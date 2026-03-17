@@ -26,6 +26,8 @@
 
     <!-- Main CSS -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body>
@@ -142,8 +144,10 @@
 <script src="{% static 'lib/easing/easing.min.js' %}"></script>
 <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
 <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-
+<script src="https://kit.fontawesome.com/3f2c27085b.js" crossorigin="anonymous"></script>
 <script src="{% static 'js/main.js' %}"></script>
+
+{% block extra_js %}{% endblock %}
 
 </body>
 </html>
