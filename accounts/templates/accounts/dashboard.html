@@ -2,143 +2,194 @@
 {% load static %}
 
 {% block extra_css %}
-    <link href="{% static 'accounts/css/style.css' %}" rel="stylesheet">
+<link href="{% static 'accounts/css/style.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-    <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="sidebar-overlay" onclick="closeSidebar()"></div>
 
-    <div class="container py-4 py-md-5">
-        
-        <div class="d-flex align-items-center mb-4">
-            <button class="btn border-0 text-primary-custom fs-4 d-md-none me-2 p-0" onclick="toggleSidebar()">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <h4 class="mb-0 fw-bold text-dark-custom">Profile</h4>
-        </div>
-        
-        <div class="row g-4">
-            
-            <div class="col-12 col-md-4 col-lg-3 sidebar mt-0">
-                
-                <div class="d-flex justify-content-end d-md-none mb-3">
-                    <button class="btn border-0 text-dark fs-5 p-0" onclick="closeSidebar()">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
+<div class="container py-4 py-md-5">
 
-                <div class="d-flex align-items-center p-3 mb-3 rounded shadow-sm" style="background-color: var(--bg-cards);">
-                    <img src="https://ui-avatars.com/api/?name={{ user_data.first_name }}+{{ user_data.last_name }}&background=ffc107&color=fff" alt="Profile" class="mini-avatar me-3">
+    <div class="d-flex align-items-center mb-4">
+        <button class="btn border-0 text-primary-custom fs-4 d-md-none me-2 p-0" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <h4 class="mb-0 fw-bold text-dark-custom">Profile</h4>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- SIDEBAR -->
+        <div class="col-12 col-md-4 col-lg-3 sidebar mt-0">
+
+            <div class="d-flex justify-content-end d-md-none mb-3">
+                <button class="btn border-0 text-dark fs-5 p-0" onclick="closeSidebar()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- USER CARD -->
+            <div class="d-flex align-items-center justify-content-between p-3 mb-3 rounded shadow-sm"
+                style="background-color: var(--bg-cards);">
+
+                <div class="d-flex align-items-center">
+                    <img src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ user.first_name|default:user.username }}+{{ user.last_name }}&background=ffc107&color=fff{% endif %}"
+                        alt="Profile" class="mini-avatar me-3">
+
                     <div>
                         <span class="text-muted d-block" style="font-size: 0.8rem;">Hello</span>
-                        <h6 class="mb-0 fw-bold text-dark-custom">{{ user_data.first_name }}</h6>
+                        <h6 class="mb-0 fw-bold text-dark-custom">
+                            {{ user.first_name|default:user.username }}
+                        </h6>
                     </div>
                 </div>
 
-                <div class="list-group sidebar-menu shadow-sm">
-                    <a href="#" class="list-group-item list-group-item-action active">
-                        <i class="fa-regular fa-user"></i> My Account
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fa-solid fa-basket-shopping"></i> My Orders
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fa-solid fa-ban"></i> Returns & Cancel
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fa-regular fa-star"></i> My Rating & Reviews
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fa-regular fa-heart"></i> My Wishlist
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fa-regular fa-credit-card"></i> Payment
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fa-solid fa-key"></i> Change Password
-                    </a>
-                </div>
+                <!-- LOGOUT -->
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm d-flex align-items-center">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i>
+                    </button>
+                </form>
+
             </div>
 
-            <div class="col-12 col-md-8 col-lg-9">
-                <div class="bg-white p-4 p-md-5 rounded shadow-sm h-100" style="background-color: var(--white);">
-                    
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center border-bottom pb-3 mb-4 gap-2">
-                        <h5 class="mb-0 fw-bold text-dark-custom">Personal Information</h5>
-                        <a href="#" id="editProfileBtn" class="text-decoration-none text-primary-custom fw-semibold">
-                            <i class="fa-regular fa-pen-to-square me-1"></i> Change Profile Information
-                        </a>
-                    </div>
+            <!-- MENU (UNCHANGED) -->
+            <div class="list-group sidebar-menu shadow-sm">
 
-                    <div class="mb-4 position-relative d-inline-block">
-                        <img src="https://ui-avatars.com/api/?name={{ user_data.first_name }}+{{ user_data.last_name }}&background=ffc107&color=fff&size=200" alt="Main Profile Picture" class="main-avatar">
-                        <div class="position-absolute edit-badge shadow-sm">
-                            <i class="fa-solid fa-camera" style="font-size: 0.85rem;"></i>
-                        </div>
-                    </div>
+                <a href="{% url 'dashboard' %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/accounts/dashboard/' %}active{% endif %}">
+                    <i class="fa-regular fa-user"></i> My Account
+                </a>
 
-                    <form id="profileForm">
-                        <div class="mb-4">
-                            <label class="form-label">Name</label>
-                            <input type="text" class="form-control custom-input w-50 editable-field" value="{{ user_data.first_name }} {{ user_data.last_name }}" readonly>
-                        </div>
+                <a href="{% url 'my_purchases' %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/accounts/purchases/' %}active{% endif %}">
+                    <i class="fa-solid fa-basket-shopping"></i> My Orders
+                </a>
 
-                        <div class="mb-4">
-                            <label class="form-label">Date Of Birth</label>
-                            <div class="position-relative w-50">
-                                <input type="text" class="form-control custom-input pe-5 editable-field" value="{{ user_data.dob }}" readonly>
-                                <i class="fa-regular fa-calendar position-absolute" style="top: 50%; right: 16px; transform: translateY(-50%); color: #666;"></i>
-                            </div>
-                        </div>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="fa-solid fa-ban"></i> Returns & Cancel
+                </a>
 
-                        <div class="mb-4">
-                            <label class="form-label d-block">Gender</label>
-                            <div class="form-check form-check-inline mt-1">
-                                <input class="form-check-input gender-radio" type="radio" name="genderOptions" id="male" value="male" {% if user_data.gender == 'male' %}checked{% endif %} disabled>
-                                <label class="form-check-label text-muted" for="male">Male</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input gender-radio" type="radio" name="genderOptions" id="female" value="female" {% if user_data.gender == 'female' %}checked{% endif %} disabled>
-                                <label class="form-check-label text-muted" for="female">Female</label>
-                            </div>
-                        </div>
+                <a href="{% url 'reviews' %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/accounts/reviews/' %}active{% endif %}">
+                    <i class="fa-regular fa-star"></i> My Rating & Reviews
+                </a>
 
-                        <div class="mb-4">
-                            <label class="form-label">Phone Number</label>
-                            <div class="input-group phone-group w-50">
-                                <span class="input-group-text custom-input text-success fw-small rounded-start">
-                                    {{ user_data.country_iso }} <span class="text-muted fw-normal ms-2">{{ user_data.phone_code }}</span>
-                                </span>
-                                <input type="text" class="form-control custom-input rounded-end editable-field" value="{{ user_data.phone_number }}" readonly>
-                            </div>
-                        </div>
+                <a href="{% url 'wishlist' %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/accounts/wishlist/' %}active{% endif %}">
+                    <i class="fa-regular fa-heart"></i> My Wishlist
+                </a>
 
-                        <div class="mb-4">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control custom-input w-50 editable-field" value="{{ user_data.email }}" readonly>
-                        </div>
-                    </form>
+                <a href="{% url 'payments' %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/accounts/payments/' %}active{% endif %}">
+                    <i class="fa-regular fa-credit-card"></i> Payment
+                </a>
 
-                </div>
+                <a href="{% url 'forgot' %}" class="list-group-item list-group-item-action">
+                    <i class="fa-solid fa-key"></i> Change Password
+                </a>
+
             </div>
         </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="col-12 col-md-8 col-lg-9">
+            <div class="bg-white p-4 p-md-5 rounded shadow-sm h-100" style="background-color: var(--white);">
+
+                <div
+                    class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center border-bottom pb-3 mb-4 gap-2">
+                    <h5 class="mb-0 fw-bold text-dark-custom">Personal Information</h5>
+                    <a href="#" id="editProfileBtn" class="text-decoration-none text-primary-custom fw-semibold">
+                        <i class="fa-regular fa-pen-to-square me-1"></i> Change Profile Information
+                    </a>
+                </div>
+
+                <!-- PROFILE IMAGE -->
+                <div class="mb-4 position-relative d-inline-block">
+                    <img src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ user.first_name|default:user.username }}+{{ user.last_name }}&background=ffc107&color=fff&size=200{% endif %}"
+                        alt="Main Profile Picture" class="main-avatar">
+
+                    <div class="position-absolute edit-badge shadow-sm">
+                        <i class="fa-solid fa-camera" style="font-size: 0.85rem;"></i>
+                    </div>
+                </div>
+
+                <!-- FORM -->
+                <form id="profileForm">
+
+                    <!-- NAME -->
+                    <div class="mb-4">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control custom-input w-50 editable-field"
+                            value="{{ user.first_name }} {{ user.last_name }}" readonly>
+                    </div>
+
+                    <!-- DOB -->
+                    <div class="mb-4">
+                        <label class="form-label">Date Of Birth</label>
+                        <div class="position-relative w-50">
+                            <input type="date" class="form-control custom-input pe-5 editable-field"
+                                value="{{ profile.dob|date:'Y-m-d' }}" readonly>
+                            <i class="fa-regular fa-calendar position-absolute"
+                                style="top: 50%; right: 16px; transform: translateY(-50%); color: #666;"></i>
+                        </div>
+                    </div>
+
+                    <!-- GENDER -->
+                    <div class="mb-4">
+                        <label class="form-label d-block">Gender</label>
+                        <div class="form-check form-check-inline mt-1">
+                            <input class="form-check-input gender-radio" type="radio" name="genderOptions" value="male"
+                                {% if profile.gender == 'male' %}checked{% endif %} disabled>
+                            <label class="form-check-label text-muted">Male</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input gender-radio" type="radio" name="genderOptions"
+                                value="female" {% if profile.gender == 'female' %}checked{% endif %} disabled>
+                            <label class="form-check-label text-muted">Female</label>
+                        </div>
+                    </div>
+
+                    <!-- PHONE -->
+                    <div class="mb-4">
+                        <label class="form-label">Phone Number</label>
+                        <div class="input-group phone-group w-50">
+                            <span class="input-group-text custom-input text-success fw-small rounded-start">
+                                IND <span class="text-muted fw-normal ms-2">+91</span>
+                            </span>
+                            <input type="text" class="form-control custom-input rounded-end editable-field"
+                                value="{{ profile.phone_number }}" readonly>
+                        </div>
+                    </div>
+
+                    <!-- EMAIL -->
+                    <div class="mb-4">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control custom-input w-50 editable-field"
+                            value="{{ user.email }}" readonly>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
     </div>
+</div>
 {% endblock content %}
 
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        
+
         const sidebarItems = document.querySelectorAll('.sidebar-menu .list-group-item');
         sidebarItems.forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault(); 
+            item.addEventListener('click', function (e) {
                 sidebarItems.forEach(nav => nav.classList.remove('active'));
                 this.classList.add('active');
-                
-                if (window.innerWidth < 768) {
-                    closeSidebar();
-                }
+
+                if (window.innerWidth < 768) closeSidebar();
             });
         });
 
@@ -147,9 +198,9 @@
         const genderRadios = document.querySelectorAll('.gender-radio');
         let isEditing = false;
 
-        editProfileBtn.addEventListener('click', function(e) {
+        editProfileBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            isEditing = !isEditing; 
+            isEditing = !isEditing;
 
             if (isEditing) {
                 this.innerHTML = '<i class="fa-solid fa-check me-1"></i> Save Profile Information';
@@ -158,7 +209,6 @@
                     field.classList.add('is-editable');
                 });
                 genderRadios.forEach(radio => radio.removeAttribute('disabled'));
-                editableFields[0].focus();
             } else {
                 this.innerHTML = '<i class="fa-regular fa-pen-to-square me-1"></i> Change Profile Information';
                 editableFields.forEach(field => {
@@ -166,7 +216,6 @@
                     field.classList.remove('is-editable');
                 });
                 genderRadios.forEach(radio => radio.setAttribute('disabled', true));
-                console.log("Profile changes prepared for submission!");
             }
         });
     });
@@ -176,11 +225,11 @@
         document.querySelector('.sidebar-overlay').classList.add('active');
         document.body.style.overflow = 'hidden';
     }
-    
+
     function closeSidebar() {
         document.querySelector('.sidebar').classList.remove('active');
         document.querySelector('.sidebar-overlay').classList.remove('active');
         document.body.style.overflow = '';
     }
 </script>
-{% endblock extra_js %}
+{% endblock %}

@@ -2,50 +2,100 @@
 {% load static %}
 
 {% block content %}
-
 <div class="container-xxl py-5">
     <div class="container">
 
         <div class="text-center">
-            <h6 class="section-title bg-white text-center text-primary px-3">Account</h6>
             <h1 class="mb-5">Register</h1>
         </div>
 
         <div class="row justify-content-center">
             <div class="col-lg-6">
-
                 <div class="bg-light p-5 rounded shadow">
 
-                    {% comment %} <h4 class="mb-4 text-center">Register</h4> {% endcomment %}
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        {{ form.errors }}
+                    </div>
+                    {% endif %}
 
-                    <form> 
+                    <form method="POST">
+                        {% csrf_token %}
 
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" placeholder="Full Name">
-                            <label>Full Name</label>
+                            {{ form.username }}
+                            <label>Username</label>
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" placeholder="Email">
-                            <label>Email Address</label>
+                            {{ form.email }}
+                            <label>Email</label>
                         </div>
 
-                        <div class="form-floating mb-3">
-                            <input type="password" class="form-control" pattern="^(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$"
-                                title="Password must contain number and special character" placeholder="Password">
+                        <div class="form-floating mb-3 position-relative">
+                            {{ form.password }}
                             <label>Password</label>
+
+                            <span onclick="togglePassword('id_password')"
+                                class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                style="cursor:pointer; font-size: 1.2rem;">
+                                <i class="fa-solid fa-eye"></i>
+                            </span>
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input type="password" class="form-control" placeholder="Confirm Password">
+                            {{ form.confirm_password }}
                             <label>Confirm Password</label>
                         </div>
 
-                        <button class="btn btn-success w-100 py-3">Register</button>
+                        <small id="passwordHelp">
+                            Must be 8+ chars, include number & symbol
+                        </small>
+
+                        <div class="form-check mb-3 mt-3">
+                            {{ form.terms }}
+                            <label>I agree to <a href="#" >Terms & Conditions</a></label>
+                        </div>
+
+                        <button class="btn btn-success w-100 py-3" id="registerBtn">
+                            <span id="btnText">Register</span>
+                        </button>
+
+                        <div class="text-center mt-4">
+
+                            <div class="d-flex align-items-center mb-3">
+                                <hr class="flex-grow-1">
+                                <span class="px-2 text-muted">OR</span>
+                                <hr class="flex-grow-1">
+                            </div>
+
+                            <div class="d-flex justify-content-center gap-3">
+
+                                <a href="#"
+                                    class="btn btn-light border rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width:45px; height:45px;">
+                                    <i class="fa-brands fa-google text-dark fs-4"></i>
+                                </a>
+
+                                <a href="#"
+                                    class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width:45px; height:45px;">
+                                    <i class="fa-brands fa-github text-white fs-4"></i>
+                                </a>
+
+                                <a href="#"
+                                    class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width:45px; height:45px;">
+                                    <i class="fa-brands fa-linkedin-in text-white fs-4"></i>
+                                </a>
+
+                            </div>
+
+                        </div>
 
                         <p class="text-center mt-3">
                             Already have an account?
-                            <a href="{% url "login" %}">Login</a>
+                            <a href="{% url 'login' %}">Login</a>
                         </p>
 
                     </form>
@@ -53,8 +103,31 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
+{% endblock %}
 
-{% endblock content %}
+{% block extra_js %}
+<script>
+    function togglePassword(id) {
+        let input = document.getElementById(id);
+        input.type = input.type === "password" ? "text" : "password";
+    }
+
+    document.getElementById("id_password").addEventListener("input", function () {
+        let val = this.value;
+        let msg = document.getElementById("passwordHelp");
+
+        if (val.length < 8) {
+            msg.innerText = "Too short";
+            msg.style.color = "red";
+        } else if (!/[0-9]/.test(val) || !/[!@#$%^&*]/.test(val)) {
+            msg.innerText = "Add number & symbol";
+            msg.style.color = "orange";
+        } else {
+            msg.innerText = "Strong password";
+            msg.style.color = "green";
+        }
+    });
+</script>
+{% endblock %}

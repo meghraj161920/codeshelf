@@ -18,27 +18,35 @@
 
                     {% comment %} <h4 class="mb-4 text-center">Login</h4> {% endcomment %}
 
-                    <form>
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                        {% endif %}
 
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" placeholder="Email">
-                            <label>Email Address</label>
+                            <input type="text" name="email" class="form-control" placeholder="Email or Username">
+                            <label class="text-muted " >Email or Username</label>
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input type="password" class="form-control" pattern="^(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$"
-                                title="Password must contain number and special character" placeholder="Password">
-                            <label>Password</label>
+                            <input type="password" name="password" class="form-control" placeholder="Password">
+                            <label class="text-muted">Password</label>
                         </div>
 
                         <div class="d-flex justify-content-between mb-3">
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox">
+                                <input class="form-check-input" type="checkbox" name="remember">
                                 <label class="form-check-label">Remember Me</label>
                             </div>
 
-                            <a href="{% url "forgot" %}">Forgot Password?</a>
+                            <a href="{% url 'forgot' %}">Forgot Password?</a>
 
                         </div>
 
@@ -46,7 +54,7 @@
 
                         <p class="text-center mt-3">
                             Don't have an account?
-                            <a href="{% url "register" %}">Register</a>
+                            <a href="{% url 'register' %}">Register</a>
                         </p>
 
                     </form>
