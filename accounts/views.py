@@ -31,3 +31,7 @@ def downloads(request):
 
 def logout_view(request):
     return render(request, 'core/home.html')  # temp
+
+
+def forgot_view(request):
+    return render(request, 'accounts/forgot.html')
