@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="container-xxl py-5">
+    <div class="container">
+
+        <div class="text-center">
+            <h6 class="section-title bg-white text-center text-primary px-3">Account</h6>
+            <h1 class="mb-5">Reset Password</h1>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+
+                <div class="bg-light p-5 rounded shadow">
+
+                    <input type="email" class="form-control mb-3" placeholder="Enter Email">
+
+                    <button class="btn btn-primary w-100 mb-3" onclick="sendOTP()">
+                        Send OTP
+                    </button>
+
+                    <div id="otpBox" style="display:none">
+
+                        <input type="text" id="userOTP" class="form-control mb-3" placeholder="Enter OTP">
+
+                        <button class="btn btn-success w-100 mb-3" onclick="verifyOTP()">
+                            Verify OTP
+                        </button>
+
+                    </div>
+
+                    <div id="resetBox" style="display:none">
+
+                        <input type="password" class="form-control mb-3" placeholder="New Password">
+
+                        <button class="btn btn-warning w-100">
+                            Reset Password
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+
+    let otp;
+
+    function sendOTP() {
+
+        otp = Math.floor(1000 + Math.random() * 9000);
+
+        alert("OTP : " + otp);
+
+        document.getElementById("otpBox").style.display = "block";
+    }
+
+    function verifyOTP() {
+
+        let userOTP = document.getElementById("userOTP").value;
+
+        if (userOTP == otp) {
+            alert("OTP Verified");
+
+            document.getElementById("resetBox").style.display = "block";
+        }
+        else {
+            alert("Invalid OTP");
+        }
+
+    }
+
+</script>
+{% endblock extra_js %}

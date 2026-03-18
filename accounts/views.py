@@ -17,3 +17,12 @@ def dashboard(request):
     }
     
     return render(request, 'accounts/dashboard.html', context)
+
+def register_view(request):
+    return render(request, 'accounts/register.html')
+
+def login_view(request):
+    return render(request, 'accounts/login.html')
+
+def forgot_view(request):
+    return render(request, 'accounts/forgot.html')
