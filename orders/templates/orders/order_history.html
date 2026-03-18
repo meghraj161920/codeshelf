@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2>📦 My Orders</h2>
+
+    <div class="card shadow-sm p-4 mb-4">
+
+        <div class="d-flex justify-content-between">
+            <strong>Order #ORD12345</strong>
+            <span>12 Feb 2026</span>
+        </div>
+
+        <hr>
+
+        <div class="d-flex justify-content-between">
+            <span>Chat Application Project</span>
+            <span>₹299</span>
+        </div>
+
+        <hr>
+
+        <div class="text-end">
+            <strong>Total: ₹798</strong>
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm p-4 mb-4">
+
+        <div class="d-flex justify-content-between">
+            <strong>Order #ORD12344</strong>
+            <span>05 Feb 2026</span>
+        </div>
+
+        <hr>
+
+        <div class="d-flex justify-content-between">
+            <span>Portfolio Website Project</span>
+            <span>₹199</span>
+        </div>
+
+        <hr>
+
+        <div class="text-end">
+            <strong>Total: ₹199</strong>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
