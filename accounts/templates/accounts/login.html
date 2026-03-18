@@ -16,7 +16,7 @@
 
                 <div class="bg-light p-5 rounded shadow">
 
-                    <h4 class="mb-4 text-center">Login</h4>
+                    {% comment %} <h4 class="mb-4 text-center">Login</h4> {% endcomment %}
 
                     <form>
 
@@ -38,7 +38,7 @@
                                 <label class="form-check-label">Remember Me</label>
                             </div>
 
-                            <a href="forgot.html">Forgot Password?</a>
+                            <a href="{% url "forgot" %}">Forgot Password?</a>
 
                         </div>
 
@@ -46,7 +46,7 @@
 
                         <p class="text-center mt-3">
                             Don't have an account?
-                            <a href="register.html">Register</a>
+                            <a href="{% url "register" %}">Register</a>
                         </p>
 
                     </form>

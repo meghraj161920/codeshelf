@@ -16,9 +16,9 @@
 
                 <div class="bg-light p-5 rounded shadow">
 
-                    <h4 class="mb-4 text-center">Register</h4>
+                    {% comment %} <h4 class="mb-4 text-center">Register</h4> {% endcomment %}
 
-                    <form>
+                    <form> 
 
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" placeholder="Full Name">
@@ -45,7 +45,7 @@
 
                         <p class="text-center mt-3">
                             Already have an account?
-                            <a href="login.html">Login</a>
+                            <a href="{% url "login" %}">Login</a>
                         </p>
 
                     </form>
