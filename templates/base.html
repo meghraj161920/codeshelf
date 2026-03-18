@@ -108,48 +108,76 @@
     <div class="container py-5">
         <div class="row g-5">
 
+            <!-- About -->
             <div class="col-lg-3 col-md-6">
-                <h4 class="text-white mb-3">Quick Link</h4>
-                <a class="btn btn-link" href="#">About Us</a>
-                <a class="btn btn-link" href="#">Contact Us</a>
-                <a class="btn btn-link" href="#">Privacy Policy</a>
-                <a class="btn btn-link" href="#">Terms & Condition</a>
-                <a class="btn btn-link" href="#">FAQs & Help</a>
-            </div>
+                <h4 class="text-white mb-3">CodeShelf</h4>
+                <p>
+                    CodeShelf is your go-to platform for ready-made coding projects.
+                    Learn faster, build smarter, and download complete solutions.
+                </p>
 
-            <div class="col-lg-3 col-md-6">
-                <h4 class="text-white mb-3">Contact</h4>
-                <p><i class="fa fa-map-marker-alt me-3"></i>Pune, India</p>
-                <p><i class="fa fa-phone-alt me-3"></i>+91 XXXXXXXX</p>
-                <p><i class="fa fa-envelope me-3"></i>info@codeshelf.com</p>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-                <h4 class="text-white mb-3">Gallery</h4>
-                <div class="row g-2 pt-2">
-                    <div class="col-4">
-                        <img class="img-fluid bg-light p-1" src="{% static 'img/course-1.jpg' %}">
-                    </div>
-                    <div class="col-4">
-                        <img class="img-fluid bg-light p-1" src="{% static 'img/course-2.jpg' %}">
-                    </div>
-                    <div class="col-4">
-                        <img class="img-fluid bg-light p-1" src="{% static 'img/course-3.jpg' %}">
-                    </div>
+                <!-- Social -->
+                <div class="d-flex pt-2">
+                    <a class="btn btn-outline-light btn-social me-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social me-2" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-outline-light btn-social me-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
+            <!-- Quick Links -->
             <div class="col-lg-3 col-md-6">
-                <h4 class="text-white mb-3">Newsletter</h4>
-                <input class="form-control mb-2" type="text" placeholder="Your email">
-                <button class="btn btn-primary w-100">Sign Up</button>
+                <h4 class="text-white mb-3">Quick Links</h4>
+                <a class="btn btn-link" href="{% url 'home' %}">Home</a>
+                <a class="btn btn-link" href="{% url 'project_list' %}">Projects</a>
+                <a class="btn btn-link" href="{% url 'about' %}">About</a>
+                <a class="btn btn-link" href="{% url 'contact' %}">Contact</a>
+            </div>
+
+            <!-- Legal -->
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Legal</h4>
+                <a class="btn btn-link" href="{% url 'privacy' %}">Privacy Policy</a>
+                <a class="btn btn-link" href="{% url 'terms' %}">Terms & Conditions</a>
+                <a class="btn btn-link" href="#">Refund Policy</a>
+                <a class="btn btn-link" href="#">FAQs</a>
+            </div>
+
+            <!-- Contact + Newsletter -->
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Contact</h4>
+
+                <p><i class="fa fa-map-marker-alt me-2"></i>Pune, India</p>
+                <p><i class="fa fa-phone-alt me-2"></i>+91 XXXXXXXX</p>
+                <p><i class="fa fa-envelope me-2"></i>info@codeshelf.com</p>
+
+                <h6 class="text-white mt-4 mb-2">Newsletter</h6>
+                <div class="position-relative">
+                    <input class="form-control border-0 w-100 py-2 ps-3 pe-5" type="text" placeholder="Your email">
+                    <button class="btn btn-primary position-absolute top-0 end-0 mt-1 me-1 px-3">
+                        Go
+                    </button>
+                </div>
             </div>
 
         </div>
     </div>
 
-    <div class="container text-center py-3">
-        <small>© CodeShelf. All Rights Reserved.</small>
+    <!-- Bottom Footer -->
+    <div class="container">
+        <div class="row border-top pt-3">
+
+            <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+                <small>© 2026 CodeShelf. All Rights Reserved.</small>
+            </div>
+
+            <div class="col-md-6 text-center text-md-end">
+                <small>
+                    Designed with ❤️ by CodeShelf Team
+                </small>
+            </div>
+
+        </div>
     </div>
 </div>
 <!-- ================= END FOOTER ================= -->

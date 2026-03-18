@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="container-fluid bg-primary py-5 mb-5">
+    <div class="container text-center text-white">
+        <h1 class="display-4 fw-bold">Contact Us</h1>
+        <p class="lead">Contact for any query</p>
+    </div>
+</div>
+
+<!-- Contact Section -->
+<div class="container-xxl py-5">
+    <div class="container">
+
+        <!-- Heading -->
+        <div class="text-center mb-5">
+            <h6 class="section-title bg-white text-center text-primary px-3">Contact Us</h6>
+            <h1>Get In Touch</h1>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Contact Info -->
+            <div class="col-lg-4">
+
+                <h5 class="mb-3">Get In Touch</h5>
+                <p>
+                    If you have any questions about our platform or projects,
+                    feel free to contact us. We’ll respond as soon as possible.
+                </p>
+
+                <!-- Address -->
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary text-white d-flex align-items-center justify-content-center"
+                        style="width:50px;height:50px;">
+                        <i class="fa fa-map-marker-alt"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="text-primary mb-0">Office</h6>
+                        <p class="mb-0">Pune, Maharashtra, India</p>
+                    </div>
+                </div>
+
+                <!-- Phone -->
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary text-white d-flex align-items-center justify-content-center"
+                        style="width:50px;height:50px;">
+                        <i class="fa fa-phone-alt"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="text-primary mb-0">Mobile</h6>
+                        <p class="mb-0">+91 XXXXXXXX</p>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary text-white d-flex align-items-center justify-content-center"
+                        style="width:50px;height:50px;">
+                        <i class="fa fa-envelope-open"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="text-primary mb-0">Email</h6>
+                        <p class="mb-0">info@codeshelf.com</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Map -->
+            <div class="col-lg-4">
+                <iframe class="rounded w-100 h-100"
+                    src="https://maps.google.com/maps?q=pune&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                    style="min-height:300px;border:0;"
+                    allowfullscreen=""
+                    loading="lazy">
+                </iframe>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="col-lg-4">
+                <div class="bg-light p-3 rounded shadow-sm">
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+                            </div>
+
+                            <div class="col-12">
+                                <input type="text" name="subject" class="form-control" placeholder="Subject" required>
+                            </div>
+
+                            <div class="col-12">
+                                <textarea name="message" rows="4" class="form-control" placeholder="Message" required></textarea>
+                            </div>
+
+                            <div class="col-12">
+                                <button class="btn btn-primary w-100 py-2">
+                                    Send Message
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

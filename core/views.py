@@ -11,3 +11,6 @@ def contact(request):
 
 def terms(request):
     return render(request, 'core/terms.html')
+
+def privacy(request):
+    return render(request, 'core/privacy.html')
