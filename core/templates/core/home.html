@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Carousel Start -->
+<div class="container-fluid p-0 mb-5">
+    <div class="owl-carousel header-carousel">
+
+        <div class="owl-carousel-item">
+            <img class="img-fluid w-100" src="{% static 'img/carousel-1.jpg' %}" style="height: 450px; object-fit: cover;" alt="">
+            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(0,0,0,0.6);">
+                <div class="container">
+                    <h1 class="text-white">Buy & Sell Coding Projects</h1>
+                    <p class="text-white">CodeShelf makes it easy to share and purchase real projects.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="owl-carousel-item">
+            <img class="img-fluid w-100" src="{% static 'img/carousel-2.jpg' %}" style="height: 450px; object-fit: cover;" alt="">
+            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(0,0,0,0.6);">
+                <div class="container">
+                    <h1 class="text-white">Learn by Real Projects</h1>
+                    <p class="text-white">Download working code and understand fast.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Carousel End -->
+
+
+<!-- Features -->
+<div class="container py-5">
+    <div class="row text-center">
+
+        <div class="col-md-4">
+            <h4>🔥 Ready Projects</h4>
+            <p>Download real-world projects instantly.</p>
+        </div>
+
+        <div class="col-md-4">
+            <h4>💡 Easy Learning</h4>
+            <p>Understand concepts with working code.</p>
+        </div>
+
+        <div class="col-md-4">
+            <h4>🚀 Fast Setup</h4>
+            <p>Run projects with simple instructions.</p>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Project Section (IMPORTANT) -->
+<div class="container py-5">
+    <h2 class="text-center mb-4">Latest Projects</h2>
+
+    <div class="row">
+
+        <!-- Dummy Card -->
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{% static 'img/course-1.jpg' %}" class="card-img-top">
+                <div class="card-body">
+                    <h5>Django E-commerce</h5>
+                    <p>Complete e-commerce project with payments.</p>
+                    <a href="#" class="btn btn-primary">View</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{% static 'img/course-2.jpg' %}" class="card-img-top">
+                <div class="card-body">
+                    <h5>Chat App</h5>
+                    <p>Real-time chat using Django + WebSockets.</p>
+                    <a href="#" class="btn btn-primary">View</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{% static 'img/course-3.jpg' %}" class="card-img-top">
+                <div class="card-body">
+                    <h5>Portfolio Website</h5>
+                    <p>Responsive portfolio with admin panel.</p>
+                    <a href="#" class="btn btn-primary">View</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
