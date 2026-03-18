@@ -1,3 +1,4 @@
 from django.shortcuts import render
 
-# Create your views here.
+def coupons(request):
+    return render(request, 'accounts/coupons.html')
