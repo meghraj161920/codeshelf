@@ -5,7 +5,6 @@
 
 <div class="container mt-5">
 
-
 <!-- PAGE HEADER -->
 <div class="row mb-4">
 
@@ -25,15 +24,56 @@
 </div>
 
 
-<!-- CATEGORY FILTER -->
-<div class="mb-4">
-    <a href="{% url 'project_list' %}" class="btn btn-secondary">All</a>
+<!-- FILTERS -->
+<div class="row mb-4">
+    <div class="col-md-12">
 
-    {% for cat in categories %}
-        <a href="?category={{ cat.slug }}" class="btn btn-outline-primary">
-            {{ cat.name }}
-        </a>
-    {% endfor %}
+        <form method="GET" class="row g-2">
+
+            <!-- CATEGORY -->
+            <div class="col-md-3">
+                <select name="category" class="form-select">
+
+                    <option value="">All Categories</option>
+
+                    {% for cat in categories %}
+                    <option value="{{ cat.slug }}"
+                        {% if request.GET.category == cat.slug %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+
+            <!-- TECHNOLOGY -->
+            <div class="col-md-3">
+                <input type="text" name="technology" class="form-control"
+                       placeholder="Technology (e.g. Python)">
+            </div>
+
+
+            <!-- DIFFICULTY -->
+            <div class="col-md-3">
+                <select name="difficulty" class="form-select">
+                    <option value="">All Difficulty</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </div>
+
+
+            <div class="col-md-3">
+                <button class="btn btn-secondary w-100">
+                    Apply Filters
+                </button>
+            </div>
+
+        </form>
+
+    </div>
 </div>
 
 
@@ -41,11 +81,13 @@
 <div class="row">
 
     {% for project in projects %}
-    <div class="col-md-3 mb-3 project-card">
+    <div class="col-md-3 mb-3">
 
         <div class="card shadow-sm h-100">
 
-            <img src="{{ project.thumbnail.url }}" class="card-img-top">
+            <img src="{{ project.thumbnail.url }}"
+                 class="card-img-top"
+                 style="height:200px; object-fit:cover;">
 
             <div class="card-body">
 
@@ -57,15 +99,17 @@
                     {{ project.description|truncatewords:12 }}
                 </p>
 
-                <span class="badge bg-info">
-                    {{ project.technology }}
-                </span>
+                <div class="mb-2">
+                    <span class="badge bg-info">
+                        {{ project.technology }}
+                    </span>
 
-                <span class="badge bg-warning text-dark">
-                    {{ project.difficulty_level }}
-                </span>
+                    <span class="badge bg-warning text-dark">
+                        {{ project.difficulty_level }}
+                    </span>
+                </div>
 
-                <h6 class="mt-3 fw-bold text-success">
+                <h6 class="fw-bold text-success">
                     ₹{{ project.price }}
                 </h6>
 
@@ -73,7 +117,8 @@
 
             <div class="card-footer bg-white border-0 d-flex justify-content-between">
 
-                <a href="{% url 'project_detail' project.slug %}" class="btn btn-outline-primary btn-sm">
+                <a href="{% url 'project_detail' project.slug %}"
+                   class="btn btn-outline-primary btn-sm">
                     View Details
                 </a>
 
@@ -87,7 +132,9 @@
 
     </div>
     {% empty %}
-        <p>No projects found.</p>
+    <div class="col-12">
+        <p class="text-center text-muted">No projects found.</p>
+    </div>
     {% endfor %}
 
 </div>
