@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<body class="bg-light">
+
+<div class="container mt-5">
+<div class="card p-4 mx-auto" style="max-width:400px">
+
+<h3>Add Review</h3>
+
+<form method="POST">
+{% csrf_token %}
+
+<!-- COMMENT -->
+<textarea name="comment" class="form-control mb-3" placeholder="Write review"></textarea>
+
+<!-- HIDDEN RATING -->
+<input type="hidden" name="rating" id="rating">
+
+<!-- STARS -->
+<div id="stars" class="text-center mb-3">
+    <span data-value="1" class="fs-3 text-secondary">★</span>
+    <span data-value="2" class="fs-3 text-secondary">★</span>
+    <span data-value="3" class="fs-3 text-secondary">★</span>
+    <span data-value="4" class="fs-3 text-secondary">★</span>
+    <span data-value="5" class="fs-3 text-secondary">★</span>
+</div>
+
+<button class="btn btn-primary w-100">Submit</button>
+
+</form>
+
+</div>
+</div>
+
+<script>
+let stars = document.querySelectorAll("#stars span");
+let ratingInput = document.getElementById("rating");
+
+stars.forEach((star) => {
+    star.addEventListener("click", function () {
+        let value = this.getAttribute("data-value");
+
+        // set rating value
+        ratingInput.value = value;
+
+        // reset all stars
+        stars.forEach(s => s.classList.remove("text-warning"));
+
+        // highlight selected stars
+        stars.forEach(s => {
+            if (s.getAttribute("data-value") <= value) {
+                s.classList.add("text-warning");
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

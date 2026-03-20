@@ -1,4 +1,4 @@
 from django.shortcuts import render
 
 def wishlist(request):
-    return render(request, 'accounts/wishlist.html')
+    return render(request, 'wishlist/wishlist.html')
