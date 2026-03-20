@@ -7,22 +7,40 @@
 <div class="container-fluid p-0 mb-5">
     <div class="owl-carousel header-carousel">
 
+        <!-- Slide 1 -->
         <div class="owl-carousel-item">
-            <img class="img-fluid w-100" src="{% static 'img/carousel-1.jpg' %}" style="height: 450px; object-fit: cover;" alt="">
-            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(0,0,0,0.6);">
-                <div class="container">
+            <img class="img-fluid w-100"
+                 src="{% static 'img/carousel-1.jpg' %}"
+                 style="height: 450px; object-fit: cover;"
+                 alt="">
+
+            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
+                 style="background: rgba(0,0,0,0.6);">
+
+                <div class="container text-center text-md-start">
                     <h1 class="text-white">Buy & Sell Coding Projects</h1>
-                    <p class="text-white">CodeShelf makes it easy to share and purchase real projects.</p>
+                    <p class="text-white">
+                        CodeShelf makes it easy to share and purchase real projects.
+                    </p>
                 </div>
             </div>
         </div>
 
+        <!-- Slide 2 -->
         <div class="owl-carousel-item">
-            <img class="img-fluid w-100" src="{% static 'img/carousel-2.jpg' %}" style="height: 450px; object-fit: cover;" alt="">
-            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(0,0,0,0.6);">
-                <div class="container">
+            <img class="img-fluid w-100"
+                 src="{% static 'img/carousel-2.jpg' %}"
+                 style="height: 450px; object-fit: cover;"
+                 alt="">
+
+            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
+                 style="background: rgba(0,0,0,0.6);">
+
+                <div class="container text-center text-md-start">
                     <h1 class="text-white">Learn by Real Projects</h1>
-                    <p class="text-white">Download working code and understand fast.</p>
+                    <p class="text-white">
+                        Download working code and understand fast.
+                    </p>
                 </div>
             </div>
         </div>
@@ -32,70 +50,89 @@
 <!-- Carousel End -->
 
 
-<!-- Features -->
+<!-- Features Start -->
 <div class="container py-5">
     <div class="row text-center">
 
-        <div class="col-md-4">
+        <div class="col-md-4 mb-4">
             <h4>🔥 Ready Projects</h4>
             <p>Download real-world projects instantly.</p>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4 mb-4">
             <h4>💡 Easy Learning</h4>
             <p>Understand concepts with working code.</p>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4 mb-4">
             <h4>🚀 Fast Setup</h4>
             <p>Run projects with simple instructions.</p>
         </div>
 
     </div>
 </div>
+<!-- Features End -->
 
 
-<!-- Project Section (IMPORTANT) -->
+<!-- Latest Projects Start -->
 <div class="container py-5">
     <h2 class="text-center mb-4">Latest Projects</h2>
 
     <div class="row">
 
-        <!-- Dummy Card -->
-        <div class="col-md-4">
-            <div class="card">
-                <img src="{% static 'img/course-1.jpg' %}" class="card-img-top">
+        {% for project in projects %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+
+                <!-- Project Image -->
+                <img src="{{ project.thumbnail.url }}"
+                     class="card-img-top"
+                     style="height: 200px; object-fit: cover;"
+                     alt="{{ project.title }}">
+
+                <!-- Card Body -->
                 <div class="card-body">
-                    <h5>Django E-commerce</h5>
-                    <p>Complete e-commerce project with payments.</p>
-                    <a href="#" class="btn btn-primary">View</a>
+                    <h5 class="card-title">{{ project.title }}</h5>
+
+                    <p class="text-muted">
+                        {{ project.description|truncatewords:12 }}
+                    </p>
+
+                    <div class="mb-2">
+                        <span class="badge bg-info">
+                            {{ project.technology }}
+                        </span>
+                        <span class="badge bg-warning text-dark">
+                            {{ project.difficulty_level }}
+                        </span>
+                    </div>
+
+                    <h6 class="text-success fw-bold">
+                        ₹{{ project.price }}
+                    </h6>
                 </div>
+
+                <!-- Card Footer -->
+                <div class="card-footer bg-white border-0">
+                    <a href="{% url 'project_detail' project.slug %}"
+                       class="btn btn-primary w-100">
+                        View Project
+                    </a>
+                </div>
+
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card">
-                <img src="{% static 'img/course-2.jpg' %}" class="card-img-top">
-                <div class="card-body">
-                    <h5>Chat App</h5>
-                    <p>Real-time chat using Django + WebSockets.</p>
-                    <a href="#" class="btn btn-primary">View</a>
-                </div>
-            </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center text-muted">
+                No projects available.
+            </p>
         </div>
-
-        <div class="col-md-4">
-            <div class="card">
-                <img src="{% static 'img/course-3.jpg' %}" class="card-img-top">
-                <div class="card-body">
-                    <h5>Portfolio Website</h5>
-                    <p>Responsive portfolio with admin panel.</p>
-                    <a href="#" class="btn btn-primary">View</a>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
 
     </div>
 </div>
+<!-- Latest Projects End -->
 
 {% endblock %}

@@ -1,279 +1,142 @@
 {% extends "base.html" %}
 {% load static %}
 
-
 {% block content %}
 
 <div class="container mt-5">
 
-    <!-- PAGE TITLE -->
-    <div class="row mb-4">
-        <div class="col-md-12">
+```
+<!-- PAGE TITLE -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="fw-bold">{{ project.title }}</h2>
+        <p class="text-muted">Complete information about this project</p>
+    </div>
+</div>
 
-            <h2 class="fw-bold">Project Details</h2>
-            <p class="text-muted">Complete information about the selected project</p>
+<div class="row">
 
-        </div>
+    <!-- PROJECT IMAGE -->
+    <div class="col-md-6">
+        <img src="{{ project.thumbnail.url }}" class="img-fluid rounded shadow">
     </div>
 
+    <!-- PROJECT INFO -->
+    <div class="col-md-6">
 
-    <div class="row">
+        <h3 class="fw-bold">{{ project.title }}</h3>
 
-        <!-- PROJECT IMAGE -->
-        <div class="col-md-6">
+        <p class="text-muted mt-3">
+            {{ project.description }}
+        </p>
 
-            <img src="https://victoriousdigital.in/wp-content/uploads/2024/11/Top-10-Python-Projects-1024x585.jpg.webp"
-                class="img-fluid rounded shadow">
-
+        <!-- BADGES -->
+        <div class="mb-3">
+            <span class="badge bg-info">{{ project.technology }}</span>
+            <span class="badge bg-warning text-dark">{{ project.difficulty_level }}</span>
+            <span class="badge bg-success">Source Code Included</span>
         </div>
 
+        <!-- PRICE -->
+        <h4 class="text-success fw-bold mb-3">
+            ₹{{ project.price }}
+        </h4>
 
+        <!-- BUTTONS -->
+        <div class="d-flex gap-2">
+            <a href="#" class="btn btn-primary">
+                Buy Now
+            </a>
 
-        <!-- PROJECT INFO -->
-        <div class="col-md-6">
-
-            <h3 class="fw-bold">Python Calculator Project</h3>
-
-            <p class="text-muted mt-3">
-
-                A beginner friendly Python calculator project with GUI support.
-                This project includes source code, documentation and setup guide.
-
-            </p>
-
-
-            <!-- BADGES -->
-            <div class="mb-3">
-
-                <span class="badge bg-info">Python</span>
-                <span class="badge bg-warning text-dark">Beginner</span>
-                <span class="badge bg-success">Source Code Included</span>
-
-            </div>
-
-
-            <!-- PRICE -->
-            <h4 class="text-success fw-bold mb-3">
-                ₹499
-            </h4>
-
-
-            <!-- BUTTONS -->
-            <div class="d-flex gap-2">
-
-                <button class="btn btn-primary">
-                    Buy Now
-                </button>
-
-                <button class="btn btn-outline-secondary">
-                    Add to Wishlist
-                </button>
-
-            </div>
-
-
+            <button class="btn btn-outline-secondary">
+                Add to Wishlist
+            </button>
         </div>
 
     </div>
-
-
-
-    <!-- PROJECT DESCRIPTION -->
-    <div class="row mt-5">
-
-        <div class="col-md-12">
-
-            <h4 class="fw-bold mb-3">Project Description</h4>
-
-            <p class="text-muted">
-
-                This Python Calculator project is designed for beginners who want
-                to understand basic programming logic and GUI development.
-
-                Features included:
-
-                • Basic arithmetic operations
-                • User-friendly interface
-                • Clean and well documented code
-                • Easy setup instructions
-
-                This project is perfect for students learning Python development.
-
-            </p>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- PROJECT FEATURES -->
-    <div class="row mt-4">
-
-        <div class="col-md-6">
-
-            <h5 class="fw-bold">Project Features</h5>
-
-            <ul class="list-group">
-
-                <li class="list-group-item">Complete Source Code</li>
-                <li class="list-group-item">Step by Step Documentation</li>
-                <li class="list-group-item">Beginner Friendly</li>
-                <li class="list-group-item">Easy to Customize</li>
-
-            </ul>
-
-        </div>
-
-
-
-        <div class="col-md-6">
-
-            <h5 class="fw-bold">Technology Used</h5>
-
-            <ul class="list-group">
-
-                <li class="list-group-item">Python</li>
-                <li class="list-group-item">Tkinter GUI</li>
-                <li class="list-group-item">OOP Concepts</li>
-                <li class="list-group-item">File Handling</li>
-
-            </ul>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- RELATED PROJECTS -->
-    <div class="row mt-5">
-
-        <div class="col-md-12">
-
-            <h4 class="fw-bold mb-4">Related Projects</h4>
-
-        </div>
-
-
-        <!-- CARD 1 -->
-        <div class="col-md-3">
-
-            <div class="card shadow-sm">
-
-                <img src="https://cdn.hackersandslackers.com/2020/04/django-views-1.jpg" class="card-img-top">
-
-                <div class="card-body">
-
-                    <h5 class="card-title">Django Blog Website</h5>
-
-                    <p class="text-muted">
-                        Blog project with authentication and admin dashboard.
-                    </p>
-
-                    <h6 class="text-success">₹999</h6>
-
-                    <a href="project_detail.html" class="btn btn-outline-primary btn-sm">
-                        View Details
-                    </a>
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- CARD 2 -->
-        <div class="col-md-3">
-
-            <div class="card shadow-sm">
-
-                <img src="https://st4.depositphotos.com/9233766/25455/i/450/depositphotos_254551978-stock-photo-php-web-development-and-coding.jpg"
-                    class="card-img-top">
-
-                <div class="card-body">
-
-                    <h5 class="card-title">PHP Blog System</h5>
-
-                    <p class="text-muted">
-                        Dynamic PHP blog with admin panel and comments system.
-                    </p>
-
-                    <h6 class="text-success">₹699</h6>
-
-                    <a href="project_detail.html" class="btn btn-outline-primary btn-sm">
-                        View Details
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- CARD 3 -->
-        <div class="col-md-3">
-
-            <div class="card shadow-sm">
-
-                <img src="https://st4.depositphotos.com/9233766/25455/i/450/depositphotos_254551978-stock-photo-php-web-development-and-coding.jpg"
-                    class="card-img-top">
-
-                <div class="card-body">
-
-                    <h5 class="card-title">PHP Blog System</h5>
-
-                    <p class="text-muted">
-                        Dynamic PHP blog with admin panel and comments system.
-                    </p>
-
-                    <h6 class="text-success">₹699</h6>
-
-                    <a href="project_detail.html" class="btn btn-outline-primary btn-sm">
-                        View Details
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- CARD 4 -->
-        <div class="col-md-3">
-
-            <div class="card shadow-sm">
-
-                <img src="https://d1jnx9ba8s6j9r.cloudfront.net/blog/wp-content/uploads/2019/09/Java-Project.jpg"
-                    class="card-img-top">
-
-                <div class="card-body">
-
-                    <h5 class="card-title">Java Student System</h5>
-
-                    <p class="text-muted">
-                        Desktop application for managing student records.
-                    </p>
-
-                    <h6 class="text-success">₹999</h6>
-
-                    <a href="project_detail.html" class="btn btn-outline-primary btn-sm">
-                        View Details
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-    </div>
-
 
 </div>
 
+
+<!-- DEMO VIDEO -->
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h4 class="fw-bold mb-3">Demo Video</h4>
+
+        <div class="ratio ratio-16x9">
+            <iframe src="{{ project.demo_video_url }}" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+
+<!-- PROJECT DETAILS -->
+<div class="row mt-5">
+
+    <div class="col-md-6">
+        <h5 class="fw-bold">Project Details</h5>
+
+        <ul class="list-group">
+            <li class="list-group-item"><strong>Version:</strong> {{ project.version }}</li>
+            <li class="list-group-item"><strong>Requirements:</strong> {{ project.requirements }}</li>
+            <li class="list-group-item"><strong>File Size:</strong> {{ project.file_size }}</li>
+            <li class="list-group-item"><strong>Category:</strong> {{ project.category.name }}</li>
+        </ul>
+    </div>
+
+
+    <div class="col-md-6">
+        <h5 class="fw-bold">Features</h5>
+
+        <ul class="list-group">
+            <li class="list-group-item">Complete Source Code</li>
+            <li class="list-group-item">Documentation Included</li>
+            <li class="list-group-item">Beginner Friendly</li>
+            <li class="list-group-item">Easy to Customize</li>
+        </ul>
+    </div>
+
+</div>
+
+
+<!-- PROJECT SCREENSHOTS -->
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h4 class="fw-bold mb-3">Project Screenshots</h4>
+    </div>
+
+    {% for img in project.images.all %}
+    <div class="col-md-3 mb-3">
+        <img src="{{ img.image.url }}" class="img-fluid rounded shadow-sm">
+    </div>
+    {% empty %}
+    <p class="text-muted">No screenshots available.</p>
+    {% endfor %}
+</div>
+
+
+<!-- RELATED PROJECTS (STATIC FOR NOW) -->
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h4 class="fw-bold mb-4">Related Projects</h4>
+    </div>
+
+    <!-- You can make this dynamic later -->
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <img src="{% static 'img/course-1.jpg' %}" class="card-img-top">
+
+            <div class="card-body">
+                <h5 class="card-title">Sample Project</h5>
+                <p class="text-muted">Example related project.</p>
+                <h6 class="text-success">₹999</h6>
+            </div>
+        </div>
+    </div>
+
+</div>
+```
+
+</div>
 
 {% endblock content %}
