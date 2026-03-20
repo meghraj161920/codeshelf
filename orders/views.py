@@ -13,7 +13,7 @@ def checkout(request):
     ]
 
     subtotal = sum(item["price"] for item in order_items)
-    discount = 100
+    discount = request.session.get("discount", 0)
     total = subtotal - discount
 
     context = {
@@ -27,13 +27,14 @@ def checkout(request):
 
 
 def place_order(request):
-    return redirect('order_success', order_id=1)
+    request.session.pop("discount", None)
+    return redirect('order_success', order_id="ORD12345")
 
 
-def order_success(request):
+def order_success(request, order_id):
 
     context = {
-        "order_id": "ORD12345"
+        "order_id": order_id
     }
 
     return render(request, "orders/order_success.html", context)

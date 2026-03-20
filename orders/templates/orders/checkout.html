@@ -16,33 +16,32 @@
                 <h4>Order Summary</h4>
                 <hr>
 
+                {% for item in order_items %}
                 <div class="d-flex justify-content-between">
-                    <span>E-commerce Website Project</span>
-                    <span>₹499</span>
+                    <span>{{ item.title }}</span>
+                    <span>₹{{ item.price }}</span>
                 </div>
-
-                <div class="d-flex justify-content-between">
-                    <span>Chat Application Project</span>
-                    <span>₹299</span>
-                </div>
+                {% endfor %}
 
                 <hr>
 
                 <div class="d-flex justify-content-between">
                     <strong>Subtotal:</strong>
-                    <strong>₹798</strong>
+                    <strong>₹{{ subtotal }}</strong>
                 </div>
 
+                {% if discount %}
                 <div class="d-flex justify-content-between text-success">
                     <strong>Discount:</strong>
-                    <strong>- ₹100</strong>
+                    <strong>- ₹{{ discount }}</strong>
                 </div>
+                {% endif %}
 
                 <hr>
 
                 <div class="d-flex justify-content-between">
                     <h5>Total:</h5>
-                    <h5>₹698</h5>
+                    <h5>₹{{ total }}</h5>
                 </div>
             </div>
 
@@ -55,22 +54,29 @@
             <div class="card shadow-sm p-4 mb-3">
                 <h5>Apply Coupon</h5>
 
-                <input type="text" class="form-control mb-2" placeholder="Enter coupon code">
+                <form method="POST" action="{% url 'apply_coupon' %}">
+                    {% csrf_token %}
+                    <input type="text" name="coupon_code" class="form-control mb-2" placeholder="Enter coupon code">
 
-                <button class="btn btn-outline-primary w-100">
-                    Apply
-                </button>
+                    <button class="btn btn-outline-primary w-100">
+                        Apply
+                    </button>
+                </form>
 
-                <p class="text-success mt-2">
-                    Coupon REVIEW10 applied!
-                </p>
+                {% if messages %}
+                {% for message in messages %}
+                <p class="text-success mt-2">{{ message }}</p>
+                {% endfor %}
+                {% endif %}
             </div>
 
             <!-- Place Order -->
-
-            <button class="btn btn-success w-100 btn-lg">
-                ✅ Place Order
-            </button>
+            <form method="POST" action="{% url 'place_order' %}">
+                {% csrf_token %}
+                <button class="btn btn-success w-100 btn-lg">
+                    ✅ Place Order
+                </button>
+            </form>
 
         </div>
 

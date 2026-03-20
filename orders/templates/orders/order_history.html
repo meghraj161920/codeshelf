@@ -7,49 +7,35 @@
 
     <h2>📦 My Orders</h2>
 
-    <div class="card shadow-sm p-4 mb-4">
-
-        <div class="d-flex justify-content-between">
-            <strong>Order #ORD12345</strong>
-            <span>12 Feb 2026</span>
-        </div>
-
-        <hr>
-
-        <div class="d-flex justify-content-between">
-            <span>Chat Application Project</span>
-            <span>₹299</span>
-        </div>
-
-        <hr>
-
-        <div class="text-end">
-            <strong>Total: ₹798</strong>
-        </div>
-
-    </div>
+    {% for order in orders %}
 
     <div class="card shadow-sm p-4 mb-4">
 
         <div class="d-flex justify-content-between">
-            <strong>Order #ORD12344</strong>
-            <span>05 Feb 2026</span>
+            <strong>Order #{{ order.id }}</strong>
+            <span>{{ order.date }}</span>
         </div>
 
         <hr>
 
+        {% for item in order.items %}
         <div class="d-flex justify-content-between">
-            <span>Portfolio Website Project</span>
-            <span>₹199</span>
+            <span>{{ item.title }}</span>
+            <span>₹{{ item.price }}</span>
         </div>
+        {% endfor %}
 
         <hr>
 
         <div class="text-end">
-            <strong>Total: ₹199</strong>
+            <strong>Total: ₹{{ order.total }}</strong>
         </div>
 
     </div>
+
+    {% empty %}
+    <p>No orders yet.</p>
+    {% endfor %}
 
 </div>
 

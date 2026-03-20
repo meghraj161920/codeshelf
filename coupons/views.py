@@ -1,5 +1,5 @@
-from pyexpat.errors import messages
 from django.shortcuts import redirect, render
+from django.contrib import messages
 
 
 def coupons(request):
@@ -8,8 +8,14 @@ def coupons(request):
 
 def apply_coupon(request):
 
-    context = {
-        "message": "Coupon REVIEW10 applied successfully!"
-    }
+    if request.method == "POST":
+        code = request.POST.get("coupon_code")
 
-    return render(request, "coupons/apply_coupon.html", context)
+        if code == "REVIEW10":
+            request.session["discount"] = 100
+            messages.success(request, "Coupon REVIEW10 applied successfully!")
+        else:
+            request.session["discount"] = 0
+            messages.error(request, "Invalid coupon code")
+
+    return redirect('checkout')
