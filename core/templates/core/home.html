@@ -3,136 +3,266 @@
 
 {% block content %}
 
-<!-- Carousel Start -->
-<div class="container-fluid p-0 mb-5">
-    <div class="owl-carousel header-carousel">
+<!-- 🔥 HERO SECTION -->
+<div class="container-fluid py-5 bg-dark text-white">
+    <div class="container">
+        <div class="row align-items-center">
 
-        <!-- Slide 1 -->
-        <div class="owl-carousel-item">
-            <img class="img-fluid w-100"
-                 src="{% static 'img/carousel-1.jpg' %}"
-                 style="height: 450px; object-fit: cover;"
-                 alt="">
+            <!-- LEFT -->
+            <div class="col-lg-6">
+                <h1 class="display-5 text-info fw-bold mb-3">
+                    Transform Your Coding Journey
+                </h1>
 
-            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
-                 style="background: rgba(0,0,0,0.6);">
+                <p class="text-light mb-4">
+                    Discover real-world coding projects, learn faster, and build powerful applications.
+                </p>
 
-                <div class="container text-center text-md-start">
-                    <h1 class="text-white">Buy & Sell Coding Projects</h1>
-                    <p class="text-white">
-                        CodeShelf makes it easy to share and purchase real projects.
-                    </p>
+                <div class="d-flex gap-2 mb-4">
+                    <a href="{% url 'project_list' %}" class="btn btn-primary px-4">
+                        <i class="fa-solid fa-rocket me-2"></i> Get Started
+                    </a>
+
+                    <a href="{% url 'project_list' %}" class="btn btn-outline-light px-4">
+                        <i class="fa-solid fa-code me-2"></i> Browse
+                    </a>
                 </div>
+
+                <!-- STATS -->
+                <div class="d-flex gap-4">
+                    <div>
+                        <h5 class="fw-bold mb-0">150+</h5>
+                        <small class="text-muted">Projects</small>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0">95%</h5>
+                        <small class="text-muted">Satisfaction</small>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0">24/7</h5>
+                        <small class="text-muted">Support</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="col-lg-6 text-center mt-4 mt-lg-0 ">
+                <img src="{% static 'img\cat-2.jpg' %}" class="img-fluid "
+                    style="max-height: 400px; border-radius: 12px;">
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<!-- 🚀 WHY CHOOSE US -->
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+        <h3 class="fw-bold">Why Choose CodeShelf?</h3>
+        <p class="text-muted">Everything you need to learn & build faster</p>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- CARD 1 -->
+        <div class="col-md-4">
+            <div class="p-4 h-100 rounded-4 shadow-sm border bg-white text-center">
+
+                <div class="mb-3">
+                    <i class="fa-solid fa-code fa-2x text-primary"></i>
+                </div>
+
+                <h5 class="fw-bold">Real Projects</h5>
+                <p class="text-muted small">
+                    Work on real-world applications, not just theory.
+                </p>
+
             </div>
         </div>
 
-        <!-- Slide 2 -->
-        <div class="owl-carousel-item">
-            <img class="img-fluid w-100"
-                 src="{% static 'img/carousel-2.jpg' %}"
-                 style="height: 450px; object-fit: cover;"
-                 alt="">
+        <!-- CARD 2 -->
+        <div class="col-md-4">
+            <div class="p-4 h-100 rounded-4 shadow-sm border bg-white text-center">
 
-            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
-                 style="background: rgba(0,0,0,0.6);">
-
-                <div class="container text-center text-md-start">
-                    <h1 class="text-white">Learn by Real Projects</h1>
-                    <p class="text-white">
-                        Download working code and understand fast.
-                    </p>
+                <div class="mb-3">
+                    <i class="fa-solid fa-bolt fa-2x text-warning"></i>
                 </div>
+
+                <h5 class="fw-bold">Instant Access</h5>
+                <p class="text-muted small">
+                    Download projects instantly and start learning.
+                </p>
+
+            </div>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="col-md-4">
+            <div class="p-4 h-100 rounded-4 shadow-sm border bg-white text-center">
+
+                <div class="mb-3">
+                    <i class="fa-solid fa-graduation-cap fa-2x text-success"></i>
+                </div>
+
+                <h5 class="fw-bold">Learn Faster</h5>
+                <p class="text-muted small">
+                    Understand concepts through working code.
+                </p>
+
             </div>
         </div>
 
     </div>
 </div>
-<!-- Carousel End -->
 
 
-<!-- Features Start -->
-<div class="container py-5">
-    <div class="row text-center">
+<!-- ⚡ QUICK STATS STRIP -->
+<div class="container-fluid bg-light py-4 border-top border-bottom">
+    <div class="container">
+        <div class="row text-center">
 
-        <div class="col-md-4 mb-4">
-            <h4>🔥 Ready Projects</h4>
-            <p>Download real-world projects instantly.</p>
+            <div class="col-md-3">
+                <h5 class="fw-bold">150+</h5>
+                <small class="text-muted">Projects</small>
+            </div>
+
+            <div class="col-md-3">
+                <h5 class="fw-bold">50+</h5>
+                <small class="text-muted">Technologies</small>
+            </div>
+
+            <div class="col-md-3">
+                <h5 class="fw-bold">1000+</h5>
+                <small class="text-muted">Downloads</small>
+            </div>
+
+            <div class="col-md-3">
+                <h5 class="fw-bold">24/7</h5>
+                <small class="text-muted">Support</small>
+            </div>
+
         </div>
-
-        <div class="col-md-4 mb-4">
-            <h4>💡 Easy Learning</h4>
-            <p>Understand concepts with working code.</p>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <h4>🚀 Fast Setup</h4>
-            <p>Run projects with simple instructions.</p>
-        </div>
-
     </div>
 </div>
-<!-- Features End -->
 
 
-<!-- Latest Projects Start -->
-<div class="container py-5">
-    <h2 class="text-center mb-4">Latest Projects</h2>
+<!-- ===================== -->
+<!-- 🔥 LATEST PROJECTS -->
+<!-- ===================== -->
+<div class="container py-4 mt-5">
+    <h3 class="text-center mb-4">Latest Projects</h3>
 
     <div class="row">
-
         {% for project in projects %}
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm h-100">
+        <div class="col-md-3 mb-4">
 
-                <!-- Project Image -->
-                <img src="{{ project.thumbnail.url }}"
-                     class="card-img-top"
-                     style="height: 200px; object-fit: cover;"
-                     alt="{{ project.title }}">
+            <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
 
-                <!-- Card Body -->
-                <div class="card-body">
-                    <h5 class="card-title">{{ project.title }}</h5>
+                <!-- IMAGE FIXED -->
+                <div class="position-relative">
+                    <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}"
+                        class="w-100" style="height:200px; object-fit:cover;">
 
-                    <p class="text-muted">
-                        {{ project.description|truncatewords:12 }}
-                    </p>
-
-                    <div class="mb-2">
-                        <span class="badge bg-info">
-                            {{ project.technology }}
-                        </span>
-                        <span class="badge bg-warning text-dark">
-                            {{ project.difficulty_level }}
-                        </span>
-                    </div>
-
-                    <h6 class="text-success fw-bold">
-                        ₹{{ project.price }}
-                    </h6>
+                    <!-- BADGE -->
+                    <span class="badge bg-success position-absolute top-0 start-0 m-2">
+                        New
+                    </span>
                 </div>
 
-                <!-- Card Footer -->
+                <div class="card-body">
+
+                    <h6 class="fw-bold mb-1">{{ project.title }}</h6>
+
+                    <p class="text-muted small mb-2">
+                        {{ project.description|truncatewords:10 }}
+                    </p>
+
+                    <!-- TECH -->
+                    <span class="badge bg-info mb-2">
+                        {{ project.technology }}
+                    </span>
+
+                    <!-- PRICE -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-success">₹{{ project.price }}</span>
+                        <small class="text-muted">
+                            <i class="fa-solid fa-download"></i> {{ project.total_downloads|default:0 }}
+                        </small>
+                    </div>
+
+                </div>
+
                 <div class="card-footer bg-white border-0">
-                    <a href="{% url 'project_detail' project.slug %}"
-                       class="btn btn-primary w-100">
+                    <a href="{% url 'project_detail' project.slug %}" class="btn btn-primary w-100 rounded-3">
                         View Project
                     </a>
                 </div>
 
             </div>
-        </div>
 
-        {% empty %}
-        <div class="col-12">
-            <p class="text-center text-muted">
-                No projects available.
-            </p>
         </div>
         {% endfor %}
-
     </div>
 </div>
-<!-- Latest Projects End -->
+
+
+<!-- ===================== -->
+<!-- 🚀 TRENDING PROJECTS -->
+<!-- ===================== -->
+<div class="container py-4">
+    <h3 class="text-center mb-4">🔥 Trending Projects</h3>
+
+    <div class="row">
+        {% for project in trending_projects %}
+        <div class="col-md-3 mb-4">
+
+            <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+
+                <div class="position-relative">
+                    <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}"
+                        class="w-100" style="height:200px; object-fit:cover;">
+
+                    <span class="badge bg-danger position-absolute top-0 start-0 m-2">
+                        🔥 Trending
+                    </span>
+                </div>
+
+                <div class="card-body">
+
+                    <h6 class="fw-bold mb-1">{{ project.title }}</h6>
+
+                    <p class="text-muted small mb-2">
+                        {{ project.description|truncatewords:10 }}
+                    </p>
+
+                    <span class="badge bg-info mb-2">
+                        {{ project.technology }}
+                    </span>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-success">₹{{ project.price }}</span>
+                        <small class="text-muted">
+                            <i class="fa-solid fa-fire text-danger"></i>
+                            {{ project.total_downloads|default:0 }}
+                        </small>
+                    </div>
+
+                </div>
+
+                <div class="card-footer bg-white border-0">
+                    <a href="{% url 'project_detail' project.slug %}" class="btn btn-primary w-100 rounded-3">
+                        View Project
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
 {% endblock %}
