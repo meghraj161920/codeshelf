@@ -24,17 +24,17 @@
 
                         <div class="form-floating mb-3">
                             {{ form.username }}
-                            <label>Username</label>
+                            <label>{{ form.username.label}}</label>
                         </div>
 
                         <div class="form-floating mb-3">
                             {{ form.email }}
-                            <label>Email</label>
+                            <label>{{ form.email.label}}</label>
                         </div>
 
                         <div class="form-floating mb-3 position-relative">
                             {{ form.password }}
-                            <label>Password</label>
+                            <label>{{ form.password.label }}</label>
 
                             <span onclick="togglePassword('id_password')"
                                 class="position-absolute top-50 end-0 translate-middle-y me-3"
@@ -45,7 +45,7 @@
 
                         <div class="form-floating mb-3">
                             {{ form.confirm_password }}
-                            <label>Confirm Password</label>
+                            <label>{{ form.confirm_password.label }}</label>
                         </div>
 
                         <small id="passwordHelp">
@@ -54,7 +54,57 @@
 
                         <div class="form-check mb-3 mt-3">
                             {{ form.terms }}
-                            <label>I agree to <a href="#" >Terms & Conditions</a></label>
+                            <label>
+                                I agree to
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">
+                                    Terms & Conditions
+                                </a>
+                            </label>
+                        </div>
+
+                        <!-- TERMS MODAL -->
+                        <div class="modal fade" id="termsModal" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Terms & Conditions</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+
+                                        <p><strong>Welcome to CodeShelf!</strong></p>
+
+                                        <p>
+                                            By using this platform, you agree to the following terms:
+                                        </p>
+
+                                        <ul>
+                                            <li>You will not redistribute purchased projects.</li>
+                                            <li>Projects are for educational use only.</li>
+                                            <li>Unauthorized sharing may lead to account suspension.</li>
+                                            <li>All payments are non-refundable.</li>
+                                        </ul>
+
+                                        <p>
+                                            We reserve the right to update these terms anytime.
+                                        </p>
+
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Close
+                                        </button>
+
+                                        <button type="button" class="btn btn-primary" onclick="acceptTerms()">
+                                            Accept
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
 
                         <button class="btn btn-success w-100 py-3" id="registerBtn">
@@ -129,5 +179,13 @@
             msg.style.color = "green";
         }
     });
+</script>
+<script>
+    function acceptTerms() {
+        document.getElementById("id_terms").checked = true;
+
+        let modal = bootstrap.Modal.getInstance(document.getElementById('termsModal'));
+        modal.hide();
+    }
 </script>
 {% endblock %}

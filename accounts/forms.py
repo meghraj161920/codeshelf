@@ -15,7 +15,11 @@ class RegisterForm(forms.ModelForm):
             'placeholder': 'Confirm Password'
         })
     )
-    terms = forms.BooleanField()
+    terms = forms.BooleanField(
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input',
+        })
+    )
 
     class Meta:
         model = User
@@ -31,6 +35,18 @@ class RegisterForm(forms.ModelForm):
             }),
         }
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("Username already exists")
+        return username
+    
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Email already exists")
+        return email
+
     def clean_password(self):
         password = self.cleaned_data.get('password')
         validate_password(password) 
@@ -41,6 +57,7 @@ class RegisterForm(forms.ModelForm):
         p1 = cleaned_data.get("password")
         p2 = cleaned_data.get("confirm_password")
 
-        if p1 != p2:
+        if p1 and p2 and p1 != p2:
             raise forms.ValidationError("Passwords do not match")
+
         return cleaned_data

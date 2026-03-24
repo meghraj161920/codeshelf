@@ -26,7 +26,7 @@ def register_view(request):
 
 def login_view(request):
     if request.method == "POST":
-        identifier = request.POST.get("email").strip()
+        identifier = request.POST.get("email", "").strip()
         password = request.POST.get("password")
 
         user_obj = User.objects.filter(email=identifier).first()
@@ -49,17 +49,38 @@ def login_view(request):
 
 @login_required
 def dashboard(request):
-    user = request.user
+    profile = request.user.profile
 
-    profile, created = Profile.objects.get_or_create(user=user)
+    if request.method == "POST":
 
-    context = {
-        "user": user,
-        "profile": profile,
-    }
+        phone = request.POST.get("phone")
+        if phone and Profile.objects.filter(phone_number=phone).exclude(user=request.user).exists():
+            messages.error(request, "Phone already used")
+            return redirect("dashboard")
+
+        full_name = request.POST.get("full_name")
+
+        if full_name:
+            parts = full_name.strip().split(" ", 1)
+            request.user.first_name = parts[0]
+            request.user.last_name = parts[1] if len(parts) > 1 else ""
+
+        request.user.email = request.POST.get("email")
+
+        profile.dob = request.POST.get("dob")
+        profile.phone_number = phone
+        profile.gender = request.POST.get("gender")
+        if request.FILES.get("profile_image"):
+            profile.profile_image = request.FILES.get("profile_image")
+            
+        request.user.save()
+        profile.save()
+
+        messages.success(request, "Profile updated successfully!")
+
+        return redirect("dashboard")
 
     return render(request, "accounts/dashboard.html", {
-        "user": request.user,
         "profile": profile
     })
 
@@ -88,8 +109,10 @@ def forgot_view(request):
 def wishlist_view(request):
     return render(request, 'accounts/wishlist.html')
 
+
 def reviews_view(request):
     return render(request, 'accounts/reviews.html')
+
 
 def payment_view(request):
     return render(request, 'accounts/payments.html')

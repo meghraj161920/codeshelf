@@ -1,10 +1,16 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Project, Category
+from wishlist.models import Wishlist
 
 
 def project_list(request):
     projects = Project.objects.filter(is_active=True)
     categories = Category.objects.all()
+    
+    wishlist_ids = []
+    if request.user.is_authenticated:
+        wishlist_ids = Wishlist.objects.filter(user=request.user)\
+                        .values_list('project_id', flat=True)
 
     # GET parameters
     category = request.GET.get('category')
@@ -27,7 +33,8 @@ def project_list(request):
 
     context = {
         'projects': projects,
-        'categories': categories
+        'categories': categories,
+        'wishlist_ids': wishlist_ids
     }
 
     return render(request, 'projects/project_list.html', context)

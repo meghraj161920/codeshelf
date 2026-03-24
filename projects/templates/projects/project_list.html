@@ -122,8 +122,11 @@
                     View Details
                 </a>
 
-                <button class="btn btn-outline-secondary btn-sm">
-                    Wishlist
+                <button class="btn btn-sm wishlist-btn" data-id="{{ project.id }}">
+
+                    <i class="fa-heart fa-xl
+                    {% if project.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}"></i>
+
                 </button>
 
             </div>
@@ -143,3 +146,42 @@
 </div>
 
 {% endblock content %}
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".wishlist-btn").forEach(button => {
+
+        button.addEventListener("click", function () {
+
+            const projectId = this.dataset.id;
+            const icon = this.querySelector("i");
+
+            fetch("{% url 'toggle_wishlist' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "project_id=" + projectId
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.status === "added") {
+                    icon.classList.remove("fa-regular");
+                    icon.classList.add("fa-solid", "text-danger");
+                } else {
+                    icon.classList.remove("fa-solid", "text-danger");
+                    icon.classList.add("fa-regular");
+                }
+
+            });
+
+        });
+
+    });
+
+});
+</script>
+{% endblock %}

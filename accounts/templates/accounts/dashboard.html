@@ -70,9 +70,9 @@
                 <a href="#" class="list-group-item list-group-item-action">
                     <i class="fa-solid fa-ban"></i> Returns & Cancel
                 </a>
-
+                
                 <a href="{% url 'reviews' %}"
-                    class="list-group-item list-group-item-action {% if request.path == '/accounts/reviews/' %}active{% endif %}">
+                class="list-group-item list-group-item-action {% if request.path == '/accounts/reviews/' %}active{% endif %}">
                     <i class="fa-regular fa-star"></i> My Rating & Reviews
                 </a>
 
@@ -96,61 +96,76 @@
         <!-- MAIN CONTENT -->
         <div class="col-12 col-md-8 col-lg-9">
             <div class="bg-white p-4 p-md-5 rounded shadow-sm h-100" style="background-color: var(--white);">
-
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
                 <div
-                    class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center border-bottom pb-3 mb-4 gap-2">
-                    <h5 class="mb-0 fw-bold text-dark-custom">Personal Information</h5>
-                    <a href="#" id="editProfileBtn" class="text-decoration-none text-primary-custom fw-semibold">
-                        <i class="fa-regular fa-pen-to-square me-1"></i> Change Profile Information
-                    </a>
-                </div>
-
+                class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center border-bottom pb-3 mb-4 gap-2">
+                <h5 class="mb-0 fw-bold text-dark-custom">Personal Information</h5>
+                <a href="#" id="editProfileBtn" class="text-decoration-none text-primary-custom fw-semibold">
+                    <i class="fa-regular fa-pen-to-square me-1"></i> Change Profile Information
+                </a>
+            </div>
+            
+            
+            <!-- FORM -->
+            <form id="profileForm" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
                 <!-- PROFILE IMAGE -->
-                <div class="mb-4 position-relative d-inline-block">
-                    <img src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ user.first_name|default:user.username }}+{{ user.last_name }}&background=ffc107&color=fff&size=200{% endif %}"
-                        alt="Main Profile Picture" class="main-avatar">
+                    <div class="mb-4 position-relative d-inline-block">
 
-                    <div class="position-absolute edit-badge shadow-sm">
-                        <i class="fa-solid fa-camera" style="font-size: 0.85rem;"></i>
+                        <img src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ user.username }}{% endif %}"
+                            class="main-avatar rounded-circle" style="width:120px;height:120px;object-fit:cover;">
+
+                        <div id="imageEditBtn" class="position-absolute top-50 start-50 translate-middle d-none"
+                            style="background: rgba(0,0,0,0.6); border-radius:50%; width:120px;height:120px; display:flex; align-items:center; justify-content:center;">
+
+                            <label for="profileImageInput" style="cursor:pointer;">
+                                <i class="fa-solid fa-camera text-white fs-4"></i>
+                            </label>
+                        </div>
+
+                        <input type="file" name="profile_image" id="profileImageInput" hidden>
                     </div>
-                </div>
-
-                <!-- FORM -->
-                <form id="profileForm">
 
                     <!-- NAME -->
                     <div class="mb-4">
                         <label class="form-label">Name</label>
-                        <input type="text" class="form-control custom-input w-50 editable-field"
-                            value="{{ user.first_name }} {{ user.last_name }}" readonly>
+                        <input type="text" name="full_name" class="form-control custom-input w-50 editable-field"
+                        value="{{ user.first_name }} {{ user.last_name }}" readonly>
                     </div>
-
+                    
                     <!-- DOB -->
                     <div class="mb-4">
                         <label class="form-label">Date Of Birth</label>
                         <div class="position-relative w-50">
-                            <input type="date" class="form-control custom-input pe-5 editable-field"
-                                value="{{ profile.dob|date:'Y-m-d' }}" readonly>
+                            <input type="date" name="dob" class="form-control custom-input pe-5 editable-field"
+                            value="{{ profile.dob|date:'Y-m-d' }}" readonly>
                             <i class="fa-regular fa-calendar position-absolute"
-                                style="top: 50%; right: 16px; transform: translateY(-50%); color: #666;"></i>
+                            style="top: 50%; right: 16px; transform: translateY(-50%); color: #666;"></i>
                         </div>
                     </div>
-
+                    
                     <!-- GENDER -->
                     <div class="mb-4">
                         <label class="form-label d-block">Gender</label>
                         <div class="form-check form-check-inline mt-1">
-                            <input class="form-check-input gender-radio" type="radio" name="genderOptions" value="male"
-                                {% if profile.gender == 'male' %}checked{% endif %} disabled>
+                            <input class="form-check-input gender-radio" type="radio" name="gender" value="male" 
+                            {% if profile.gender == 'male' %}checked {% endif %} disabled>
                             <label class="form-check-label text-muted">Male</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input gender-radio" type="radio" name="genderOptions"
-                                value="female" {% if profile.gender == 'female' %}checked{% endif %} disabled>
+                            <input class="form-check-input gender-radio" type="radio" name="gender" value="female" 
+                            {% if profile.gender == 'female' %}checked{% endif %} disabled>
                             <label class="form-check-label text-muted">Female</label>
                         </div>
                     </div>
-
+                    
                     <!-- PHONE -->
                     <div class="mb-4">
                         <label class="form-label">Phone Number</label>
@@ -158,17 +173,18 @@
                             <span class="input-group-text custom-input text-success fw-small rounded-start">
                                 IND <span class="text-muted fw-normal ms-2">+91</span>
                             </span>
-                            <input type="text" class="form-control custom-input rounded-end editable-field"
-                                value="{{ profile.phone_number }}" readonly>
+                            <input type="text" name="phone" class="form-control custom-input rounded-end editable-field"
+                            value="{{ profile.phone_number }}" readonly>
                         </div>
                     </div>
-
+                    
                     <!-- EMAIL -->
                     <div class="mb-4">
                         <label class="form-label">Email</label>
-                        <input type="email" class="form-control custom-input w-50 editable-field"
-                            value="{{ user.email }}" readonly>
+                        <input type="email" name="email" class="form-control custom-input w-50 editable-field"
+                        value="{{ user.email }}" readonly>
                     </div>
+                    
 
                 </form>
 
@@ -181,55 +197,91 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebarItems = document.querySelectorAll('.sidebar-menu .list-group-item');
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', function () {
+            sidebarItems.forEach(nav => nav.classList.remove('active'));
+            this.classList.add('active');
 
-        const sidebarItems = document.querySelectorAll('.sidebar-menu .list-group-item');
-        sidebarItems.forEach(item => {
-            item.addEventListener('click', function (e) {
-                sidebarItems.forEach(nav => nav.classList.remove('active'));
-                this.classList.add('active');
-
-                if (window.innerWidth < 768) closeSidebar();
-            });
-        });
-
-        const editProfileBtn = document.getElementById('editProfileBtn');
-        const editableFields = document.querySelectorAll('.editable-field');
-        const genderRadios = document.querySelectorAll('.gender-radio');
-        let isEditing = false;
-
-        editProfileBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            isEditing = !isEditing;
-
-            if (isEditing) {
-                this.innerHTML = '<i class="fa-solid fa-check me-1"></i> Save Profile Information';
-                editableFields.forEach(field => {
-                    field.removeAttribute('readonly');
-                    field.classList.add('is-editable');
-                });
-                genderRadios.forEach(radio => radio.removeAttribute('disabled'));
-            } else {
-                this.innerHTML = '<i class="fa-regular fa-pen-to-square me-1"></i> Change Profile Information';
-                editableFields.forEach(field => {
-                    field.setAttribute('readonly', true);
-                    field.classList.remove('is-editable');
-                });
-                genderRadios.forEach(radio => radio.setAttribute('disabled', true));
-            }
+            if (window.innerWidth < 768) closeSidebar();
         });
     });
 
-    function toggleSidebar() {
-        document.querySelector('.sidebar').classList.add('active');
-        document.querySelector('.sidebar-overlay').classList.add('active');
-        document.body.style.overflow = 'hidden';
+
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const editableFields = document.querySelectorAll('.editable-field');
+    const genderRadios = document.querySelectorAll('.gender-radio');
+    const imageEditBtn = document.getElementById('imageEditBtn');
+    const profileForm = document.getElementById("profileForm");
+
+    let isEditing = false;
+
+    editProfileBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        if (isEditing) {
+            profileForm.submit();
+            return;
+        }
+
+        isEditing = true;
+
+        this.innerHTML = '<i class="fa-solid fa-check me-1"></i> Save Profile Information';
+
+        editableFields.forEach(field => {
+            field.removeAttribute('readonly');
+            field.classList.add('is-editable');
+        });
+
+        genderRadios.forEach(radio => radio.removeAttribute('disabled'));
+
+        if (imageEditBtn) {
+            imageEditBtn.classList.remove("d-none");
+        }
+    });
+
+
+    const imageInput = document.getElementById("profileImageInput");
+
+    if (imageInput) {
+        imageInput.addEventListener("change", function () {
+            const file = this.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const avatar = document.querySelector(".main-avatar");
+                    if (avatar) {
+                        avatar.src = e.target.result;
+                    }
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
     }
 
-    function closeSidebar() {
-        document.querySelector('.sidebar').classList.remove('active');
-        document.querySelector('.sidebar-overlay').classList.remove('active');
-        document.body.style.overflow = '';
-    }
+
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(el => el.remove());
+    }, 3000);
+
+});
+
+
+
+function toggleSidebar() {
+    document.querySelector('.sidebar').classList.add('active');
+    document.querySelector('.sidebar-overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+    document.querySelector('.sidebar').classList.remove('active');
+    document.querySelector('.sidebar-overlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
 </script>
 {% endblock %}
