@@ -1,11 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -18,8 +22,15 @@ class Project(models.Model):
         ('advanced', 'Advanced'),
     )
 
+    seller = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='projects'
+    )
+
     title = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True, db_index=True)
+
     description = models.TextField()
 
     category = models.ForeignKey(
@@ -28,10 +39,12 @@ class Project(models.Model):
         related_name='projects'
     )
 
-    technology = models.CharField(max_length=100)
+    technology = models.CharField(max_length=100, db_index=True)
+
     difficulty_level = models.CharField(
         max_length=20,
-        choices=DIFFICULTY_CHOICES
+        choices=DIFFICULTY_CHOICES,
+        db_index=True
     )
 
     version = models.CharField(max_length=50)
@@ -41,21 +54,29 @@ class Project(models.Model):
 
     thumbnail = models.ImageField(upload_to='project_images/')
 
-    demo_video_url = models.URLField()
-    installation_video_url = models.URLField()
+    demo_video_url = models.URLField(blank=True, null=True)
+    installation_video_url = models.URLField(blank=True, null=True)
 
     zip_file = models.FileField(upload_to='project_files/')
-    documentation_file = models.FileField(upload_to='project_docs/')
+    documentation_file = models.FileField(upload_to='project_docs/', blank=True, null=True)
 
-    file_size = models.CharField(max_length=50)
+    file_size = models.CharField(max_length=50, blank=True)
 
     is_active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return self.title
+        return f"{self.title} ({self.seller.username})"
 
 
 class ProjectImage(models.Model):
