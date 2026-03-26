@@ -1,22 +1,29 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.shortcuts import redirect
+from django.contrib import messages
 from functools import wraps
 
+
+def role_required(allowed_roles):
+    def decorator(view_func):
+        @login_required
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+
+            profile = getattr(request.user, 'profile', None)
+
+            if not profile or profile.role not in allowed_roles:
+                messages.error(request, "You are not authorized to access this page.")
+                return redirect('login')
+
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
 def seller_required(view_func):
-    @login_required
-    @wraps(view_func)
-    def wrapper(request, *args, **kwargs):
-        if request.user.profile.role != 'seller':
-            # This returns a standard 403 Forbidden page
-            return HttpResponseForbidden("Access denied. Seller account required.")
-        return view_func(request, *args, **kwargs)
-    return wrapper
+    return role_required(['seller'])(view_func)
+
 
 def customer_required(view_func):
-    @login_required
-    @wraps(view_func)
-    def wrapper(request, *args, **kwargs):
-        if request.user.profile.role != 'customer':
-            return HttpResponseForbidden("Access denied. Customer account required.")
-        return view_func(request, *args, **kwargs)
-    return wrapper
+    return role_required(['customer'])(view_func)

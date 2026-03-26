@@ -80,3 +80,10 @@ class RegisterForm(forms.ModelForm):
             raise forms.ValidationError("Passwords do not match")
 
         return cleaned_data
+
+
+    def clean_terms(self):
+        terms = self.cleaned_data.get("terms")
+        if not terms:
+            raise forms.ValidationError("You must accept terms")
+        return terms
