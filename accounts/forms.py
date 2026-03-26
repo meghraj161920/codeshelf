@@ -3,6 +3,19 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 
 class RegisterForm(forms.ModelForm):
+    ROLE_CHOICES = [
+        ('', 'Select Role'),
+        ('customer', 'Customer'),
+        ('seller', 'Seller')
+    ]
+    
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        widget=forms.Select(attrs={
+            'class': 'form-select form-control-lg'
+        })
+    )
+    
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
@@ -51,6 +64,12 @@ class RegisterForm(forms.ModelForm):
         password = self.cleaned_data.get('password')
         validate_password(password) 
         return password
+    
+    def clean_role(self):
+        role = self.cleaned_data.get("role")
+        if not role:
+            raise forms.ValidationError("Please select a role")
+        return role
 
     def clean(self):
         cleaned_data = super().clean()

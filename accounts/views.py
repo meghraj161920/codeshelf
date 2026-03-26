@@ -5,6 +5,7 @@ from .forms import RegisterForm
 from .models import Profile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from core.decorators import seller_required, customer_required
 
 
 def register_view(request):
@@ -15,7 +16,9 @@ def register_view(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
-
+            profile = user.profile
+            profile.role = form.cleaned_data['role']
+            profile.save()
             messages.success(request, "Account created successfully!")
             return redirect('login')
     else:
@@ -40,14 +43,22 @@ def login_view(request):
 
         if user:
             login(request, user)
-            return redirect("dashboard")
+            profile = user.profile
+            
+            if user.is_superuser:
+                return redirect("/admin/")
+            elif profile.role == "seller":
+                return redirect("seller_dashboard")
+            else:
+                return redirect("dashboard")
+
         else:
             messages.error(request, "Invalid username/email or password")
 
     return render(request, "accounts/login.html")
 
 
-@login_required
+@customer_required
 def dashboard(request):
     profile = request.user.profile
 
@@ -83,6 +94,10 @@ def dashboard(request):
     return render(request, "accounts/dashboard.html", {
         "profile": profile
     })
+    
+@seller_required
+def seller_dashboard(request):
+    return render(request, "accounts/seller_dashboard.html")
 
 
 def profile(request):
@@ -116,3 +131,8 @@ def reviews_view(request):
 
 def payment_view(request):
     return render(request, 'accounts/payments.html')
+
+
+# @seller_required
+# def upload_project(request):
+#     return render(request, 'projects/upload.html')
