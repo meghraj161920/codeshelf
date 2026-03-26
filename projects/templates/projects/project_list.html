@@ -115,19 +115,20 @@
 
             </div>
 
+            <!-- ✅ UPDATED FOOTER -->
             <div class="card-footer bg-white border-0 d-flex justify-content-between">
 
+                <!-- View Details -->
                 <a href="{% url 'project_detail' project.slug %}"
                    class="btn btn-outline-primary btn-sm">
                     View Details
                 </a>
 
-                <button class="btn btn-sm wishlist-btn" data-id="{{ project.id }}">
-
-                    <i class="fa-heart fa-xl
-                    {% if project.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}"></i>
-
-                </button>
+                <!-- 🔥 ADD TO CART BUTTON -->
+                <a href="{% url 'add_to_cart' project.id %}"
+                   class="btn btn-success btn-sm">
+                    Add to Cart
+                </a>
 
             </div>
 
@@ -142,46 +143,6 @@
 
 </div>
 
-
 </div>
 
 {% endblock content %}
-{% block extra_js %}
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    document.querySelectorAll(".wishlist-btn").forEach(button => {
-
-        button.addEventListener("click", function () {
-
-            const projectId = this.dataset.id;
-            const icon = this.querySelector("i");
-
-            fetch("{% url 'toggle_wishlist' %}", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}",
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: "project_id=" + projectId
-            })
-            .then(res => res.json())
-            .then(data => {
-
-                if (data.status === "added") {
-                    icon.classList.remove("fa-regular");
-                    icon.classList.add("fa-solid", "text-danger");
-                } else {
-                    icon.classList.remove("fa-solid", "text-danger");
-                    icon.classList.add("fa-regular");
-                }
-
-            });
-
-        });
-
-    });
-
-});
-</script>
-{% endblock %}

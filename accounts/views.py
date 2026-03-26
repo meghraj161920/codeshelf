@@ -20,7 +20,7 @@ def register_view(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
 
-            # 🔥 FIX: safely get/create profile
+            # create profile safely
             profile, created = Profile.objects.get_or_create(user=user)
             profile.role = form.cleaned_data['role']
             profile.save()
@@ -39,7 +39,7 @@ def login_view(request):
         identifier = request.POST.get("email", "").strip()
         password = request.POST.get("password")
 
-        # 🔥 Improved login (email OR username)
+        # login with email OR username
         try:
             user_obj = User.objects.get(email=identifier)
             username = user_obj.username
@@ -50,6 +50,11 @@ def login_view(request):
 
         if user:
             login(request, user)
+
+            # ✅ TASK 1: NEXT REDIRECT FIX
+            next_url = request.GET.get('next')
+            if next_url:
+                return redirect(next_url)
 
             profile = getattr(user, 'profile', None)
 
