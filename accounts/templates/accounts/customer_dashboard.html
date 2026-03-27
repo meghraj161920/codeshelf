@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}
+<div>Customer Dashboard</div>
+<!-- LOGOUT -->
+<form method="POST" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-outline-danger btn-sm d-flex align-items-center">
+        <i class="fa-solid fa-right-from-bracket me-1"></i>
+    </button>
+</form>
+{% endblock content %}

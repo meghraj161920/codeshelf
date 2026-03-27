@@ -39,7 +39,7 @@
 
 <!-- ================= NAVBAR ================= -->
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top">
-    <div class="container-fluid px-4">
+    <div class="container-fluid px-3 px-lg-4">
 
         <!-- Logo -->
         <a href="{% url 'home' %}" class="navbar-brand d-flex align-items-center">
@@ -69,7 +69,7 @@
             </div>
 
             <!-- RIGHT -->
-            <div class="d-flex align-items-center gap-2 flex-nowrap">
+            <div class="d-flex align-items-center gap-2 position-relative">
 
                 <!-- Search -->
                 <form class="d-flex align-items-center" method="GET" action="{% url 'project_list' %}">
@@ -84,15 +84,101 @@
                 <!-- Auth -->
                 {% if user.is_authenticated %}
 
-                    {% if user.profile.role == 'seller' %}
-                        <a href="{% url 'seller_dashboard' %}" class="btn btn-primary btn-sm px-3">
-                            Seller Panel
-                        </a>
-                    {% else %}
-                        <a href="{% url 'dashboard' %}" class="btn btn-primary btn-sm px-3">
-                            Dashboard
-                        </a>
-                    {% endif %}
+                <div class="dropdown me-2">
+
+                    <a class="d-flex align-items-center text-decoration-none"
+                    href="#"
+                    id="profileDropdown"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+
+                        {% if user.profile.profile_image %}
+                            <img src="{{ user.profile.profile_image.url }}"
+                                width="38"
+                                height="38"
+                                class="rounded-circle border">
+                        {% else %}
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                                style="width:38px; height:38px; font-weight:600;">
+                                {{ user.username|first|upper }}
+                            </div>
+                        {% endif %}
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-0"
+                        aria-labelledby="profileDropdown"
+                        style="min-width: 260px; border-radius: 12px; overflow: hidden; right:0; left:auto;">
+
+                        <li class="px-3 py-3 bg-light d-flex align-items-center gap-3">
+                            
+                            {% if user.profile.profile_image %}
+                                <img src="{{ user.profile.profile_image.url }}"
+                                    width="45"
+                                    height="45"
+                                    class="rounded-circle border">
+                            {% else %}
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                                    style="width:45px; height:45px; font-weight:600; font-size:18px;">
+                                    {{ user.username|first|upper }}
+                                </div>
+                            {% endif %}
+
+                            <div>
+                                <div class="fw-semibold">{{ user.username }}</div>
+                                <small class="text-muted">{{ user.email }}</small>
+                            </div>
+                        </li>
+
+                        <!-- MENU -->
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'profile' %}">
+                                <i class="fa fa-user text-primary"></i>
+                                Profile
+                            </a>
+                        </li>
+
+                        <li>
+                            {% if user.profile.role == 'seller' %}
+                                <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'seller_dashboard' %}">
+                                    <i class="fa fa-briefcase text-warning"></i>
+                                    Seller Panel
+                                </a>
+                            {% else %}
+                                <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'customer_dashboard' %}">
+                                    <i class="fa fa-home text-success"></i>
+                                    Dashboard
+                                </a>
+                            {% endif %}
+                        </li>
+
+                        {% if user.profile.role == 'seller' %}
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
+                                <i class="fa fa-upload text-info"></i>
+                                Upload Project
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'order_history' %}">
+                                <i class="fa fa-shopping-cart text-danger"></i>
+                                My Orders
+                            </a>
+                        </li>
+
+                        <li><hr class="dropdown-divider m-0"></li>
+
+                        <!-- LOGOUT -->
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger" href="{% url 'logout' %}">
+                                <i class="fa fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
 
                 {% else %}
                     <a href="{% url 'login' %}" class="btn btn-primary btn-sm px-3">Login</a>

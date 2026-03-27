@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+{% with role=user.profile.role %}
 <div class="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <div class="container py-4 py-md-5">
@@ -20,7 +21,7 @@
     <div class="row g-4">
 
         <!-- SIDEBAR -->
-        <div class="col-12 col-md-4 col-lg-3 sidebar mt-0">
+        <div class="col-12 col-md-4 col-lg-3 sidebar">
 
             <div class="d-flex justify-content-end d-md-none mb-3">
                 <button class="btn border-0 text-dark fs-5 p-0" onclick="closeSidebar()">
@@ -41,6 +42,9 @@
                         <h6 class="mb-0 fw-bold text-dark-custom">
                             {{ user.first_name|default:user.username }}
                         </h6>
+                        <span class="badge bg-primary mt-1 text-capitalize rounded-pill">
+                            {{ role }}
+                        </span>
                     </div>
                 </div>
 
@@ -57,33 +61,52 @@
             <!-- MENU (UNCHANGED) -->
             <div class="list-group sidebar-menu shadow-sm">
 
-                <a href="{% url 'dashboard' %}"
-                    class="list-group-item list-group-item-action {% if request.path == '/accounts/dashboard/' %}active{% endif %}">
+                <!-- COMMON -->
+                <a href="{% url 'profile' %}" class="list-group-item list-group-item-action active">
                     <i class="fa-regular fa-user"></i> My Account
                 </a>
 
-                <a href="{% url 'order_history' %}"
-                    class="list-group-item list-group-item-action {% if request.path == 'orders/history/' %}active{% endif %}">
-                    <i class="fa-solid fa-basket-shopping"></i> My Orders
-                </a>
+                <!-- CUSTOMER MENU -->
+                {% if role == "customer" %}
 
-                <a href="#" class="list-group-item list-group-item-action">
-                    <i class="fa-solid fa-ban"></i> Returns & Cancel
-                </a>
-                
-                <a href="{% url 'reviews' %}"
-                class="list-group-item list-group-item-action {% if request.path == '/accounts/reviews/' %}active{% endif %}">
-                    <i class="fa-regular fa-star"></i> My Rating & Reviews
-                </a>
+                    <a href="{% url 'order_history' %}" class="list-group-item list-group-item-action">
+                        <i class="fa-solid fa-basket-shopping"></i> My Orders
+                    </a>
 
-                <a href="{% url 'wishlist' %}"
-                    class="list-group-item list-group-item-action {% if request.path == '/accounts/wishlist/' %}active{% endif %}">
-                    <i class="fa-regular fa-heart"></i> My Wishlist
-                </a>
+                    <a href="{% url 'reviews' %}" class="list-group-item list-group-item-action">
+                        <i class="fa-regular fa-star"></i> My Reviews
+                    </a>
 
-                <a href="{% url 'payments' %}"
-                    class="list-group-item list-group-item-action {% if request.path == '/accounts/payments/' %}active{% endif %}">
-                    <i class="fa-regular fa-credit-card"></i> Payment
+                    <a href="{% url 'wishlist' %}" class="list-group-item list-group-item-action">
+                        <i class="fa-regular fa-heart"></i> Wishlist
+                    </a>
+
+                {% endif %}
+
+                <!-- SELLER MENU -->
+                {% if role == "seller" %}
+
+                    <a href="{% url 'seller_dashboard' %}" class="list-group-item list-group-item-action">
+                        <i class="fa-solid fa-chart-line"></i> Dashboard
+                    </a>
+
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fa-solid fa-box"></i> My Products
+                    </a>
+
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fa-solid fa-upload"></i> Upload Project
+                    </a>
+
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fa-solid fa-indian-rupee-sign"></i> Earnings
+                    </a>
+
+                {% endif %}
+
+                <!-- COMMON -->
+                <a href="{% url 'payments' %}" class="list-group-item list-group-item-action">
+                    <i class="fa-regular fa-credit-card"></i> Payments
                 </a>
 
                 <a href="{% url 'forgot' %}" class="list-group-item list-group-item-action">
@@ -120,8 +143,7 @@
                     <div class="mb-4 position-relative d-inline-block">
 
                         <img src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ user.username }}{% endif %}"
-                            class="main-avatar rounded-circle" style="width:120px;height:120px;object-fit:cover;">
-
+                        alt="Profile" class="mini-avatar me-3 rounded-circle" style="width:120px;height:120px;object-fit:cover;">
                         <div id="imageEditBtn" class="position-absolute top-50 start-50 translate-middle d-none"
                             style="background: rgba(0,0,0,0.6); border-radius:50%; width:120px;height:120px; display:flex; align-items:center; justify-content:center;">
 
@@ -193,6 +215,7 @@
 
     </div>
 </div>
+{% endwith %}
 {% endblock content %}
 
 {% block extra_js %}
@@ -284,4 +307,5 @@ function closeSidebar() {
     document.body.style.overflow = '';
 }
 </script>
+
 {% endblock %}

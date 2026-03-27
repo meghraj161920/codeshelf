@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.messages import get_messages
-
 from .forms import RegisterForm
 from .models import Profile
 from django.contrib.auth.decorators import login_required
@@ -13,6 +12,7 @@ User = get_user_model()
 
 
 # ================= REGISTER =================
+@unauthenticated_only
 def register_view(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
@@ -52,21 +52,21 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user:
+            if user.is_superuser:
+                messages.error(request, "Invalid username/email or password")
+                return redirect("login")
             login(request, user)
 
-            # ✅ TASK 1: NEXT REDIRECT FIX
             next_url = request.GET.get('next')
             if next_url:
                 return redirect(next_url)
 
             profile = getattr(user, 'profile', None)
 
-            if user.is_superuser:
-                return redirect("/admin/")
-            elif profile and profile.role == "seller":
+            if profile and profile.role == "seller":
                 return redirect("seller_dashboard")
             else:
-                return redirect("home")
+                return redirect("customer_dashboard")
 
         else:
             messages.error(request, "Invalid username/email or password")
@@ -76,7 +76,19 @@ def login_view(request):
 
 # ================= CUSTOMER DASHBOARD =================
 @customer_required
-def dashboard(request):
+def customer_dashboard(request):
+    return render(request, "accounts/customer_dashboard.html")
+
+
+# ================= SELLER DASHBOARD =================
+@seller_required
+def seller_dashboard(request):
+    return render(request, "accounts/seller_dashboard.html")
+
+
+# ================= USER PAGES =================
+@login_required
+def profile(request):
     profile = request.user.profile
 
     if request.method == "POST":
@@ -85,7 +97,7 @@ def dashboard(request):
 
         if phone and Profile.objects.filter(phone_number=phone).exclude(user=request.user).exists():
             messages.error(request, "Phone already used")
-            return redirect("dashboard")
+            return redirect("profile")
 
         full_name = request.POST.get("full_name")
 
@@ -107,23 +119,11 @@ def dashboard(request):
         profile.save()
 
         messages.success(request, "Profile updated successfully!")
-        return redirect("dashboard")
+        return redirect("profile")
 
-    return render(request, "accounts/dashboard.html", {
+    return render(request, "accounts/profile.html", {
         "profile": profile
     })
-
-
-# ================= SELLER DASHBOARD =================
-@seller_required
-def seller_dashboard(request):
-    return render(request, "accounts/seller_dashboard.html")
-
-
-# ================= USER PAGES =================
-@login_required
-def profile(request):
-    return render(request, 'accounts/profile.html')
 
 
 @login_required
@@ -155,7 +155,6 @@ def payment_view(request):
 @login_required
 def logout_view(request):
     
-    # ✅ Clear all messages
     storage = get_messages(request)
     for _ in storage:
         pass
