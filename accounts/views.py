@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
+from django.contrib.messages import get_messages
+
 from .forms import RegisterForm
 from .models import Profile
 from django.contrib.auth.decorators import login_required
@@ -64,7 +66,7 @@ def login_view(request):
             elif profile and profile.role == "seller":
                 return redirect("seller_dashboard")
             else:
-                return redirect("dashboard")
+                return redirect("home")
 
         else:
             messages.error(request, "Invalid username/email or password")
@@ -150,7 +152,14 @@ def payment_view(request):
 
 
 # ================= LOGOUT =================
+@login_required
 def logout_view(request):
+    
+    # ✅ Clear all messages
+    storage = get_messages(request)
+    for _ in storage:
+        pass
+
     logout(request)
     return redirect('login')
 

@@ -6,17 +6,28 @@ from functools import wraps
 
 def role_required(allowed_roles):
     def decorator(view_func):
-        @login_required
+
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
 
-            profile = getattr(request.user, 'profile', None)
-
-            if not profile or profile.role not in allowed_roles:
-                messages.error(request, "You are not authorized to access this page.")
+            # ✅ Not logged in → go to login (NO message)
+            if not request.user.is_authenticated:
                 return redirect('login')
 
+            profile = getattr(request.user, 'profile', None)
+
+            # ❌ Role not allowed
+            if not profile or profile.role not in allowed_roles:
+
+                # ✅ Prevent duplicate messages
+                existing_messages = [m.message for m in messages.get_messages(request)]
+                if "You are not authorized to access this page." not in existing_messages:
+                    messages.error(request, "You are not authorized to access this page.")
+
+                return redirect('home')
+
             return view_func(request, *args, **kwargs)
+
         return wrapper
     return decorator
 
