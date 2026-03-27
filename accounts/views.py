@@ -5,7 +5,7 @@ from .forms import RegisterForm
 from .models import Profile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from core.decorators import seller_required, customer_required
+from core.decorators import seller_required, customer_required, unauthenticated_only
 
 User = get_user_model()
 
@@ -34,6 +34,7 @@ def register_view(request):
 
 
 # ================= LOGIN =================
+@unauthenticated_only
 def login_view(request):
     if request.method == "POST":
         identifier = request.POST.get("email", "").strip()
