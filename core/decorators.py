@@ -16,6 +16,12 @@ def role_required(allowed_roles):
 
             profile = getattr(request.user, 'profile', None)
 
+            # ❌ Superuser ko website access mat do
+            if request.user.is_superuser:
+                from django.contrib.auth import logout
+                logout(request)
+                return redirect('login')
+
             # ❌ Role not allowed
             if not profile or profile.role not in allowed_roles:
 
@@ -45,15 +51,19 @@ def unauthenticated_only(view_func):
     def wrapper(request, *args, **kwargs):
 
         if request.user.is_authenticated:
-            # Redirect based on role
+
+            # ✅ Superuser ka session ignore karo — unhe website pe allow mat karo
+            if request.user.is_superuser:
+                from django.contrib.auth import logout
+                logout(request)
+                return view_func(request, *args, **kwargs)
+
             profile = getattr(request.user, 'profile', None)
 
-            if request.user.is_superuser:
-                return redirect('/admin/')
-            elif profile and profile.role == 'seller':
+            if profile and profile.role == 'seller':
                 return redirect('seller_dashboard')
             else:
-                return redirect('dashboard')
+                return redirect('customer_dashboard')
 
         return view_func(request, *args, **kwargs)
 

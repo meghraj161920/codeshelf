@@ -62,6 +62,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.views.cart_context', 
             ],
         },
     },
@@ -123,3 +124,5 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+# ✅ Admin aur website ke liye alag session cookies
+SESSION_COOKIE_NAME = 'codeshelf_session'  # Default 'sessionid' ki jagah

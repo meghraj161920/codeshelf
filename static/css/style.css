@@ -75,6 +75,13 @@
 
 .navbar {
     min-height: 70px;
+    overflow: visible !important;
+}
+
+.navbar .container-fluid,
+.navbar-collapse,
+.navbar .d-flex {
+    overflow: visible !important;
 }
 
 /* Brand */
@@ -121,7 +128,55 @@
     flex-wrap: nowrap;
 }
 
-/*** 🔥 MOBILE FIX (IMPORTANT) ***/
+/*** ================= DROPDOWN FIX ================= ***/
+
+/* Dropdown arrow hatao (Bootstrap default) */
+.navbar .dropdown-toggle::after {
+    display: none;
+}
+
+/* Dropdown container */
+.navbar .dropdown {
+    position: relative;
+}
+
+/* Dropdown menu */
+.navbar .dropdown-menu {
+    display: none;
+    position: absolute !important;
+    right: 0 !important;
+    left: auto !important;
+    top: 100% !important;
+    transform: none !important;
+    z-index: 9999 !important;
+    min-width: 260px;
+    border-radius: 12px !important;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
+    border: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    /* Gap cover karne ke liye pseudo element */
+    margin-top: 0 !important;
+}
+
+/* Gap fill karo avatar aur dropdown ke beech */
+.navbar .dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: transparent;
+}
+
+/* Show class se open hoga */
+.navbar .dropdown-menu.show {
+    display: block !important;
+}
+
+/*** 🔥 MOBILE FIX ***/
 @media (max-width: 991.98px) {
 
     .navbar-nav {
@@ -139,7 +194,6 @@
         border-top: 1px solid #eee;
     }
 
-    /* Right section fix */
     .navbar .d-flex {
         flex-direction: column;
         align-items: stretch !important;
@@ -147,7 +201,6 @@
         margin-top: 10px;
     }
 
-    /* Search full width */
     .navbar form {
         width: 100%;
     }
@@ -160,38 +213,22 @@
         width: 100%;
     }
 
-    /* Buttons full width */
     .navbar .btn {
         width: 100%;
+    }
+
+    /* Mobile me dropdown full width */
+    .navbar .dropdown-menu {
+        position: static !important;
+        width: 100%;
+        margin-top: 5px !important;
+        border-radius: 8px !important;
     }
 }
 
 /* Sticky */
 .navbar-light.sticky-top {
     top: 0;
-}
-
-/* Dropdown */
-.navbar .dropdown-toggle::after {
-    border: none;
-    content: "\f107";
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    margin-left: 8px;
-}
-
-@media (min-width: 992px) {
-    .navbar .nav-item .dropdown-menu {
-        display: block;
-        opacity: 0;
-        visibility: hidden;
-        transition: .5s;
-    }
-
-    .navbar .nav-item:hover .dropdown-menu {
-        opacity: 1;
-        visibility: visible;
-    }
 }
 
 /*** ================= HEADER ================= ***/
@@ -276,7 +313,16 @@
     transform: scale(1.05);
 }
 
-/*** Footer ***/
+/*** ================= FOOTER ================= ***/
+.footer {
+    background: var(--dark);
+    color: #fff;
+}
+
+.footer h4 {
+    font-weight: 600;
+}
+
 .footer .btn.btn-social {
     margin-right: 5px;
     width: 35px;
@@ -289,7 +335,6 @@
     border-radius: 50%;
 }
 
-
 .footer .copyright {
     padding: 25px 0;
     border-top: 1px solid rgba(255, 255, 255, .1);
@@ -298,17 +343,6 @@
 .footer .btn.btn-link::before {
     content: "› ";
     margin-right: 5px;
-}
-
-/* ===== FOOTER FIX ===== */
-
-.footer {
-    background: var(--dark);
-    color: #fff;
-}
-
-.footer h4 {
-    font-weight: 600;
 }
 
 .footer .btn.btn-link {
@@ -326,18 +360,15 @@
     letter-spacing: 1px;
 }
 
-/* Contact icons spacing */
 .footer p {
     margin-bottom: 10px;
 }
 
-/* Gallery images */
 .footer .img-fluid {
     width: 100%;
     height: auto;
 }
 
-/* Newsletter */
 .footer input {
     height: 45px;
 }
@@ -346,7 +377,6 @@
     height: 45px;
 }
 
-/* Copyright */
 .footer .container.text-center {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     margin-top: 20px;

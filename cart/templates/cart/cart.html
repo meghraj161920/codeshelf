@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h4 class="fw-bold mb-4">🛒 My Cart</h4>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% if projects %}
+
+    <div class="row g-4">
+
+        <!-- CART ITEMS -->
+        <div class="col-lg-8">
+            {% for project in projects %}
+            <div class="card mb-3 shadow-sm border-0" id="cart-item-{{ project.id }}">
+                <div class="row g-0 align-items-center">
+
+                    <!-- THUMBNAIL -->
+                    <div class="col-3">
+                        <img src="{{ project.thumbnail.url }}"
+                            class="img-fluid rounded-start"
+                            style="height: 120px; object-fit: cover; width: 100%;"
+                            alt="{{ project.title }}">
+                    </div>
+
+                    <!-- DETAILS -->
+                    <div class="col-6 px-3">
+                        <h6 class="fw-bold mb-1">{{ project.title }}</h6>
+                        <span class="badge bg-primary mb-1">{{ project.category }}</span>
+                        <p class="text-muted mb-0" style="font-size: 0.85rem;">
+                            {{ project.technology }}
+                        </p>
+                    </div>
+
+                    <!-- PRICE + REMOVE -->
+                    <div class="col-3 text-end pe-3">
+                        <p class="fw-bold text-success mb-2">₹{{ project.price }}</p>
+                        <button class="btn btn-sm btn-outline-danger"
+                            onclick="removeFromCart({{ project.id }}, this)">
+                            <i class="fa-solid fa-trash-can"></i> Remove
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- CLEAR CART -->
+            <div class="text-end mt-2">
+                <a href="{% url 'clear_cart' %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="fa-solid fa-broom"></i> Clear Cart
+                </a>
+            </div>
+        </div>
+
+        <!-- ORDER SUMMARY -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 p-4">
+                <h5 class="fw-bold mb-3">Order Summary</h5>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Items</span>
+                    <span>{{ cart_count }}</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Total</span>
+                    <span class="fw-bold text-success" id="cart-total">₹{{ total }}</span>
+                </div>
+
+                <hr>
+
+                <a href="{% url 'checkout' %}" class="btn btn-primary w-100 py-2">
+                    Proceed to Checkout <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+
+                <a href="{% url 'project_list' %}" class="btn btn-outline-secondary w-100 mt-2 py-2">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Continue Browsing
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <!-- EMPTY CART -->
+    <div class="text-center py-5">
+        <i class="fa-solid fa-cart-shopping fa-4x text-muted mb-4"></i>
+        <h5 class="text-muted">Your cart is empty!</h5>
+        <p class="text-muted">Browse projects and add them to your cart.</p>
+        <a href="{% url 'project_list' %}" class="btn btn-primary mt-2">
+            Browse Projects
+        </a>
+    </div>
+
+    {% endif %}
+
+</div>
+{% endblock content %}
+
+
+{% block extra_js %}
+<script>
+function removeFromCart(projectId, btn) {
+    fetch(`/cart/remove/${projectId}/`, {
+        method: 'GET',
+        headers: { 'x-requested-with': 'XMLHttpRequest' }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'removed') {
+            // Item remove karo
+            document.getElementById(`cart-item-${projectId}`).remove()
+
+            // Total update karo
+            document.getElementById('cart-total').innerText = '₹' + data.total
+
+            // Agar cart empty ho gaya
+            if (data.cart_count === 0) {
+                location.reload()
+            }
+        }
+    })
+}
+</script>
+{% endblock %}

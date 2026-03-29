@@ -2,166 +2,172 @@
 {% load static %}
 
 {% block content %}
-
 <div class="container mt-5">
 
-<!-- PAGE TITLE -->
-<div class="row mb-4">
-    <div class="col-md-12">
-        <h2 class="fw-bold">{{ project.title }}</h2>
-        <p class="text-muted">Complete information about this project</p>
-    </div>
-</div>
-
-<div class="row">
-
-    <!-- PROJECT IMAGE -->
-    <div class="col-md-6">
-        <img src="{{ project.thumbnail.url }}" class="img-fluid rounded shadow">
-    </div>
-
-    <!-- PROJECT INFO -->
-    <div class="col-md-6">
-
-        <h3 class="fw-bold">{{ project.title }}</h3>
-
-        <p class="text-muted mt-3">
-            {{ project.description }}
-        </p>
-
-        <!-- BADGES -->
-        <div class="mb-3">
-            <span class="badge bg-info">{{ project.technology }}</span>
-            <span class="badge bg-warning text-dark">{{ project.difficulty_level }}</span>
-            <span class="badge bg-success">Source Code Included</span>
-        </div>
-
-        <!-- PRICE -->
-        <h4 class="text-success fw-bold mb-3">
-            ₹{{ project.price }}
-        </h4>
-
-        <!-- BUTTONS -->
-        <div class="d-flex gap-2">
-
-            {% if user.is_authenticated and user.profile.is_customer %}
-                <a href="{% url 'add_to_cart' project.id %}" class="btn btn-primary">
-                    Add to Cart
-                </a>
-            {% endif %}
-
-            <button class="btn btn-outline-secondary">
-                Add to Wishlist
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- DEMO VIDEO -->
-{% if project.demo_video_url %}
-<div class="row mt-5">
-    <div class="col-md-12">
-        <h4 class="fw-bold mb-3">Demo Video</h4>
-
-        <div class="ratio ratio-16x9">
-            <iframe src="{{ project.demo_video_url }}" allowfullscreen></iframe>
+    <!-- PAGE TITLE -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2 class="fw-bold">{{ project.title }}</h2>
+            <p class="text-muted">Complete information about this project</p>
         </div>
     </div>
-</div>
-{% endif %}
 
+    <div class="row">
 
-<!-- PROJECT DETAILS -->
-<div class="row mt-5">
+        <!-- PROJECT IMAGE -->
+        <div class="col-md-6">
+            <img src="{{ project.thumbnail.url }}" class="img-fluid rounded shadow">
+        </div>
 
-    <div class="col-md-6">
-        <h5 class="fw-bold">Project Details</h5>
+        <!-- PROJECT INFO -->
+        <div class="col-md-6">
+            <h3 class="fw-bold">{{ project.title }}</h3>
+            <p class="text-muted mt-3">{{ project.description }}</p>
 
-        <ul class="list-group">
-            <li class="list-group-item"><strong>Version:</strong> {{ project.version }}</li>
-            <li class="list-group-item"><strong>Requirements:</strong> {{ project.requirements }}</li>
-            <li class="list-group-item"><strong>File Size:</strong> {{ project.file_size }}</li>
-            <li class="list-group-item"><strong>Category:</strong> {{ project.category.name }}</li>
-        </ul>
-    </div>
-
-    <div class="col-md-6">
-        <h5 class="fw-bold">Features</h5>
-
-        <ul class="list-group">
-            <li class="list-group-item">Complete Source Code</li>
-            <li class="list-group-item">Documentation Included</li>
-            <li class="list-group-item">Beginner Friendly</li>
-            <li class="list-group-item">Easy to Customize</li>
-        </ul>
-    </div>
-
-</div>
-
-
-<!-- PROJECT SCREENSHOTS -->
-<div class="row mt-5">
-    <div class="col-md-12">
-        <h4 class="fw-bold mb-3">Project Screenshots</h4>
-    </div>
-
-    {% for img in project.images.all %}
-    <div class="col-md-3 mb-3">
-        <img src="{{ img.image.url }}" class="img-fluid rounded shadow-sm">
-    </div>
-    {% empty %}
-    <p class="text-muted">No screenshots available.</p>
-    {% endfor %}
-</div>
-
-
-<!-- RELATED PROJECTS -->
-<div class="row mt-5">
-    <div class="col-md-12">
-        <h4 class="fw-bold mb-4">Related Projects</h4>
-    </div>
-
-    {% for p in related_projects %}
-    <div class="col-md-3 mb-3">
-        <div class="card shadow-sm h-100">
-
-            <img src="{{ p.thumbnail.url }}"
-                 class="card-img-top"
-                 style="height:180px; object-fit:cover;">
-
-            <div class="card-body">
-
-                <h6 class="fw-bold">{{ p.title }}</h6>
-
-                <p class="text-muted small">
-                    {{ p.description|truncatewords:10 }}
-                </p>
-
-                <h6 class="text-success">₹{{ p.price }}</h6>
-
+            <div class="mb-3">
+                <span class="badge bg-info">{{ project.technology }}</span>
+                <span class="badge bg-warning text-dark">{{ project.difficulty_level }}</span>
+                <span class="badge bg-success">Source Code Included</span>
             </div>
 
-            <div class="card-footer bg-white border-0">
+            <h4 class="text-success fw-bold mb-3">₹{{ project.price }}</h4>
 
-                <a href="{% url 'project_detail' p.slug %}"
-                   class="btn btn-sm btn-outline-primary w-100">
-                    View Details
-                </a>
+            <div class="d-flex gap-2 flex-wrap">
+                {% if user.is_authenticated and user.profile.is_customer %}
 
+                    {% if has_purchased %}
+                        <!-- ✅ Already purchased — Download button dikhao -->
+                        <a href="{% url 'download_project' project.id %}" class="btn btn-success">
+                            <i class="fa-solid fa-download me-1"></i> Download Project
+                        </a>
+                    {% else %}
+                        <!-- ❌ Not purchased — Cart aur Wishlist dikhao -->
+                        <a href="{% url 'add_to_cart' project.id %}" class="btn btn-primary">
+                            <i class="fa-solid fa-cart-shopping me-1"></i> Add to Cart
+                        </a>
+
+                        <button class="btn btn-outline-danger wishlist-btn" data-id="{{ project.id }}">
+                            <i class="fa-{% if project.id in wishlist_ids %}solid text-danger{% else %}regular{% endif %} fa-heart me-1"></i>
+                            {% if project.id in wishlist_ids %}Wishlisted{% else %}Add to Wishlist{% endif %}
+                        </button>
+                    {% endif %}
+
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary">
+                        Login to Purchase
+                    </a>
+                {% endif %}
             </div>
+        </div>
 
+    </div>
+
+    <!-- DEMO VIDEO -->
+    {% if project.demo_video_url %}
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h4 class="fw-bold mb-3">Demo Video</h4>
+            <div class="ratio ratio-16x9">
+                <iframe src="{{ project.demo_video_url }}" allowfullscreen></iframe>
+            </div>
         </div>
     </div>
-    {% empty %}
-    <p class="text-muted">No related projects found.</p>
-    {% endfor %}
+    {% endif %}
+
+    <!-- PROJECT DETAILS -->
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <h5 class="fw-bold">Project Details</h5>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Version:</strong> {{ project.version }}</li>
+                <li class="list-group-item"><strong>Requirements:</strong> {{ project.requirements }}</li>
+                <li class="list-group-item"><strong>File Size:</strong> {{ project.file_size }}</li>
+                <li class="list-group-item"><strong>Category:</strong> {{ project.category.name }}</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h5 class="fw-bold">Features</h5>
+            <ul class="list-group">
+                <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i>Complete Source Code</li>
+                <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i>Documentation Included</li>
+                <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i>Beginner Friendly</li>
+                <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i>Easy to Customize</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PROJECT SCREENSHOTS -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h4 class="fw-bold mb-3">Project Screenshots</h4>
+        </div>
+        {% for img in project.images.all %}
+        <div class="col-md-3 mb-3">
+            <img src="{{ img.image.url }}" class="img-fluid rounded shadow-sm">
+        </div>
+        {% empty %}
+        <p class="text-muted">No screenshots available.</p>
+        {% endfor %}
+    </div>
+
+    <!-- RELATED PROJECTS -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h4 class="fw-bold mb-4">Related Projects</h4>
+        </div>
+        {% for p in related_projects %}
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm h-100">
+                <img src="{{ p.thumbnail.url }}"
+                    class="card-img-top"
+                    style="height:180px; object-fit:cover;">
+                <div class="card-body">
+                    <h6 class="fw-bold">{{ p.title }}</h6>
+                    <p class="text-muted small">{{ p.description|truncatewords:10 }}</p>
+                    <h6 class="text-success">₹{{ p.price }}</h6>
+                </div>
+                <div class="card-footer bg-white border-0">
+                    <a href="{% url 'project_detail' p.slug %}"
+                        class="btn btn-sm btn-outline-primary w-100">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">No related projects found.</p>
+        {% endfor %}
+    </div>
 
 </div>
-
-</div>
-
 {% endblock content %}
+
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.wishlist-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const projectId = this.dataset.id
+        const icon = this.querySelector('i')
+
+        fetch("{% url 'toggle_wishlist' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: `project_id=${projectId}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'added') {
+                icon.className = 'fa-solid fa-heart text-danger me-1'
+                this.innerHTML = '<i class="fa-solid fa-heart text-danger me-1"></i> Wishlisted'
+            } else {
+                this.innerHTML = '<i class="fa-regular fa-heart me-1"></i> Add to Wishlist'
+            }
+        })
+    })
+})
+</script>
+{% endblock %}

@@ -2,147 +2,159 @@
 {% load static %}
 
 {% block content %}
-
 <div class="container mt-5">
 
-<!-- PAGE HEADER -->
-<div class="row mb-4">
-
-    <div class="col-md-6">
-        <h2 class="fw-bold">Browse Projects</h2>
-        <p class="text-muted">Explore coding projects available on CodeShelf</p>
+    <!-- PAGE HEADER -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2 class="fw-bold">Browse Projects</h2>
+            <p class="text-muted">Explore coding projects available on CodeShelf</p>
+        </div>
+        <div class="col-md-6">
+            <form method="GET" class="d-flex">
+                <input type="text" name="q" value="{{ request.GET.q }}"
+                    class="form-control me-2" placeholder="Search projects...">
+                <button class="btn btn-primary">Search</button>
+            </form>
+        </div>
     </div>
 
-    <!-- SEARCH BAR -->
-    <div class="col-md-6">
-        <form method="GET" class="d-flex">
-            <input type="text" name="q" class="form-control me-2" placeholder="Search projects...">
-            <button class="btn btn-primary">Search</button>
-        </form>
+    <!-- FILTERS -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <form method="GET" class="row g-2">
+                <div class="col-md-3">
+                    <select name="category" class="form-select">
+                        <option value="">All Categories</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.slug }}"
+                            {% if request.GET.category == cat.slug %}selected{% endif %}>
+                            {{ cat.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="technology" value="{{ request.GET.technology }}"
+                        class="form-control" placeholder="Technology (e.g. Python)"
+                        onchange="this.form.submit()">
+                </div>
+                <div class="col-md-3">
+                    <select name="difficulty" class="form-select">
+                        <option value="">All Difficulty</option>
+                        <option value="beginner" {% if request.GET.difficulty == 'beginner' %}selected{% endif %}>Beginner</option>
+                        <option value="intermediate" {% if request.GET.difficulty == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                        <option value="advanced" {% if request.GET.difficulty == 'advanced' %}selected{% endif %}>Advanced</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <a href="{% url 'project_list' %}" class="btn btn-outline-secondary w-100">
+                        Clear Filters
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 
-</div>
+    <!-- PROJECT GRID -->
+    <div class="row">
+        {% for project in projects %}
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm h-100">
 
+                <!-- THUMBNAIL -->
+                <div class="position-relative">
+                    <img src="{{ project.thumbnail.url }}"
+                        class="card-img-top"
+                        style="height:200px; object-fit:cover;">
 
-<!-- FILTERS -->
-<div class="row mb-4">
-    <div class="col-md-12">
-
-        <form method="GET" class="row g-2">
-
-            <!-- CATEGORY -->
-            <div class="col-md-3">
-                <select name="category" class="form-select">
-
-                    <option value="">All Categories</option>
-
-                    {% for cat in categories %}
-                    <option value="{{ cat.slug }}"
-                        {% if request.GET.category == cat.slug %}selected{% endif %}>
-                        {{ cat.name }}
-                    </option>
-                    {% endfor %}
-
-                </select>
-            </div>
-
-
-            <!-- TECHNOLOGY -->
-            <div class="col-md-3">
-                <input type="text" name="technology" class="form-control"
-                       placeholder="Technology (e.g. Python)">
-            </div>
-
-
-            <!-- DIFFICULTY -->
-            <div class="col-md-3">
-                <select name="difficulty" class="form-select">
-                    <option value="">All Difficulty</option>
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
-                </select>
-            </div>
-
-
-            <div class="col-md-3">
-                <button class="btn btn-secondary w-100">
-                    Apply Filters
-                </button>
-            </div>
-
-        </form>
-
-    </div>
-</div>
-
-
-<!-- PROJECT GRID -->
-<div class="row">
-
-    {% for project in projects %}
-    <div class="col-md-3 mb-3">
-
-        <div class="card shadow-sm h-100">
-
-            <img src="{{ project.thumbnail.url }}"
-                 class="card-img-top"
-                 style="height:200px; object-fit:cover;">
-
-            <div class="card-body">
-
-                <h5 class="card-title">
-                    {{ project.title }}
-                </h5>
-
-                <p class="card-text text-muted">
-                    {{ project.description|truncatewords:12 }}
-                </p>
-
-                <div class="mb-2">
-                    <span class="badge bg-info">
-                        {{ project.technology }}
-                    </span>
-
-                    <span class="badge bg-warning text-dark">
-                        {{ project.difficulty_level }}
-                    </span>
+                    <!-- WISHLIST BUTTON (top right) -->
+                    {% if user.is_authenticated and user.profile.is_customer %}
+                    <button class="btn btn-sm position-absolute top-0 end-0 m-2 wishlist-btn"
+                        data-id="{{ project.id }}"
+                        style="background:rgba(255,255,255,0.9); border-radius:50%; width:36px; height:36px; padding:0;">
+                        <i class="fa-{% if project.id in wishlist_ids %}solid text-danger{% else %}regular text-muted{% endif %} fa-heart"></i>
+                    </button>
+                    {% endif %}
                 </div>
 
-                <h6 class="fw-bold text-success">
-                    ₹{{ project.price }}
-                </h6>
+                <div class="card-body">
+                    <h5 class="card-title">{{ project.title }}</h5>
+                    <p class="card-text text-muted">{{ project.description|truncatewords:12 }}</p>
+                    <div class="mb-2">
+                        <span class="badge bg-info">{{ project.technology }}</span>
+                        <span class="badge bg-warning text-dark">{{ project.difficulty_level }}</span>
+                    </div>
+                    <h6 class="fw-bold text-success">₹{{ project.price }}</h6>
+                </div>
+
+                <div class="card-footer bg-white border-0 d-flex justify-content-between">
+                    <a href="{% url 'project_detail' project.slug %}"
+                        class="btn btn-outline-primary btn-sm">
+                        View Details
+                    </a>
+
+                    <!-- CART — only for logged in customers -->
+                    {% if user.is_authenticated and user.profile.is_customer %}
+                    <a href="{% url 'add_to_cart' project.id %}"
+                        class="btn btn-success btn-sm">
+                        <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}"
+                        class="btn btn-success btn-sm">
+                        <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                    </a>
+                    {% endif %}
+                </div>
 
             </div>
-
-            <!-- ✅ UPDATED FOOTER -->
-            <div class="card-footer bg-white border-0 d-flex justify-content-between">
-
-                <!-- View Details -->
-                <a href="{% url 'project_detail' project.slug %}"
-                   class="btn btn-outline-primary btn-sm">
-                    View Details
-                </a>
-
-                <!-- 🔥 ADD TO CART BUTTON -->
-                <a href="{% url 'add_to_cart' project.id %}"
-                   class="btn btn-success btn-sm">
-                    Add to Cart
-                </a>
-
-            </div>
-
         </div>
-
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center text-muted">No projects found.</p>
+        </div>
+        {% endfor %}
     </div>
-    {% empty %}
-    <div class="col-12">
-        <p class="text-center text-muted">No projects found.</p>
-    </div>
-    {% endfor %}
 
 </div>
-
-</div>
-
 {% endblock content %}
+
+
+{% block extra_js %}
+<script>
+// Auto submit filters
+document.querySelectorAll('select[name="category"], select[name="difficulty"]').forEach(select => {
+    select.addEventListener('change', function() {
+        this.closest('form').submit()
+    })
+})
+</script>
+
+<script>
+// Wishlist toggle
+document.querySelectorAll('.wishlist-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const projectId = this.dataset.id
+        const icon = this.querySelector('i')
+
+        fetch("{% url 'toggle_wishlist' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: `project_id=${projectId}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'added') {
+                icon.className = 'fa-solid fa-heart text-danger'
+            } else {
+                icon.className = 'fa-regular fa-heart text-muted'
+            }
+        })
+    })
+})
+</script>
+{% endblock %}

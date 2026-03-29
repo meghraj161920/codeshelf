@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-
 {% block content %}
-
 <div class="container-xxl py-5">
     <div class="container">
 
@@ -14,34 +12,45 @@
 
         <div class="row justify-content-center">
             <div class="col-lg-6">
-
                 <div class="bg-light p-5 rounded shadow">
 
-                    <input type="email" class="form-control mb-3" placeholder="Enter Email">
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
 
-                    <button class="btn btn-primary w-100 mb-3" onclick="sendOTP()">
-                        Send OTP
-                    </button>
+                    <!-- STEP 1 : Email -->
+                    {% if step == 'email' or not step %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <h5 class="mb-3">Enter your email</h5>
+                        <input type="email" name="email" class="form-control mb-3" placeholder="Enter Email" required>
+                        <button name="send_otp" class="btn btn-primary w-100">Send OTP</button>
+                    </form>
+                    {% endif %}
 
-                    <div id="otpBox" style="display:none">
+                    <!-- STEP 2 : OTP Verify -->
+                    {% if step == 'verify' %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <h5 class="mb-3">Enter OTP</h5>
+                        <p class="text-muted">OTP sent to: <strong>{{ email }}</strong> (check terminal)</p>
+                        <input type="text" name="otp" class="form-control mb-3" placeholder="Enter OTP" required>
+                        <button name="verify_otp" class="btn btn-success w-100">Verify OTP</button>
+                    </form>
+                    {% endif %}
 
-                        <input type="text" id="userOTP" class="form-control mb-3" placeholder="Enter OTP">
-
-                        <button class="btn btn-success w-100 mb-3" onclick="verifyOTP()">
-                            Verify OTP
-                        </button>
-
-                    </div>
-
-                    <div id="resetBox" style="display:none">
-
-                        <input type="password" class="form-control mb-3" placeholder="New Password">
-
-                        <button class="btn btn-warning w-100">
-                            Reset Password
-                        </button>
-
-                    </div>
+                    <!-- STEP 3 : New Password -->
+                    {% if step == 'reset' %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <h5 class="mb-3">Set New Password</h5>
+                        <input type="password" name="password" class="form-control mb-3" placeholder="New Password" required>
+                        <input type="password" name="confirm_password" class="form-control mb-3" placeholder="Confirm Password" required>
+                        <button name="reset_password" class="btn btn-warning w-100">Reset Password</button>
+                    </form>
+                    {% endif %}
 
                 </div>
             </div>
@@ -49,37 +58,4 @@
 
     </div>
 </div>
-
 {% endblock content %}
-
-{% block extra_js %}
-<script>
-
-    let otp;
-
-    function sendOTP() {
-
-        otp = Math.floor(1000 + Math.random() * 9000);
-
-        alert("OTP : " + otp);
-
-        document.getElementById("otpBox").style.display = "block";
-    }
-
-    function verifyOTP() {
-
-        let userOTP = document.getElementById("userOTP").value;
-
-        if (userOTP == otp) {
-            alert("OTP Verified");
-
-            document.getElementById("resetBox").style.display = "block";
-        }
-        else {
-            alert("Invalid OTP");
-        }
-
-    }
-
-</script>
-{% endblock extra_js %}

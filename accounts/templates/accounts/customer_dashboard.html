@@ -1,14 +1,137 @@
 {% extends "base.html" %}
 {% load static %}
 
-
 {% block content %}
-<div>Customer Dashboard</div>
-<!-- LOGOUT -->
-<form method="POST" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-outline-danger btn-sm d-flex align-items-center">
-        <i class="fa-solid fa-right-from-bracket me-1"></i>
-    </button>
-</form>
+<div class="container py-5">
+
+    <!-- WELCOME -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold mb-0">
+                👋 Hello, {{ user.first_name|default:user.username }}!
+            </h4>
+            <p class="text-muted mb-0">Welcome to your dashboard</p>
+        </div>
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="btn btn-outline-danger btn-sm">
+                <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+            </button>
+        </form>
+    </div>
+
+    <!-- STATS CARDS -->
+    <div class="row g-3 mb-5">
+
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm border-0 p-3 text-center">
+                <i class="fa-solid fa-basket-shopping fa-2x text-primary mb-2"></i>
+                <h4 class="fw-bold mb-0">{{ total_orders }}</h4>
+                <p class="text-muted mb-0 small">Total Orders</p>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm border-0 p-3 text-center">
+                <i class="fa-regular fa-heart fa-2x text-danger mb-2"></i>
+                <h4 class="fw-bold mb-0">{{ wishlist_count }}</h4>
+                <p class="text-muted mb-0 small">Wishlist Items</p>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm border-0 p-3 text-center">
+                <i class="fa-regular fa-star fa-2x text-warning mb-2"></i>
+                <h4 class="fw-bold mb-0">{{ reviews_count }}</h4>
+                <p class="text-muted mb-0 small">Reviews Given</p>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm border-0 p-3 text-center">
+                <i class="fa-solid fa-ticket fa-2x text-success mb-2"></i>
+                <h4 class="fw-bold mb-0">{{ coupons_count }}</h4>
+                <p class="text-muted mb-0 small">Active Coupons</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- QUICK LINKS -->
+    <div class="row g-3 mb-5">
+
+        <div class="col-6 col-md-3">
+            <a href="{% url 'profile' %}" class="card shadow-sm border-0 p-3 text-center text-decoration-none text-dark h-100">
+                <i class="fa-regular fa-user fa-2x text-primary mb-2"></i>
+                <p class="mb-0 fw-semibold">My Profile</p>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <a href="{% url 'order_history' %}" class="card shadow-sm border-0 p-3 text-center text-decoration-none text-dark h-100">
+                <i class="fa-solid fa-box fa-2x text-warning mb-2"></i>
+                <p class="mb-0 fw-semibold">My Orders</p>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <a href="{% url 'wishlist' %}" class="card shadow-sm border-0 p-3 text-center text-decoration-none text-dark h-100">
+                <i class="fa-regular fa-heart fa-2x text-danger mb-2"></i>
+                <p class="mb-0 fw-semibold">Wishlist</p>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <a href="{% url 'coupons' %}" class="card shadow-sm border-0 p-3 text-center text-decoration-none text-dark h-100">
+                <i class="fa-solid fa-ticket fa-2x text-success mb-2"></i>
+                <p class="mb-0 fw-semibold">My Coupons</p>
+            </a>
+        </div>
+
+    </div>
+
+    <!-- RECENT ORDERS -->
+    <div class="card shadow-sm border-0 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0">📦 Recent Orders</h5>
+            <a href="{% url 'order_history' %}" class="text-primary text-decoration-none small">
+                View All →
+            </a>
+        </div>
+
+        {% if recent_orders %}
+        {% for order in recent_orders %}
+        <div class="border rounded p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong>Order #{{ order.id }}</strong>
+                <div>
+                    <span class="badge bg-success me-2">{{ order.payment_status }}</span>
+                    <small class="text-muted">{{ order.order_date|date:"d M Y" }}</small>
+                </div>
+            </div>
+
+            {% for item in order.items.all %}
+            <div class="d-flex justify-content-between">
+                <span class="text-muted small">{{ item.project.title }}</span>
+                <span class="small">₹{{ item.price }}</span>
+            </div>
+            {% endfor %}
+
+            <div class="text-end mt-2">
+                <strong class="text-success">Total: ₹{{ order.total_amount }}</strong>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% else %}
+        <div class="text-center py-4">
+            <i class="fa-solid fa-box-open fa-3x text-muted mb-3"></i>
+            <p class="text-muted">No orders yet!</p>
+            <a href="{% url 'project_list' %}" class="btn btn-primary btn-sm">Browse Projects</a>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
 {% endblock content %}

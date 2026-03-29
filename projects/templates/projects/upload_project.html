@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex align-items-center mb-4">
+        <a href="{% url 'seller_dashboard' %}" class="btn btn-outline-secondary btn-sm me-3">
+            <i class="fa fa-arrow-left"></i> Back
+        </a>
+        <h4 class="fw-bold mb-0">📤 Upload New Project</h4>
+    </div>
+
+    <div class="card shadow-sm border-0 p-4 p-md-5">
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row g-4">
+
+                <!-- TITLE -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Project Title *</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                    <div class="text-danger small">{{ form.title.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- CATEGORY -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Category *</label>
+                    {{ form.category }}
+                </div>
+
+                <!-- DESCRIPTION -->
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Description *</label>
+                    {{ form.description }}
+                </div>
+
+                <!-- TECHNOLOGY -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Technology *</label>
+                    {{ form.technology }}
+                </div>
+
+                <!-- DIFFICULTY -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Difficulty Level *</label>
+                    {{ form.difficulty_level }}
+                </div>
+
+                <!-- VERSION -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Version *</label>
+                    {{ form.version }}
+                </div>
+
+                <!-- PRICE -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Price (₹) *</label>
+                    {{ form.price }}
+                </div>
+
+                <!-- REQUIREMENTS -->
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Requirements</label>
+                    {{ form.requirements }}
+                </div>
+
+                <hr>
+
+                <!-- THUMBNAIL -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Thumbnail Image *</label>
+                    {{ form.thumbnail }}
+                    <small class="text-muted">JPG, PNG recommended</small>
+                </div>
+
+                <!-- ZIP FILE -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Project ZIP File *</label>
+                    {{ form.zip_file }}
+                    <small class="text-muted">Upload complete source code</small>
+                </div>
+
+                <!-- DOCUMENTATION -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Documentation File</label>
+                    {{ form.documentation_file }}
+                    <small class="text-muted">PDF recommended</small>
+                </div>
+
+                <!-- FILE SIZE -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">File Size</label>
+                    {{ form.file_size }}
+                </div>
+
+                <hr>
+
+                <!-- DEMO VIDEO -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Demo Video URL</label>
+                    {{ form.demo_video_url }}
+                    <small class="text-muted">YouTube embed URL</small>
+                </div>
+
+                <!-- INSTALLATION VIDEO -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Installation Video URL</label>
+                    {{ form.installation_video_url }}
+                    <small class="text-muted">YouTube embed URL (private)</small>
+                </div>
+
+                <!-- SUBMIT -->
+                <div class="col-12 text-end">
+                    <a href="{% url 'seller_dashboard' %}" class="btn btn-outline-secondary me-2">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary px-5">
+                        <i class="fa fa-upload me-1"></i> Upload Project
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock content %}

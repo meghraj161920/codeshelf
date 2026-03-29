@@ -4,9 +4,17 @@ from django.contrib import messages
 from django.contrib.messages import get_messages
 from .forms import RegisterForm
 from .models import Profile
+import random
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from core.decorators import seller_required, customer_required, unauthenticated_only
+from wishlist.models import Wishlist
+from reviews.models import Review
+from coupons.models import UserCoupon
+from django.db import models
+from projects.models import Project
+from orders.models import Order, OrderItem
+
 
 User = get_user_model()
 
@@ -18,17 +26,30 @@ def register_view(request):
         form = RegisterForm(request.POST)
 
         if form.is_valid():
+            # ✅ Register se pehle cart save karo
+            old_cart = request.session.get('cart', [])
+
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
 
-            # create profile safely
             profile, created = Profile.objects.get_or_create(user=user)
             profile.role = form.cleaned_data['role']
             profile.save()
 
+            # ✅ Auto login karo
+            login(request, user)
+
+            # ✅ Cart restore karo
+            request.session['cart'] = old_cart
+
             messages.success(request, "Account created successfully!")
-            return redirect('login')
+
+            # ✅ Role ke hisaab se redirect
+            if profile.role == 'seller':
+                return redirect('seller_dashboard')
+            else:
+                return redirect('customer_dashboard')
     else:
         form = RegisterForm()
 
@@ -75,15 +96,58 @@ def login_view(request):
 
 
 # ================= CUSTOMER DASHBOARD =================
+
+
 @customer_required
 def customer_dashboard(request):
-    return render(request, "accounts/customer_dashboard.html")
+    user = request.user
 
+    # Recent orders
+    recent_orders = Order.objects.filter(
+        user=user
+    ).prefetch_related('items__project').order_by('-order_date')[:5]
+
+    # Stats
+    total_orders = Order.objects.filter(user=user, is_completed=True).count()
+    wishlist_count = Wishlist.objects.filter(user=user).count()
+    reviews_count = Review.objects.filter(user=user).count()
+    coupons_count = UserCoupon.objects.filter(user=user, is_used=False).count()
+
+    return render(request, "accounts/customer_dashboard.html", {
+        'recent_orders': recent_orders,
+        'total_orders': total_orders,
+        'wishlist_count': wishlist_count,
+        'reviews_count': reviews_count,
+        'coupons_count': coupons_count,
+    })
 
 # ================= SELLER DASHBOARD =================
 @seller_required
 def seller_dashboard(request):
-    return render(request, "accounts/seller_dashboard.html")
+    user = request.user
+
+    # Seller ke projects
+    projects = Project.objects.filter(seller=user).order_by('-created_at')
+
+    # Stats
+    total_projects = projects.count()
+    total_orders = OrderItem.objects.filter(project__seller=user).count()
+    total_revenue = OrderItem.objects.filter(
+        project__seller=user
+    ).aggregate(total=models.Sum('price'))['total'] or 0
+
+    # Recent orders
+    recent_orders = OrderItem.objects.filter(
+        project__seller=user
+    ).select_related('order__user', 'project').order_by('-order__order_date')[:10]
+
+    return render(request, "accounts/seller_dashboard.html", {
+        'projects': projects,
+        'total_projects': total_projects,
+        'total_orders': total_orders,
+        'total_revenue': total_revenue,
+        'recent_orders': recent_orders,
+    })
 
 
 # ================= USER PAGES =================
@@ -163,6 +227,75 @@ def logout_view(request):
     return redirect('login')
 
 
+
+
 # ================= FORGOT PASSWORD =================
 def forgot_view(request):
-    return render(request, 'accounts/forgot.html')
+
+    # STEP 1 — Email submit
+    if request.method == "POST" and 'send_otp' in request.POST:
+        email = request.POST.get("email", "").strip()
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            messages.error(request, "No account found with this email.")
+            return redirect('forgot')
+
+        # OTP generate करो
+        otp = random.randint(1000, 9999)
+
+        # Session में save करो
+        request.session['otp'] = otp
+        request.session['otp_email'] = email
+
+        # Terminal में print करो
+        print(f"\n{'='*40}")
+        print(f"  OTP for {email} : {otp}")
+        print(f"{'='*40}\n")
+
+        messages.success(request, "OTP sent! Check your terminal.")
+        return render(request, 'accounts/forgot.html', {'step': 'verify', 'email': email})
+
+    # STEP 2 — OTP verify
+    if request.method == "POST" and 'verify_otp' in request.POST:
+        user_otp = request.POST.get("otp", "").strip()
+        email = request.session.get('otp_email')
+
+        if str(request.session.get('otp')) == user_otp:
+            return render(request, 'accounts/forgot.html', {'step': 'reset', 'email': email})
+        else:
+            messages.error(request, "Invalid OTP. Try again.")
+            return render(request, 'accounts/forgot.html', {'step': 'verify', 'email': email})
+
+    # STEP 3 — New password set
+    if request.method == "POST" and 'reset_password' in request.POST:
+        email = request.session.get('otp_email')
+        password = request.POST.get("password", "")
+        confirm = request.POST.get("confirm_password", "")
+
+        if password != confirm:
+            messages.error(request, "Passwords do not match.")
+            return render(request, 'accounts/forgot.html', {'step': 'reset', 'email': email})
+
+        if len(password) < 8:
+            messages.error(request, "Password must be at least 8 characters.")
+            return render(request, 'accounts/forgot.html', {'step': 'reset', 'email': email})
+
+        try:
+            user = User.objects.get(email=email)
+            user.set_password(password)
+            user.save()
+
+            # Session पूरी तरह clear करो
+            request.session.flush()
+
+            messages.success(request, "Password reset successful! Please login.")
+            return redirect('login')
+
+        except User.DoesNotExist:
+            messages.error(request, "Something went wrong.")
+            return redirect('forgot')
+
+    # GET request — fresh page
+    return render(request, 'accounts/forgot.html', {'step': 'email'})
