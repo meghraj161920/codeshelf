@@ -31,6 +31,7 @@ urlpatterns = [
     path('reviews/', include('reviews.urls')),
     path('coupons/', include('coupons.urls')),
     path('cart/', include('cart.urls')),
+    path('courses/', include('courses.urls')),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
