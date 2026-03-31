@@ -80,10 +80,7 @@
 
                 {% if user.is_authenticated and user.profile.is_customer %}
 
-                <!-- WISHLIST ICON -->
-                <a href="{% url 'wishlist' %}" class="position-relative text-dark text-decoration-none">
-                    <i class="fa fa-heart fs-5"></i>
-                </a>
+                
 
                 <!-- CART ICON -->
                 <a href="{% url 'cart' %}" class="position-relative text-dark text-decoration-none">
@@ -144,7 +141,7 @@
 
                         <li>
                             <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'profile' %}">
-                                <i class="fa fa-user text-primary"></i> Profile
+                                <i class="fa fa-user text-dark"></i> Profile
                             </a>
                         </li>
 
@@ -163,12 +160,18 @@
                         {% if user.profile.role == 'customer' %}
                         <li>
                             <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'order_history' %}">
-                                <i class="fa fa-box text-danger"></i> My Orders
+                                <i class="fa fa-box text-primary"></i> My Orders
+                            </a>
+                        </li>
+                        <li>
+                            <!-- WISHLIST ICON -->
+                            <a href="{% url 'wishlist' %}" class="dropdown-item d-flex align-items-center gap-2 py-2">
+                                <i class="fa fa-heart text-danger"></i>My Wishlist
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'coupons' %}">
-                                <i class="fa fa-ticket-alt text-success"></i> My Coupons
+                                <i class="fa fa-ticket-alt text-warning"></i> My Coupons
                             </a>
                         </li>
                         {% endif %}

@@ -122,6 +122,13 @@
                     <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}"
                         class="w-100" style="height:200px; object-fit:cover;">
                     <span class="badge bg-success position-absolute top-0 start-0 m-2">New</span>
+                    {% if user.is_authenticated and user.profile.is_customer %}
+                    <button class="btn btn-sm position-absolute top-0 end-0 m-2 wishlist-btn"
+                        data-id="{{ project.id }}"
+                        style="background:rgba(255,255,255,0.9); border-radius:50%; width:36px; height:36px; padding:0;">
+                        <i class="fa-{% if project.id in wishlist_ids %}solid text-danger{% else %}regular text-muted{% endif %} fa-heart"></i>
+                    </button>
+                    {% endif %}
                 </div>
 
                 <div class="card-body">
@@ -184,6 +191,13 @@
                     <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}"
                         class="w-100" style="height:200px; object-fit:cover;">
                     <span class="badge bg-danger position-absolute top-0 start-0 m-2">🔥 Trending</span>
+                    {% if user.is_authenticated and user.profile.is_customer %}
+                    <button class="btn btn-sm position-absolute top-0 end-0 m-2 wishlist-btn"
+                        data-id="{{ project.id }}"
+                        style="background:rgba(255,255,255,0.9); border-radius:50%; width:36px; height:36px; padding:0;">
+                        <i class="fa-{% if project.id in wishlist_ids %}solid text-danger{% else %}regular text-muted{% endif %} fa-heart"></i>
+                    </button>
+                    {% endif %}
                 </div>
 
                 <div class="card-body">
@@ -235,3 +249,32 @@
 </div>
 
 {% endblock %}
+
+{% block extra_js %}
+<script>
+// Wishlist toggle
+document.querySelectorAll('.wishlist-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const projectId = this.dataset.id
+        const icon = this.querySelector('i')
+
+        fetch("{% url 'toggle_wishlist' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: `project_id=${projectId}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'added') {
+                icon.className = 'fa-solid fa-heart text-danger'
+            } else {
+                icon.className = 'fa-regular fa-heart text-muted'
+            }
+        })
+    })
+})
+</script>
+{% endblock extra_js %}
