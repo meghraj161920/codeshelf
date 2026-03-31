@@ -1,125 +1,390 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<style>
+    /* =========================================
+       CONTACT PAGE - BROWSER UI WIDGET
+    ========================================= */
+    .contact-wrapper {
+        background-color: var(--bs-body-bg, #f8f9fa);
+        padding-bottom: 5rem;
+    }
+
+    #browser-widget {
+        margin: 0 auto; 
+        color: white;
+        width: 100%;
+        max-width: 1000px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        background: #181d38; /* CodeShelf Dark Navy */
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    #browser-bar {
+        background: #0f1322;
+        width: 100%;
+        padding: 12px 15px;
+        font-weight: 600;
+        font-size: 0.9em;
+        position: relative;
+        display: flex;
+        align-items: center;
+        color: #8e9699;
+    }
+
+    #browser-bar .circles {
+        display: flex;
+        gap: 8px;
+        position: absolute;
+        left: 15px;
+    }
+
+    #browser-bar .circle {
+        border-radius: 50%;
+        height: 14px;
+        width: 14px;
+    }
+    #browser-bar .circle.red { background: #ff5f56; }
+    #browser-bar .circle.yellow { background: #ffbd2e; }
+    #browser-bar .circle.green { background: #27c93f; }
+
+    #browser-bar .title {
+        margin: 0 auto;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+    }
+
+    #content-split {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    /* --- LEFT SIDE (INTERACTIVE MAP) --- */
+    #left-panel {
+        width: 65%;
+        background: #e9ecef;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #map-area {
+        flex-grow: 1; /* This forces the map to stretch and fill the dead space */
+        min-height: 350px; 
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Location Bar Tabs */
+    #location-bar {
+        display: flex;
+        width: 100%;
+        background: #181d38;
+        margin: 0; padding: 0; list-style: none;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    #location-bar li {
+        flex: 1;
+        text-align: center;
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    #location-bar li:last-child { border-right: none; }
+    
+    #location-bar a {
+        display: block;
+        padding: 12px 5px;
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: 0.3s;
+    }
+    #location-bar li.active a {
+        background: var(--primary);
+        color: white;
+    }
+    #location-bar a:hover {
+        background: rgba(6, 187, 204, 0.3);
+        color: white;
+    }
+
+    /* --- RIGHT SIDE (FORM) --- */
+    #right-panel {
+        width: 35%;
+        background: #181d38;
+        padding: 25px 30px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .panel-heading {
+        color: #8e9699;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+    }
+
+    .social-icons {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    .social-icons a {
+        display: flex; align-items: center; justify-content: center;
+        width: 38px; height: 38px;
+        background: rgba(255,255,255,0.05);
+        color: white; border-radius: 8px;
+        text-decoration: none; transition: 0.3s;
+    }
+    .social-icons a:hover {
+        background: var(--primary);
+        transform: translateY(-3px);
+    }
+
+    #contact-form input, #contact-form textarea {
+        width: 100%;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 10px 15px;
+        margin-bottom: 12px;
+        color: white;
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+    #contact-form input:focus, #contact-form textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: rgba(255,255,255,0.08);
+    }
+    #contact-form button {
+        width: 100%;
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 6px;
+        font-weight: 700;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    #contact-form button:hover {
+        background: #05a0af;
+    }
+
+    .alt-contact {
+        margin-top: auto;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .alt-contact p { color: #8e9699; font-size: 0.85rem; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
+    
+    /* Force remove margin from the last paragraph */
+    .alt-contact p:last-child { margin-bottom: 0 !important; }
+    
+    .alt-contact a { color: #8e9699; text-decoration: none; transition: 0.3s; }
+    .alt-contact a:hover { color: var(--primary); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+        #left-panel, #right-panel { width: 100%; }
+        #location-bar { flex-wrap: wrap; }
+        #location-bar li { min-width: 50%; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    }
+
+    /* =========================================
+       DEPARTMENTS SECTION STYLES
+    ========================================= */
+    .dept-card {
+        background-color: var(--bs-body-bg, #ffffff);
+        border: 1px solid var(--bs-border-color, rgba(0,0,0,0.08));
+        border-radius: 20px;
+        padding: 30px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+    }
+    .dept-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(6, 187, 204, 0.1);
+        border-color: var(--primary);
+    }
+    .dept-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background-color: rgba(6, 187, 204, 0.15);
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        transition: 0.3s;
+    }
+    .dept-card:hover .dept-icon {
+        background-color: var(--primary);
+        color: white;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
-<!-- Hero Section -->
-<div class="container-fluid bg-primary py-5 mb-5">
-    <div class="container text-center text-white">
-        <h1 class="display-4 fw-bold">Contact Us</h1>
-        <p class="lead">Contact for any query</p>
+<div class="container-fluid py-5 mb-5" style="background: linear-gradient(rgba(12, 16, 34, 0.9), rgba(12, 16, 34, 0.9)), url('{% static "img/carousel-2.jpg" %}') center/cover; min-height: 35vh; display: flex; align-items: center;">
+    <div class="container text-center pt-5">
+        <h1 class="display-3 fw-bold mb-3 animate__animated animate__fadeInDown" style="color: #ffffff !important;">Contact <span style="color: var(--primary);">Us</span></h1>
+        <p class="fs-5 text-light opacity-75 mx-auto animate__animated animate__fadeInUp" style="max-width: 600px;">
+            Have a question about a project, billing, or technical support? We're here to help.
+        </p>
     </div>
 </div>
 
-<!-- Contact Section -->
-<div class="container-xxl py-5">
-    <div class="container">
-
-        <!-- Heading -->
-        <div class="text-center mb-5">
-            <h6 class="section-title bg-white text-center text-primary px-3">Contact Us</h6>
-            <h1>Get In Touch</h1>
-        </div>
-
-        <div class="row g-4">
-
-            <!-- Contact Info -->
-            <div class="col-lg-4">
-
-                <h5 class="mb-3">Get In Touch</h5>
-                <p>
-                    If you have any questions about our platform or projects,
-                    feel free to contact us. We’ll respond as soon as possible.
-                </p>
-
-                <!-- Address -->
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-primary text-white d-flex align-items-center justify-content-center"
-                        style="width:50px;height:50px;">
-                        <i class="fa fa-map-marker-alt"></i>
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="text-primary mb-0">Office</h6>
-                        <p class="mb-0">Pune, Maharashtra, India</p>
-                    </div>
+<div class="contact-wrapper">
+    <div class="container px-4">
+        
+        <div id="browser-widget">
+            <div id="browser-bar">
+                <div class="circles">
+                    <div class="circle red"></div>
+                    <div class="circle yellow"></div>
+                    <div class="circle green"></div>
                 </div>
-
-                <!-- Phone -->
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-primary text-white d-flex align-items-center justify-content-center"
-                        style="width:50px;height:50px;">
-                        <i class="fa fa-phone-alt"></i>
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="text-primary mb-0">Mobile</h6>
-                        <p class="mb-0">+91 XXXXXXXX</p>
-                    </div>
-                </div>
-
-                <!-- Email -->
-                <div class="d-flex align-items-center">
-                    <div class="bg-primary text-white d-flex align-items-center justify-content-center"
-                        style="width:50px;height:50px;">
-                        <i class="fa fa-envelope-open"></i>
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="text-primary mb-0">Email</h6>
-                        <p class="mb-0">info@codeshelf.com</p>
-                    </div>
-                </div>
-
+                <div class="title">Secure Contact Portal</div>
             </div>
 
-            <!-- Map -->
-            <div class="col-lg-4">
-                <iframe class="rounded w-100 h-100"
-                    src="https://maps.google.com/maps?q=pune&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                    style="min-height:300px;border:0;"
-                    allowfullscreen=""
-                    loading="lazy">
-                </iframe>
-            </div>
+            <div id="content-split">
+                
+                <div id="left-panel">
+                    <div id="map-area">
+                        <iframe id="interactive-map" width="100%" height="100%" frameborder="0" style="border:0; display: block;" allowfullscreen="" loading="lazy" src="https://maps.google.com/maps?q=Pune,+Maharashtra,+India&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
+                    </div>
 
-            <!-- Contact Form -->
-            <div class="col-lg-4">
-                <div class="bg-light p-3 rounded shadow-sm">
+                    <ul id="location-bar">
+                        <li class="active">
+                            <a href="#" data-location="Pune, Maharashtra, India">India (HQ)</a>
+                        </li>
+                        <li>
+                            <a href="#" data-location="New York, USA">United States</a>
+                        </li>
+                        <li>
+                            <a href="#" data-location="London, UK">United Kingdom</a>
+                        </li>
+                        <li>
+                            <a href="#" data-location="Singapore">Singapore</a>
+                        </li>
+                    </ul>
+                </div>
 
-                    <form method="POST">
+                <div id="right-panel">
+                    <div class="panel-heading">Connect With Us</div>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+
+                    <div class="panel-heading">Drop A Message</div>
+                    <form id="contact-form" method="POST">
                         {% csrf_token %}
-
-                        <div class="row g-3">
-
-                            <div class="col-md-6">
-                                <input type="text" name="name" class="form-control" placeholder="Your Name" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <input type="email" name="email" class="form-control" placeholder="Your Email" required>
-                            </div>
-
-                            <div class="col-12">
-                                <input type="text" name="subject" class="form-control" placeholder="Subject" required>
-                            </div>
-
-                            <div class="col-12">
-                                <textarea name="message" rows="4" class="form-control" placeholder="Message" required></textarea>
-                            </div>
-
-                            <div class="col-12">
-                                <button class="btn btn-primary w-100 py-2">
-                                    Send Message
-                                </button>
-                            </div>
-
-                        </div>
+                        <input type="text" name="name" placeholder="Your Name" required>
+                        <input type="email" name="email" placeholder="Your Email" required>
+                        <input type="text" name="subject" placeholder="Subject" required>
+                        <textarea name="message" rows="3" placeholder="How can we help you?" required></textarea>
+                        <button type="submit">Send Message</button>
                     </form>
 
+                    <div class="alt-contact">
+                        <p><i class="fas fa-envelope"></i> <a href="mailto:info@codeshelf.com">info@codeshelf.com</a></p>
+                        <p><i class="fas fa-headset"></i> Support: 24/7 Available</p>
+                    </div>
                 </div>
+
+            </div>
+        </div>
+        <div class="container py-5 mt-5">
+            <div class="text-center mb-5 pb-2">
+                <h6 class="text-primary text-uppercase fw-bold mb-2" style="letter-spacing: 2px;">Departments</h6>
+                <h2 class="fw-bold">Route Your Request</h2>
+                <p class="text-muted">Reach out directly to the team that can help you best.</p>
             </div>
 
-        </div>
+            <div class="row g-4 text-center">
+                <div class="col-md-4">
+                    <div class="dept-card h-100">
+                        <div class="dept-icon">
+                            <i class="fas fa-life-ring fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Technical Support</h5>
+                        <p class="text-muted small mb-4">Having trouble with a downloaded project or setting up your environment? Our engineers are here to help.</p>
+                        <a href="mailto:support@codeshelf.com" class="text-primary fw-bold text-decoration-none">support@codeshelf.com</a>
+                    </div>
+                </div>
 
-    </div>
+                <div class="col-md-4">
+                    <div class="dept-card h-100">
+                        <div class="dept-icon">
+                            <i class="fas fa-credit-card fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Sales & Billing</h5>
+                        <p class="text-muted small mb-4">Questions about recent purchases, refunds, bulk downloads, or enterprise team licensing.</p>
+                        <a href="mailto:sales@codeshelf.com" class="text-primary fw-bold text-decoration-none">sales@codeshelf.com</a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="dept-card h-100">
+                        <div class="dept-icon">
+                            <i class="fas fa-handshake fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Partnerships</h5>
+                        <p class="text-muted small mb-4">Interested in becoming a premium instructor, uploading content, or partnering with CodeShelf?</p>
+                        <a href="mailto:partners@codeshelf.com" class="text-primary fw-bold text-decoration-none">partners@codeshelf.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const locationLinks = document.querySelectorAll("#location-bar a");
+        const mapIframe = document.getElementById("interactive-map");
+
+        locationLinks.forEach(link => {
+            link.addEventListener("click", function(e) {
+                e.preventDefault();
+
+                // Remove active class from all LIs
+                document.querySelectorAll("#location-bar li").forEach(li => {
+                    li.classList.remove("active");
+                });
+
+                // Add active class to clicked LI
+                this.parentElement.classList.add("active");
+
+                // Get new location text
+                const newLocation = this.getAttribute("data-location");
+
+                // Update Iframe Source smoothly to valid Google Maps Embed URL
+                mapIframe.style.opacity = 0.5;
+                setTimeout(() => {
+                    // Standard Google Maps Embed link (automatically drops a red pin at the queried location)
+                    mapIframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(newLocation)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+                    mapIframe.style.opacity = 1;
+                }, 300);
+            });
+        });
+    });
+</script>
 {% endblock %}

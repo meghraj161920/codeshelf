@@ -36,6 +36,13 @@ def terms(request):
 def privacy(request):
     return render(request, 'core/privacy.html')
 
+def faq(request):
+    return render(request, 'core/faq.html')
+
+def refund_policy(request):
+    from django.utils.timezone import now
+    return render(request, 'core/refund_policy.html', {'now': now()})
+
 
 # ================= ERROR PAGES =================
 def custom_404(request, exception):

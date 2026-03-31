@@ -1,118 +1,378 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<style>
+    /* =========================================
+       ADAPTIVE ABOUT PAGE STYLES (Light & Dark Mode Safe)
+    ========================================= */
+    
+    /* Feature Cards */
+    .feature-card {
+        background-color: var(--bs-body-bg, #ffffff);
+        border: 1px solid var(--bs-border-color, rgba(0,0,0,0.08));
+        border-radius: 24px;
+        padding: 40px 30px;
+        transition: all 0.4s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        height: 100%;
+    }
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(6, 187, 204, 0.15);
+        border-color: var(--primary);
+    }
+    .feature-card::after {
+        content: ''; position: absolute; top: 0; right: 0;
+        width: 120px; height: 120px; background: var(--primary);
+        opacity: 0.05; border-bottom-left-radius: 100%;
+        z-index: -1; transition: all 0.4s ease;
+    }
+    .feature-card:hover::after {
+        transform: scale(1.5); opacity: 0.1;
+    }
+    .feature-icon-box {
+        width: 80px; height: 80px; border-radius: 20px;
+        background-color: rgba(6, 187, 204, 0.15); color: var(--primary);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2.5rem; margin-bottom: 1.5rem; transition: all 0.4s ease;
+    }
+    .feature-card:hover .feature-icon-box {
+        background-color: var(--primary); color: #ffffff; transform: rotate(-10deg);
+    }
+
+    /* Mission & Vision Mini-Cards */
+    .mission-card {
+        background-color: var(--bs-body-bg, #ffffff);
+        border: 1px solid var(--bs-border-color, rgba(0,0,0,0.08));
+        border-radius: 16px; transition: all 0.3s ease;
+    }
+    .mission-card:hover {
+        border-color: var(--primary); background-color: rgba(6, 187, 204, 0.02);
+    }
+
+    /* Floating Image */
+    .floating-about-img {
+        animation: floatImg 6s ease-in-out infinite;
+        border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+    }
+    @keyframes floatImg {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+        100% { transform: translateY(0px); }
+    }
+
+    /* Safe Badges */
+    .badge-soft-primary {
+        background-color: rgba(6, 187, 204, 0.15) !important;
+        color: var(--primary) !important;
+        border: 1px solid rgba(6, 187, 204, 0.3) !important;
+    }
+
+    /* =========================================
+       NEW TEAM SECTION (Pinterest Inspired)
+    ========================================= */
+    .team-section {
+        position: relative;
+        padding-block: 5rem;
+        text-align: center;
+        width: 100%;
+        margin-inline: auto;
+        overflow: hidden;
+    }
+
+    .team-watermark {
+        color: rgba(6, 187, 204, 0.05); /* Faint cyan watermark */
+        font-size: clamp(5rem, 15vw, 18rem);
+        font-weight: 800;
+        position: absolute;
+        z-index: 0;
+        left: 50%;
+        top: 0;
+        transform: translatex(-50%);
+        user-select: none;
+        letter-spacing: 0.5rem;
+        text-transform: uppercase;
+        pointer-events: none;
+    }
+
+    .team-cards-grid {
+        margin-top: 5rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        position: relative;
+        z-index: 1;
+        padding-bottom: 3rem; /* Space for offset cards */
+    }
+
+    @media screen and (min-width: 800px) {
+        .team-cards-grid { gap: 1.5rem; }
+    }
+
+    .team-member-card {
+        position: relative;
+        cursor: pointer;
+        border-radius: 12px;
+        z-index: 1;
+    }
+
+    /* The colored block behind the image */
+    .team-member-card::before {
+        position: absolute;
+        content: "";
+        width: 5rem;
+        height: 6.25rem;
+        z-index: -1;
+        transition: 0.3s ease-in-out;
+        background: linear-gradient(to left, #06BBCC, #4facfe); /* CodeShelf Cyan theme */
+        top: -0.5rem;
+        left: -0.5rem;
+        border-radius: 8px;
+    }
+
+    /* The dark gradient overlay on the image */
+    .team-member-card::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(0, 0, 0, 0.9));
+        pointer-events: none;
+    }
+
+    .team-member-card img {
+        width: 100%;
+        aspect-ratio: 3 / 4; /* Perfect portrait ratio */
+        object-fit: cover;
+        border-radius: 12px;
+        filter: grayscale(100%);
+        transition: 0.5s ease;
+    }
+
+    .team-member-card:hover img {
+        filter: grayscale(0%);
+    }
+
+    .team-member-card:hover::before {
+        transform: scale(1.05);
+    }
+
+    /* Content inside the card */
+    .team-member-content {
+        position: absolute;
+        bottom: 0;
+        z-index: 99;
+        left: 0;
+        color: #fff;
+        width: 100%;
+        padding: 1.5rem 1rem;
+        text-align: center;
+    }
+
+    .team-member-content h3 {
+        font-size: clamp(1.1rem, 1rem + 0.3vw, 1.3rem);
+        font-weight: 500;
+        color: #ffffff;
+        text-transform: capitalize;
+        margin-bottom: 0.2rem;
+    }
+
+    .team-member-content p {
+        font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.9rem);
+        letter-spacing: 0.1rem;
+        font-weight: 400;
+        color: var(--primary); /* Cyan text */
+        text-transform: uppercase;
+        margin-bottom: 0;
+    }
+
+    .team-member-content ul {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        margin-top: 1rem;
+        padding-left: 0;
+        list-style: none;
+    }
+
+    .team-member-content ul i {
+        color: rgba(255,255,255,0.7);
+        font-size: 1.2rem;
+        transition: 0.3s;
+    }
+
+    .team-member-content ul i:hover {
+        color: var(--primary);
+    }
+
+    /* Staggered Zig-Zag Layout on Desktop */
+    @media screen and (min-width: 800px) {
+        .team-member-card:nth-child(even) {
+            transform: translateY(15%);
+        }
+        .team-member-card:nth-child(even)::before {
+            bottom: -0.5rem;
+            left: -0.5rem;
+            top: auto;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
-<!-- Hero Section -->
-<div class="container-fluid bg-primary py-5 mb-5">
-    <div class="container text-center text-white">
-        <h1 class="display-4 fw-bold">About CodeShelf</h1>
-        <p class="lead">Your marketplace for ready-to-use coding projects</p>
+<div class="container-fluid py-5 mb-5" style="background: linear-gradient(rgba(12, 16, 34, 0.85), rgba(12, 16, 34, 0.85)), url('{% static "img/carousel-1.jpg" %}') center/cover; min-height: 40vh; display: flex; align-items: center;">
+    <div class="container text-center text-white pt-5">
+        <span class="badge badge-soft-primary px-3 py-2 rounded-pill mb-3 fs-6">Discover Our Story</span>
+        <h1 class="display-3 fw-bold mb-3 animate__animated animate__fadeInDown text-white">About <span style="color: var(--primary);">CodeShelf</span></h1>
+        <p class="fs-5 text-light opacity-75 mx-auto animate__animated animate__fadeInUp" style="max-width: 600px;">
+            Your premium marketplace for ready-to-use, production-grade coding projects and development resources.
+        </p>
     </div>
 </div>
 
-<!-- About Section -->
 <div class="container py-5">
-    <div class="row align-items-center">
-
-        <!-- Image -->
-        <div class="col-lg-6 mb-4">
-            <img src="{% static 'img/about.jpg' %}" class="img-fluid rounded shadow" alt="About CodeShelf">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-6 mb-4 mb-lg-0 text-center">
+            <div class="position-relative d-inline-block">
+                <img src="{% static 'img/about.jpg' %}" class="img-fluid floating-about-img w-100" style="max-height: 500px; object-fit: cover;" alt="About CodeShelf">
+            </div>
         </div>
 
-        <!-- Content -->
         <div class="col-lg-6">
-            <h2 class="fw-bold mb-3">Who We Are</h2>
-            <p>
-                CodeShelf is a platform designed to help students and developers access
-                high-quality ready-made projects. Whether you're learning a new technology
-                or need a project for your academic submission, CodeShelf provides
-                complete solutions with documentation and source code.
+            <h6 class="text-primary text-uppercase fw-bold mb-2" style="letter-spacing: 2px;">Who We Are</h6>
+            <h2 class="display-5 fw-bold mb-4">Empowering the next generation of <span style="color: var(--primary);">Developers</span>.</h2>
+            <p class="text-muted fs-5 mb-5">
+                CodeShelf is a dedicated platform designed to help students, freelancers, and professional developers access high-quality, ready-made projects. Whether you are learning a new tech stack from scratch or need a robust foundation for your next academic submission, we provide complete solutions including documentation, database schemas, and source code.
             </p>
 
-            <h5 class="mt-4">Our Mission</h5>
-            <p>
-                To simplify learning and development by providing structured, practical,
-                and ready-to-use coding projects for everyone.
-            </p>
-
-            <h5 class="mt-4">Our Vision</h5>
-            <p>
-                To become the most trusted platform for project-based learning and
-                development resources globally.
-            </p>
+            <div class="row g-4">
+                <div class="col-sm-6">
+                    <div class="mission-card p-4 h-100">
+                        <i class="fas fa-bullseye fa-2x text-primary mb-3"></i>
+                        <h5 class="fw-bold">Our Mission</h5>
+                        <p class="text-muted mb-0 small">
+                            To simplify learning and software development by providing structured, practical, and highly-documented coding projects for everyone.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="mission-card p-4 h-100">
+                        <i class="fas fa-eye fa-2x text-primary mb-3"></i>
+                        <h5 class="fw-bold">Our Vision</h5>
+                        <p class="text-muted mb-0 small">
+                            To become the most trusted, globally recognized marketplace for project-based learning and peer-to-peer development resources.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-
     </div>
 </div>
 
-<!-- Features Section -->
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h2 class="fw-bold">Why Choose CodeShelf?</h2>
-        <p class="text-muted">Everything you need in one place</p>
+<div class="container py-5 my-5">
+    <div class="text-center mb-5 pb-3">
+        <h6 class="text-primary text-uppercase fw-bold mb-2" style="letter-spacing: 2px;">The Advantage</h6>
+        <h2 class="display-6 fw-bold">Why Choose CodeShelf?</h2>
+        <p class="text-muted">Everything you need to accelerate your coding journey.</p>
     </div>
 
     <div class="row g-4">
-
         <div class="col-md-4">
-            <div class="p-4 text-center border rounded shadow-sm h-100">
-                <i class="fa fa-code fa-2x text-primary mb-3"></i>
-                <h5>Ready Projects</h5>
-                <p>Download fully working projects with source code and documentation.</p>
+            <div class="feature-card">
+                <div class="feature-icon-box">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Ready Projects</h4>
+                <p class="text-muted mb-0">Skip the configuration nightmares. Download fully working, production-ready projects complete with source code and databases.</p>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="p-4 text-center border rounded shadow-sm h-100">
-                <i class="fa fa-book fa-2x text-primary mb-3"></i>
-                <h5>Easy Learning</h5>
-                <p>Understand concepts faster with practical implementation.</p>
+            <div class="feature-card">
+                <div class="feature-icon-box">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Accelerated Learning</h4>
+                <p class="text-muted mb-0">Stop watching passive tutorials. Understand complex backend concepts faster through practical, hands-on reverse engineering.</p>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="p-4 text-center border rounded shadow-sm h-100">
-                <i class="fa fa-shield-alt fa-2x text-primary mb-3"></i>
-                <h5>Secure Access</h5>
-                <p>Only verified users can download purchased projects securely.</p>
+            <div class="feature-card">
+                <div class="feature-icon-box">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Secure Access</h4>
+                <p class="text-muted mb-0">Your downloads and purchases are safe. Only verified users can access the dashboard and download purchased project files securely.</p>
             </div>
         </div>
-
     </div>
 </div>
 
-<!-- Team Section -->
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h2 class="fw-bold">Our Team</h2>
-        <p class="text-muted">Meet the people behind CodeShelf</p>
+<div class="container team-section">
+    <span class="team-watermark">TEAM</span>
+    
+    <div class="text-center mb-4 position-relative z-1">
+        <h6 class="text-primary text-uppercase fw-bold mb-2" style="letter-spacing: 2px;">The Creators</h6>
+        <h2 class="display-6 fw-bold">Meet Our Experts</h2>
     </div>
 
-    <div class="row g-4">
-
-        <div class="col-md-3 text-center">
-            <img src="{% static 'img/team-1.jpg' %}" class="img-fluid rounded-circle mb-3" alt="">
-            <h6>Meghraj</h6>
-            <small>Team Lead</small>
+    <div class="team-cards-grid">
+        
+        <div class="team-member-card">
+            <img src="{% static 'img/team-1.jpg' %}" alt="Meghraj">
+            <div class="team-member-content">
+                <h3>Meghraj</h3>
+                <p>Team Lead</p>
+                <ul>
+                    <li><a href="#"><i class="fa-brands fa-github"></i></a></li>
+                    <li><a href="#"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                </ul>
+            </div>
         </div>
 
-        <div class="col-md-3 text-center">
-            <img src="{% static 'img/team-2.jpg' %}" class="img-fluid rounded-circle mb-3" alt="">
-            <h6>Kavindra</h6>
-            <small>Frontend</small>
+        <div class="team-member-card">
+            <img src="{% static 'img/team-2.jpg' %}" alt="Kavindra">
+            <div class="team-member-content">
+                <h3>Kavindra</h3>
+                <p>Frontend Dev</p>
+                <ul>
+                    <li><a href="#"><i class="fa-brands fa-github"></i></a></li>
+                    <li><a href="#"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                </ul>
+            </div>
         </div>
 
-        <div class="col-md-3 text-center">
-            <img src="{% static 'img/team-3.jpg' %}" class="img-fluid rounded-circle mb-3" alt="">
-            <h6>Kshitij</h6>
-            <small>Backend</small>
+        <div class="team-member-card">
+            <img src="{% static 'img/team-3.jpg' %}" alt="Kshitij">
+            <div class="team-member-content">
+                <h3>Kshitij</h3>
+                <p>Backend Dev</p>
+                <ul>
+                    <li><a href="#"><i class="fa-brands fa-github"></i></a></li>
+                    <li><a href="#"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                </ul>
+            </div>
         </div>
 
-        <div class="col-md-3 text-center">
-            <img src="{% static 'img/team-4.jpg' %}" class="img-fluid rounded-circle mb-3" alt="">
-            <h6>Mangesh</h6>
-            <small>UI/UX</small>
+        <div class="team-member-card">
+            <img src="{% static 'img/team-4.jpg' %}" alt="Mangesh">
+            <div class="team-member-content">
+                <h3>Mangesh</h3>
+                <p>UI / UX Design</p>
+                <ul>
+                    <li><a href="#"><i class="fa-brands fa-github"></i></a></li>
+                    <li><a href="#"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                </ul>
+            </div>
         </div>
 
     </div>

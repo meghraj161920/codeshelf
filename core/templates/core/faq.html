@@ -1,0 +1,486 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* =========================================
+       CUSTOM FAQ ACCORDION STYLES
+    ========================================= */
+    .cs-faq {
+        background-color: var(--bs-body-bg, #ffffff);
+        border: 1px solid var(--bs-border-color, rgba(0,0,0,0.1));
+        border-radius: 12px;
+        padding: 30px;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 20px;
+        transition: 0.3s ease;
+    }
+
+    .cs-faq.active {
+        background-color: var(--bs-body-bg, #ffffff);
+        box-shadow: 0 10px 30px rgba(6, 187, 204, 0.12);
+        border-color: var(--primary);
+    }
+
+    /* Watermark Icons */
+    .cs-faq.active::after, .cs-faq.active::before {
+        color: var(--primary);
+        content: '\f059'; /* FontAwesome Question Circle */
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        font-size: 7rem;
+        position: absolute;
+        opacity: 0.05;
+        top: 20px;
+        left: 20px;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .cs-faq.active::before {
+        top: -10px;
+        left: -30px;
+        transform: rotateY(180deg);
+    }
+
+    .cs-faq-title {
+        margin: 0 45px 0 0;
+        font-size: 1.15rem;
+        font-weight: 700;
+        position: relative;
+        z-index: 1;
+        color: var(--bs-heading-color, #333);
+    }
+
+    .cs-faq-text {
+        display: none;
+        margin: 20px 0 0;
+        color: #6c757d;
+        position: relative;
+        z-index: 1;
+        line-height: 1.6;
+    }
+
+    .cs-faq.active .cs-faq-text {
+        display: block;
+        animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cs-faq-toggle {
+        background-color: transparent;
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 50%;
+        color: var(--bs-body-color, #333);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        padding: 0;
+        position: absolute;
+        top: 25px;
+        right: 30px;
+        height: 35px;
+        width: 35px;
+        transition: 0.3s;
+        z-index: 2;
+    }
+
+    .cs-faq-toggle:focus { outline: none; }
+    
+    .cs-faq.active .cs-faq-toggle {
+        background-color: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+    }
+
+    .cs-faq-toggle .fa-times { display: none; }
+    .cs-faq.active .cs-faq-toggle .fa-times { display: block; }
+    .cs-faq.active .cs-faq-toggle .fa-chevron-down { display: none; }
+
+    /* =========================================
+       CATEGORY TABS & ASK FORM
+    ========================================= */
+    .faq-sidebar .list-group-item {
+        border: none;
+        padding: 15px 20px;
+        margin-bottom: 5px;
+        border-radius: 8px !important;
+        font-weight: 600;
+        color: #555;
+        transition: 0.3s;
+    }
+    .faq-sidebar .list-group-item:hover {
+        background-color: rgba(6, 187, 204, 0.05);
+        color: var(--primary);
+    }
+    .faq-sidebar .list-group-item.active {
+        background-color: var(--primary);
+        color: white;
+        box-shadow: 0 5px 15px rgba(6, 187, 204, 0.3);
+    }
+
+    .ask-question-box {
+        background: #181d38;
+        border-radius: 12px;
+        padding: 25px;
+        color: white;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    .ask-question-box input, .ask-question-box textarea {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: white;
+    }
+    .ask-question-box input:focus, .ask-question-box textarea:focus {
+        background: rgba(255,255,255,0.1);
+        border-color: var(--primary);
+        color: white;
+        box-shadow: none;
+    }
+
+    /* =========================================
+       SOCIAL PANEL CSS
+    ========================================= */
+    .social-panel-container {
+        position: fixed;
+        right: 0;
+        bottom: 80px;
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        z-index: 1000;
+    }
+
+    .social-panel-container.visible {
+        transform: translateX(-20px);
+    }
+
+    .social-panel {	
+        background-color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 16px 31px -17px rgba(0,31,97,0.6);
+        border: 3px solid #181d38;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        height: 169px;	
+        width: 320px;
+        max-width: calc(100% - 10px);
+    }
+
+    .social-panel button.close-btn {
+        border: 0;
+        background: transparent;
+        color: #9fa4a8;
+        cursor: pointer;
+        font-size: 20px;
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        transition: 0.3s;
+    }
+    .social-panel button.close-btn:hover { color: #ff5f56; transform: scale(1.1); }
+
+    .social-panel p {
+        background-color: #181d38;
+        border-radius: 0 0 10px 10px;
+        color: #fff;
+        font-size: 14px;
+        padding: 5px 20px;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        margin: 0;
+        transform: translateX(-50%);
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .social-panel h4 {
+        margin: 25px 0 15px;
+        color: #181d38;	
+        font-size: 15px;	
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .social-panel ul {
+        display: flex;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .social-panel ul li { margin: 0 8px; }
+
+    .social-panel ul li a {
+        border: 1px solid #e0e0e0;
+        border-radius: 50%;
+        color: #181d38;
+        font-size: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 45px;
+        width: 45px;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .social-panel ul li a:hover {
+        border-color: var(--primary);
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 5px 15px rgba(6, 187, 204, 0.4);
+        transform: translateY(-3px);
+    }
+
+    .floating-btn {
+        border-radius: 30px;
+        background-color: var(--primary);
+        border: none;
+        box-shadow: 0 10px 20px rgba(6, 187, 204, 0.4);
+        color: #fff;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 700;
+        padding: 12px 25px;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 999;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .floating-btn:hover {
+        background-color: #181d38;
+        box-shadow: 0 10px 20px rgba(24, 29, 56, 0.4);
+        transform: translateY(-3px);
+    }
+
+    @media screen and (max-width: 480px) {
+        .social-panel-container.visible { transform: translateX(0px); }
+        .floating-btn { right: 10px; bottom: 10px; padding: 10px 20px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-5 mb-5" style="background: linear-gradient(rgba(12, 16, 34, 0.9), rgba(12, 16, 34, 0.9)), url('{% static "img/carousel-1.jpg" %}') center/cover; min-height: 35vh; display: flex; align-items: center;">
+    <div class="container text-center pt-5">
+        <h1 class="display-3 fw-bold mb-3 animate__animated animate__fadeInDown" style="color: #ffffff !important;">Help <span style="color: var(--primary);">& FAQ</span></h1>
+        <p class="fs-5 text-light opacity-75 mx-auto animate__animated animate__fadeInUp" style="max-width: 600px;">
+            Find answers to common questions about CodeShelf, payments, and account management.
+        </p>
+    </div>
+</div>
+
+<div class="container py-5 mb-5">
+    <div class="row g-5">
+
+        <div class="col-lg-4">
+            
+            <div class="faq-sidebar mb-5">
+                <h5 class="fw-bold mb-4 px-2">Categories</h5>
+                <div class="list-group shadow-sm">
+                    <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#general">
+                        <i class="fas fa-info-circle me-2 w-20px"></i> General
+                    </a>
+                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#account">
+                        <i class="fas fa-user-circle me-2 w-20px"></i> Account
+                    </a>
+                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#payments">
+                        <i class="fas fa-credit-card me-2 w-20px"></i> Payments
+                    </a>
+                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#seller">
+                        <i class="fas fa-store me-2 w-20px"></i> Seller Hub
+                    </a>
+                </div>
+            </div>
+
+            <div class="ask-question-box">
+                <h5 class="fw-bold mb-3 text-white">Still have questions?</h5>
+                <p class="small text-light opacity-75 mb-4">If you cannot find the answer you are looking for, send us a direct message.</p>
+                <form method="POST" action="{% url 'contact' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" name="message" rows="4" placeholder="Ask your question here..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Submit Question</button>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="col-lg-8">
+            <div class="tab-content">
+
+                <div class="tab-pane fade show active" id="general">
+                    <h4 class="fw-bold mb-4"><span style="color: var(--primary);">#</span> General Questions</h4>
+                    
+                    <div class="cs-faq active">
+                        <h3 class="cs-faq-title">What is CodeShelf?</h3>
+                        <p class="cs-faq-text">CodeShelf is a premium marketplace platform where students, developers, and professionals can buy and sell real-world, production-ready coding projects and templates.</p>
+                        <button class="cs-faq-toggle">
+                            <i class="fas fa-chevron-down"></i><i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="cs-faq">
+                        <h3 class="cs-faq-title">Who can use this platform?</h3>
+                        <p class="cs-faq-text">Our platform is built for everyone! CS Students looking for project references, freelance developers needing a base template, and experienced engineers wanting to monetize their existing codebases.</p>
+                        <button class="cs-faq-toggle">
+                            <i class="fas fa-chevron-down"></i><i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="cs-faq">
+                        <h3 class="cs-faq-title">Do the projects include databases?</h3>
+                        <p class="cs-faq-text">Yes! The vast majority of our full-stack projects include exported database schemas (like .sql or sqlite files) and detailed setup instructions in the README.</p>
+                        <button class="cs-faq-toggle">
+                            <i class="fas fa-chevron-down"></i><i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="account">
+                    <h4 class="fw-bold mb-4"><span style="color: var(--primary);">#</span> Account Management</h4>
+
+                    <div class="cs-faq active">
+                        <h3 class="cs-faq-title">How do I create an account?</h3>
+                        <p class="cs-faq-text">You can easily register by clicking the 'Register' button in the navigation bar. You simply need to provide an email, a username, and select whether you want to be a Customer or a Seller.</p>
+                        <button class="cs-faq-toggle">
+                            <i class="fas fa-chevron-down"></i><i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="cs-faq">
+                        <h3 class="cs-faq-title">Can I switch my role later?</h3>
+                        <p class="cs-faq-text">Currently, roles are fixed upon registration to ensure security and proper dashboard routing. If you created a customer account but now wish to sell, please contact support to have your account upgraded.</p>
+                        <button class="cs-faq-toggle">
+                            <i class="fas fa-chevron-down"></i><i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="payments">
+                    <h4 class="fw-bold mb-4"><span style="color: var(--primary);">#</span> Payments & Refunds</h4>
+
+                    <div class="cs-faq active">
+                        <h3 class="cs-faq-title">What payment methods are supported?</h3>
+                        <p class="cs-faq-text">We support all major payment methods including UPI, Credit/Debit cards, Net Banking, and popular mobile wallets through our secure payment gateway.</p>
+                        <button class="cs-faq-toggle">
+                            <i class="fas fa-chevron-down"></i><i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="cs-faq">
+                        <h3 class="cs-faq-title">Can I get a refund if the code doesn't work?</h3>
+                        <p class="cs-faq-text">Because our products are digital downloads, we generally do not offer refunds. However, if the zip file is corrupted or grossly misrepresents the product description, you can open a dispute ticket within 3 days of purchase.</p>
+                        <button class="cs-faq-toggle">
+                            <i class="fas fa-chevron-down"></i><i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="seller">
+                    <h4 class="fw-bold mb-4"><span style="color: var(--primary);">#</span> Seller Hub</h4>
+
+                    <div class="cs-faq active">
+                        <h3 class="cs-faq-title">How can I upload a project?</h3>
+                        <p class="cs-faq-text">Once you are logged in as a Seller, navigate to your Dashboard and click "Upload Project". You will need to provide a title, description, zip file, and set your price.</p>
+                        <button class="cs-faq-toggle">
+                            <i class="fas fa-chevron-down"></i><i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="cs-faq">
+                        <h3 class="cs-faq-title">How do I earn money?</h3>
+                        <p class="cs-faq-text">You earn money every time a verified user purchases your uploaded projects. Your earnings accumulate in your seller wallet and are paid out automatically at the end of the month.</p>
+                        <button class="cs-faq-toggle">
+                            <i class="fas fa-chevron-down"></i><i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="social-panel-container">
+    <div class="social-panel">
+        <p><i class="fas fa-bolt"></i> Connect with CodeShelf</p>
+        <button class="close-btn"><i class="fas fa-times"></i></button>
+        <h4>Follow our updates</h4>
+        <ul>
+            <li><a href="#" target="_blank"><i class="fab fa-discord"></i></a></li>
+            <li><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></li>
+            <li><a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+            <li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
+        </ul>
+    </div>
+</div>
+
+<button class="floating-btn">
+    <i class="fas fa-comments"></i> Connect
+</button>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // 1. FAQ ACCORDION LOGIC
+        const toggles = document.querySelectorAll('.cs-faq-toggle');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                // Close other open faqs in the same tab to keep it tidy
+                const parentTab = toggle.closest('.tab-pane');
+                const currentlyActive = parentTab.querySelector('.cs-faq.active');
+                
+                if (currentlyActive && currentlyActive !== toggle.parentNode) {
+                    currentlyActive.classList.remove('active');
+                }
+
+                // Toggle the clicked one
+                toggle.parentNode.classList.toggle('active');
+            });
+        });
+
+        // 2. SOCIAL PANEL LOGIC
+        const floating_btn = document.querySelector('.floating-btn');
+        const close_btn = document.querySelector('.close-btn');
+        const social_panel_container = document.querySelector('.social-panel-container');
+
+        floating_btn.addEventListener('click', () => {
+            social_panel_container.classList.toggle('visible');
+        });
+
+        close_btn.addEventListener('click', () => {
+            social_panel_container.classList.remove('visible');
+        });
+    });
+</script>
+{% endblock %}

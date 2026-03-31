@@ -102,8 +102,11 @@ a {
 /* ===== BACK TO TOP ===== */
 .back-to-top {
     position: fixed;
-    display: none;
-    right: 28px;
+    display: flex;
+    opacity: 0;
+    visibility: hidden;
+    left: 28px;
+    right: auto;
     bottom: 28px;
     z-index: 99;
     width: 44px;

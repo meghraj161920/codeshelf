@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Refund Policy</h2>
+        <p class="text-muted">Last updated: {{ now|date:"F d, Y" }}</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="bg-white shadow-sm rounded p-4 p-md-5">
+
+                <!-- INTRO -->
+                <p class="text-muted">
+                    At <strong>CodeShelf</strong>, we aim to provide high-quality digital products.
+                    Please read our refund policy carefully before making a purchase.
+                </p>
+
+                <!-- SECTION -->
+                <h5 class="fw-bold mt-4">1. Digital Products</h5>
+                <p class="text-muted">
+                    All products sold on CodeShelf are digital downloads. Once a product is purchased
+                    and accessed, it cannot be returned physically.
+                </p>
+
+                <!-- SECTION -->
+                <h5 class="fw-bold mt-4">2. No Refund Policy</h5>
+                <p class="text-muted">
+                    Due to the nature of digital content, all sales are final and non-refundable.
+                    We do not offer refunds once the product has been downloaded or accessed.
+                </p>
+
+                <!-- SECTION -->
+                <h5 class="fw-bold mt-4">3. Exceptions</h5>
+                <p class="text-muted">
+                    Refunds may be considered in the following cases:
+                </p>
+                <ul class="text-muted">
+                    <li>The product file is corrupted or not accessible</li>
+                    <li>You were charged multiple times for the same product</li>
+                    <li>The product does not match the description significantly</li>
+                </ul>
+
+                <!-- SECTION -->
+                <h5 class="fw-bold mt-4">4. Refund Request Process</h5>
+                <p class="text-muted">
+                    To request a refund, please contact us within <strong>48 hours</strong> of purchase.
+                    Include your order details and reason for the request.
+                </p>
+
+                <!-- SECTION -->
+                <h5 class="fw-bold mt-4">5. Processing Time</h5>
+                <p class="text-muted">
+                    If your refund is approved, it will be processed within 5-7 business days
+                    to your original payment method.
+                </p>
+
+                <!-- SECTION -->
+                <h5 class="fw-bold mt-4">6. Contact Us</h5>
+                <p class="text-muted mb-0">
+                    If you have any questions about our refund policy, contact us at:
+                    <br>
+                    📧 support@codeshelf.com
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
