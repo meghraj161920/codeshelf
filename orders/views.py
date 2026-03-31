@@ -78,7 +78,34 @@ def place_order(request):
             return redirect('cart')
 
         projects = Project.objects.filter(id__in=cart)
-        subtotal = sum(p.price for p in projects)
+
+        # ✅ Filter out already purchased projects
+        already_purchased = []
+        valid_projects = []
+
+        for project in projects:
+            purchased = OrderItem.objects.filter(
+                order__user=request.user,
+                order__is_completed=True,
+                project=project
+            ).exists()
+
+            if purchased:
+                already_purchased.append(project.title)
+            else:
+                valid_projects.append(project)
+
+        # ✅ If all projects already purchased
+        if not valid_projects:
+            messages.error(request, "You have already purchased all projects in your cart.")
+            request.session['cart'] = []
+            return redirect('cart')
+
+        # ✅ Warn about some already purchased
+        if already_purchased:
+            messages.warning(request, f"Skipped already purchased: {', '.join(already_purchased)}")
+
+        subtotal = sum(p.price for p in valid_projects)
 
         # Coupon discount
         discount = 0
@@ -92,11 +119,9 @@ def place_order(request):
                 pass
 
         total = subtotal - discount
-
-        # Payment method
         payment_method = request.POST.get('payment_method', 'upi')
 
-        # Order create karo
+        # Create Order
         order = Order.objects.create(
             user=request.user,
             total_amount=total,
@@ -105,15 +130,15 @@ def place_order(request):
             is_completed=True
         )
 
-        # Order items create karo
-        for project in projects:
+        # Create OrderItems for valid projects only
+        for project in valid_projects:
             OrderItem.objects.create(
                 order=order,
                 project=project,
                 price=project.price
             )
 
-        # Coupon mark as used
+        # Mark coupon as used
         if coupon_obj:
             UserCoupon.objects.filter(
                 user=request.user,
@@ -121,7 +146,7 @@ def place_order(request):
             ).update(is_used=True)
             request.session.pop('coupon_code', None)
 
-        # Cart clear karo
+        # Clear cart
         request.session['cart'] = []
 
         return redirect('order_success', order_id=order.id)
