@@ -127,8 +127,9 @@
         position: relative;
         overflow: hidden;
         border-radius: 16px 16px 0 0;
-        height: 200px;
-        flex-shrink: 0; /* Prevents image from squishing */
+        height: 170px;
+        flex-shrink: 0; 
+        z-index: 1; /* Explicitly low so it stays underneath the card buttons */
     }
 
     .card-img-overlay-hover {
@@ -140,12 +141,12 @@
 
     .box-content {
         position: relative;
-        z-index: 1;
-        padding-bottom: 25px;
+        z-index: 10; /* FIXED: Must be higher than the image overlay so buttons remain clickable! */
+        padding-bottom: 20px; 
         background: #fff;
-        flex-grow: 1;
+        flex-grow: 1; 
         display: flex;
-        flex-direction: column; /* Allows internal elements to stretch */
+        flex-direction: column; 
     }
 
     .box-content::before {
@@ -156,7 +157,7 @@
         display: block;
         background-color: #fff;
         transform: rotate(-8deg);
-        top: -50px;
+        top: -25px;
         left: -10%;
         z-index: -1;
     }
@@ -165,21 +166,21 @@
         display: flex;
         gap: 12px;
         position: absolute;
-        top: -70px;
+        top: -58px; /* FIXED: Moved down slightly so the line cuts precisely through the middle */
         right: 20px;
-        z-index: 6;
+        z-index: 20; /* Keep well above everything else */
         align-items: flex-start;
     }
 
     .action-btn {
-        width: 55px;
-        height: 55px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: #fff;
-        font-size: 20px;
+        font-size: 18px;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(0,0,0,0.15);
         position: relative;
@@ -188,7 +189,7 @@
     
     .wishlist-btn { 
         background-color: #ff5f56; 
-        margin-top: 12px; /* Aligns perfectly with the -8deg background slope */
+        margin-top: 9px; /* FIXED: Perfect trigonometric drop for an 8-degree angle over 62px */
     }
     .wishlist-btn:hover { background-color: #e04a42; transform: scale(1.1); color: #fff;}
     
@@ -215,21 +216,27 @@
 
     .box-title { font-size: 1.1rem; font-weight: 800; text-transform: uppercase; margin: 0; padding: 0 15px; color: #181d38; }
     .box-title a { color: inherit; text-decoration: none; }
-    .box-desc { font-size: 0.9rem; color: #6c757d; margin: 5px 0 15px; padding: 0 15px; }
     
-    /* Pushes the price and footer to the bottom of the card */
+    .box-desc { 
+        font-size: 0.9rem; 
+        color: #6c757d; 
+        margin: 5px 0 15px; 
+        padding: 0 15px; 
+        flex-grow: 1; 
+    }
+    
     .box-price { 
-        font-size: 1.5rem; font-weight: 900; color: #28a745; 
+        font-size: 1.4rem; font-weight: 900; color: #28a745; 
         margin-top: auto; 
         margin-bottom: 0;
         align-self: center;
         position: relative; 
     }
-    .box-price::after, .box-price::before { content: ''; height: 1px; width: 30px; display: block; position: absolute; background-color: #ddd; top: 50%; }
-    .box-price::before { left: -40px; }
-    .box-price::after { right: -40px; }
+    .box-price::after, .box-price::before { content: ''; height: 1px; width: 25px; display: block; position: absolute; background-color: #ddd; top: 50%; }
+    .box-price::before { left: -35px; }
+    .box-price::after { right: -35px; }
 
-    .box-footer { margin-top: 20px; display: flex; justify-content: space-between; padding: 0 20px; align-items: center; }
+    .box-footer { margin-top: 15px; display: flex; justify-content: space-between; padding: 0 20px; align-items: center; }
     .box-footer .stars { color: #ffbd2e; font-size: 0.8rem; }
     .box-footer .downloads { font-size: 0.85rem; color: #6c757d; font-weight: bold; }
 </style>
@@ -336,11 +343,11 @@
     </div>
 
     <div class="row g-4 pt-3">
-        {% for project in projects %}
-        <div class="col-md-4 col-lg-3">
-            <div class="project-card">
+        {% for project in projects|slice:":4" %}
+        <div class="col-md-4 col-lg-3 d-flex">
+            <div class="project-card w-100">
                 <div class="img-container">
-                    <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100" style="object-fit:cover;">
+                    <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100 h-100" style="object-fit:cover;">
                     <span class="badge bg-success position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill shadow-sm">New</span>
                     
                     <div class="card-img-overlay-hover">
@@ -405,11 +412,11 @@
         </div>
 
         <div class="row g-4 pt-3">
-            {% for project in trending_projects %}
-            <div class="col-md-4 col-lg-3">
-                <div class="project-card">
+            {% for project in trending_projects|slice:":4" %}
+            <div class="col-md-4 col-lg-3 d-flex">
+                <div class="project-card w-100">
                     <div class="img-container">
-                        <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100" style="object-fit:cover;">
+                        <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100 h-100" style="object-fit:cover;">
                         <span class="badge bg-danger position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill shadow-sm">🔥 Hot</span>
                         
                         <div class="card-img-overlay-hover">

@@ -28,9 +28,15 @@
     // Back to top button
     $(window).scroll(function () {
         if ($(this).scrollTop() > 300) {
-            $('.back-to-top').fadeIn('slow');
+            $('.back-to-top').css({
+                opacity: 1,
+                visibility: 'visible'
+            });
         } else {
-            $('.back-to-top').fadeOut('slow');
+            $('.back-to-top').css({
+                opacity: 0,
+                visibility: 'hidden'
+            });
         }
     });
 

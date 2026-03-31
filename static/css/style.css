@@ -102,24 +102,22 @@ a {
 /* ===== BACK TO TOP ===== */
 .back-to-top {
     position: fixed;
-    display: flex;
-    opacity: 0;
-    visibility: hidden;
-    left: 28px;
-    right: auto;
     bottom: 28px;
+    left: 28px;
     z-index: 99;
     width: 44px;
     height: 44px;
     background: var(--primary);
     color: #fff;
     border-radius: 12px;
-    display: none;
+    display: flex;              /* ✅ ALWAYS FLEX */
     align-items: center;
     justify-content: center;
     font-size: 18px;
     box-shadow: var(--shadow-primary);
     transition: all 0.3s ease;
+    opacity: 0;                 /* ✅ use opacity instead */
+    visibility: hidden;
 }
 
 .back-to-top:hover {
