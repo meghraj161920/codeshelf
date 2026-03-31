@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="container">
+
+        <!-- COURSE HEADER -->
+        <div class="mb-4">
+            <a href="{% url 'course_list' %}"
+                class="btn btn-outline-secondary btn-sm mb-3">
+                <i class="fa fa-arrow-left me-1"></i> Back to Courses
+            </a>
+            <h3 class="fw-bold">{{ course.title }}</h3>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <span class="badge bg-info">{{ course.category.name }}</span>
+                <span class="badge
+                    {% if course.difficulty_level == 'beginner' %}bg-success
+                    {% elif course.difficulty_level == 'intermediate' %}bg-warning text-dark
+                    {% else %}bg-danger{% endif %}">
+                    {{ course.difficulty_level|capfirst }}
+                </span>
+                <small class="text-muted">
+                    <i class="fa fa-play-circle me-1"></i>
+                    {{ course.total_videos }} Videos
+                </small>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- LEFT SIDE: VIDEO LIST -->
+            <div class="col-md-4 col-lg-3">
+                <div class="card shadow-sm border-0 ">
+
+                    <div class="card-header bg-dark text-white fw-bold py-3">
+                        <i class="fa fa-list me-2"></i> Course Videos
+                    </div>
+
+                    <!-- SCROLLABLE VIDEO LIST -->
+                    <div class="list-group list-group-flush overflow-auto"
+                        style="max-height: calc(100vh - 200px);">
+
+                        {% for video in videos %}
+                        <a href="?video={{ video.id }}"
+                            class="list-group-item list-group-item-action
+                            d-flex align-items-center gap-3 py-3
+                            {% if current_video.id == video.id %}active{% endif %}">
+
+                            <!-- VIDEO ORDER NUMBER -->
+                            <span class="badge rounded-pill flex-shrink-0
+                                {% if current_video.id == video.id %}bg-white text-primary
+                                {% else %}bg-primary{% endif %}"
+                                style="min-width: 28px; text-align: center;">
+                                {{ video.order }}
+                            </span>
+
+                            <!-- VIDEO TITLE AND DURATION -->
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="mb-0 small fw-semibold text-truncate">
+                                    {{ video.title }}
+                                </p>
+                                {% if video.duration %}
+                                <small class="{% if current_video.id == video.id %}text-white-50{% else %}text-muted{% endif %}">
+                                    <i class="fa fa-clock me-1"></i>{{ video.duration }}
+                                </small>
+                                {% endif %}
+                            </div>
+
+                            <!-- PLAY ICON -->
+                            <i class="fa fa-play-circle flex-shrink-0
+                                {% if current_video.id == video.id %}text-white
+                                {% else %}text-primary{% endif %}"></i>
+
+                        </a>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- RIGHT SIDE: VIDEO PLAYER -->
+            <div class="col-md-8 col-lg-9">
+
+                {% if current_video %}
+
+                <!-- YOUTUBE VIDEO PLAYER -->
+                <div class="ratio ratio-16x9 mb-3 rounded-3 overflow-hidden shadow">
+                    <iframe
+                        src="{{ current_video.youtube_url }}?autoplay=1"
+                        title="{{ current_video.title }}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write;
+                               encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+
+                <!-- CURRENT VIDEO INFO -->
+                <div class="card shadow-sm border-0 p-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="fw-bold mb-1">{{ current_video.title }}</h5>
+                            <small class="text-muted">
+                                Video {{ current_video.order }} of {{ course.total_videos }}
+                                {% if current_video.duration %}
+                                &bull; {{ current_video.duration }}
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PREVIOUS AND NEXT BUTTONS -->
+                <div class="d-flex justify-content-between mb-4">
+
+                    <!-- PREVIOUS VIDEO BUTTON -->
+                    {% with prev_order=current_video.order|add:"-1" %}
+                    {% for video in videos %}
+                        {% if video.order == prev_order %}
+                        <a href="?video={{ video.id }}"
+                            class="btn btn-outline-secondary">
+                            <i class="fa fa-arrow-left me-1"></i> Previous
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                    {% endwith %}
+
+                    <!-- NEXT VIDEO BUTTON -->
+                    {% with next_order=current_video.order|add:"1" %}
+                    {% for video in videos %}
+                        {% if video.order == next_order %}
+                        <a href="?video={{ video.id }}"
+                            class="btn btn-primary ms-auto">
+                            Next <i class="fa fa-arrow-right ms-1"></i>
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                    {% endwith %}
+
+                </div>
+
+                {% else %}
+                <!-- NO VIDEOS AVAILABLE -->
+                <div class="text-center py-5">
+                    <i class="fa fa-video fa-4x text-muted mb-3"></i>
+                    <p class="text-muted">No videos available yet.</p>
+                </div>
+                {% endif %}
+
+                <!-- COURSE DESCRIPTION -->
+                <div class="card shadow-sm border-0 p-4">
+                    <h5 class="fw-bold mb-3">About This Course</h5>
+                    <p class="text-muted mb-0">{{ course.description }}</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
