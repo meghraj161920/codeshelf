@@ -1,30 +1,19 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="utf-8">
     <title>CodeShelf</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <!-- Favicon -->
     <link href="{% static 'img/favicon.ico' %}" rel="icon">
-
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries -->
     <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
     <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
-
-    <!-- Bootstrap -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-
-    <!-- Main CSS -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
     {% block extra_css %}{% endblock %}
@@ -38,156 +27,155 @@
 </div>
 
 <!-- ================= NAVBAR ================= -->
-<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top">
-    <div class="container-fluid px-3 px-lg-4">
+<nav class="navbar navbar-expand-lg sticky-top" id="mainNavbar">
+    <div class="container-fluid px-3 px-lg-5">
 
         <!-- Logo -->
-        <a href="{% url 'home' %}" class="navbar-brand d-flex align-items-center">
-            <h2 class="m-0 text-primary">
-                <i class="fa fa-book me-2"></i>CodeShelf
-            </h2>
+        <a href="{% url 'home' %}" class="navbar-brand d-flex align-items-center gap-2">
+            <div class="brand-icon">
+                <i class="fa fa-code"></i>
+            </div>
+            <span class="brand-text">Code<span class="brand-accent">Shelf</span></span>
         </a>
 
         <!-- Toggle -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
 
             <!-- LEFT NAV LINKS -->
-            <div class="navbar-nav me-auto align-items-center gap-3">
-                <a href="{% url 'home' %}" class="nav-link">Home</a>
-                <a href="{% url 'project_list' %}" class="nav-link">Projects</a>
-                <a href="{% url 'about' %}" class="nav-link">About</a>
-                <a href="{% url 'contact' %}" class="nav-link">Contact</a>
-                <a href="{% url 'terms' %}" class="nav-link">Terms</a>
-                <a href="{% url 'course_list' %}" class="nav-link">Courses</a>
+            <div class="navbar-nav me-auto align-items-center gap-1 ms-4">
+                <a href="{% url 'home' %}" class="nav-link nav-pill">Home</a>
+                <a href="{% url 'project_list' %}" class="nav-link nav-pill">Projects</a>
+                <a href="{% url 'course_list' %}" class="nav-link nav-pill">Courses</a>
+                <a href="{% url 'about' %}" class="nav-link nav-pill">About</a>
+                <a href="{% url 'contact' %}" class="nav-link nav-pill">Contact</a>
             </div>
 
             <!-- RIGHT SIDE -->
-            <div class="d-flex align-items-center gap-3 position-relative">
+            <div class="d-flex align-items-center gap-3">
 
                 <!-- Search -->
-                <form class="d-flex align-items-center" method="GET" action="{% url 'project_list' %}">
-                    <input class="form-control form-control-sm"
-                           type="search"
-                           name="q"
-                           placeholder="Search"
-                           style="width: 150px;">
-                    <button class="btn btn-outline-primary btn-sm ms-1">Go</button>
+                <form class="d-flex align-items-center search-form" method="GET" action="{% url 'project_list' %}">
+                    <div class="search-wrap">
+                        <i class="fa fa-search search-icon"></i>
+                        <input class="search-input" type="search" name="q" placeholder="Search projects...">
+                    </div>
                 </form>
 
                 {% if user.is_authenticated and user.profile.is_customer %}
 
-                
-
-                <!-- CART ICON -->
-                <a href="{% url 'cart' %}" class="position-relative text-dark text-decoration-none">
-                    <i class="fa fa-shopping-cart fs-5"></i>
-                    {% if cart_count > 0 %}
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                        style="font-size: 0.6rem;">
-                        {{ cart_count }}
+                <!-- WISHLIST -->
+                <a href="{% url 'wishlist' %}" class="nav-icon-btn" title="Wishlist">
+                    <i class="fa fa-heart"></i>
+                    <span id="wishlist-count" class="nav-badge"
+                        style="{% if not wishlist_count %}display:none;{% endif %}">
+                        {{ wishlist_count }}
                     </span>
+                </a>
+
+                <!-- CART -->
+                <a href="{% url 'cart' %}" class="nav-icon-btn" title="Cart">
+                    <i class="fa fa-shopping-cart"></i>
+                    {% if cart_count > 0 %}
+                    <span class="nav-badge">{{ cart_count }}</span>
                     {% endif %}
                 </a>
 
                 {% endif %}
 
+                <!-- DARK MODE TOGGLE -->
+                <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                    <i class="fa fa-moon" id="themeIcon"></i>
+                </button>
+
                 <!-- Auth -->
                 {% if user.is_authenticated %}
-
                 <div class="dropdown">
-                    <a class="d-flex align-items-center text-decoration-none"
-                        role="button"
-                        id="profileDropdown"
-                        data-bs-toggle="dropdown"
-                        data-bs-auto-close="true"
+                    <button class="avatar-btn" id="profileDropdown"
+                        data-bs-toggle="dropdown" data-bs-auto-close="true"
                         aria-expanded="false">
-
                         {% if user.profile.profile_image %}
                             <img src="{{ user.profile.profile_image.url }}"
-                                width="38" height="38"
-                                class="rounded-circle border">
+                                width="36" height="36" class="rounded-circle">
                         {% else %}
-                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                                style="width:38px; height:38px; font-weight:600;">
+                            <div class="avatar-initials">
                                 {{ user.username|first|upper }}
                             </div>
                         {% endif %}
-                    </a>
+                        <span class="avatar-status"></span>
+                    </button>
 
-                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-0"
-                        aria-labelledby="profileDropdown"
-                        style="min-width: 260px; border-radius: 12px; overflow: hidden; margin-top: 0 !important; padding-top: 10px; background-clip: padding-box;">
+                    <ul class="dropdown-menu dropdown-menu-end cs-dropdown"
+                        aria-labelledby="profileDropdown">
 
                         <!-- USER INFO -->
-                        <li class="px-3 py-3 bg-light d-flex align-items-center gap-3">
-                            {% if user.profile.profile_image %}
-                                <img src="{{ user.profile.profile_image.url }}"
-                                    width="45" height="45" class="rounded-circle border">
-                            {% else %}
-                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                                    style="width:45px; height:45px; font-weight:600; font-size:18px;">
-                                    {{ user.username|first|upper }}
+                        <li class="dropdown-header">
+                            <div class="d-flex align-items-center gap-3">
+                                {% if user.profile.profile_image %}
+                                    <img src="{{ user.profile.profile_image.url }}"
+                                        width="42" height="42" class="rounded-circle border">
+                                {% else %}
+                                    <div class="avatar-initials" style="width:42px;height:42px;font-size:16px;">
+                                        {{ user.username|first|upper }}
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <div class="fw-bold" style="font-size:14px;">{{ user.username }}</div>
+                                    <div style="font-size:12px;opacity:0.6;">{{ user.email }}</div>
+                                    <span class="role-badge">{{ user.profile.role|capfirst }}</span>
                                 </div>
-                            {% endif %}
-                            <div>
-                                <div class="fw-semibold">{{ user.username }}</div>
-                                <small class="text-muted">{{ user.email }}</small>
                             </div>
                         </li>
 
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'profile' %}">
-                                <i class="fa fa-user text-dark"></i> Profile
-                            </a>
-                        </li>
+                        <li><div class="dropdown-divider"></div></li>
 
                         <li>
-                            {% if user.profile.role == 'seller' %}
-                            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'seller_dashboard' %}">
-                                <i class="fa fa-briefcase text-warning"></i> Seller Panel
-                            </a>
-                            {% else %}
-                            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'customer_dashboard' %}">
-                                <i class="fa fa-home text-success"></i> Dashboard
-                            </a>
-                            {% endif %}
-                        </li>
-
-                        {% if user.profile.role == 'customer' %}
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'order_history' %}">
-                                <i class="fa fa-box text-primary"></i> My Orders
+                            <a class="dropdown-item cs-item" href="{% url 'profile' %}">
+                                <i class="fa fa-user-circle"></i> My Profile
                             </a>
                         </li>
-                        <li>
-                            <!-- WISHLIST ICON -->
-                            <a href="{% url 'wishlist' %}" class="dropdown-item d-flex align-items-center gap-2 py-2">
-                                <i class="fa fa-heart text-danger"></i>My Wishlist
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'coupons' %}">
-                                <i class="fa fa-ticket-alt text-warning"></i> My Coupons
-                            </a>
-                        </li>
-                        {% endif %}
 
                         {% if user.profile.role == 'seller' %}
                         <li>
-                            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'upload_project' %}">
-                                <i class="fa fa-upload text-info"></i> Upload Project
+                            <a class="dropdown-item cs-item" href="{% url 'seller_dashboard' %}">
+                                <i class="fa fa-chart-line"></i> Seller Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item cs-item" href="{% url 'upload_project' %}">
+                                <i class="fa fa-upload"></i> Upload Project
+                            </a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <a class="dropdown-item cs-item" href="{% url 'customer_dashboard' %}">
+                                <i class="fa fa-th-large"></i> Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item cs-item" href="{% url 'order_history' %}">
+                                <i class="fa fa-box"></i> My Orders
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item cs-item" href="{% url 'wishlist' %}">
+                                <i class="fa fa-heart"></i> Wishlist
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item cs-item" href="{% url 'coupons' %}">
+                                <i class="fa fa-ticket-alt"></i> My Coupons
                             </a>
                         </li>
                         {% endif %}
 
-                        <li><hr class="dropdown-divider m-0"></li>
+                        <li><div class="dropdown-divider"></div></li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger" href="{% url 'logout' %}">
+                            <a class="dropdown-item cs-item danger" href="{% url 'logout' %}">
                                 <i class="fa fa-sign-out-alt"></i> Logout
                             </a>
                         </li>
@@ -196,7 +184,8 @@
                 </div>
 
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-primary btn-sm px-3">Login</a>
+                <a href="{% url 'login' %}" class="btn-login">Login</a>
+                <a href="{% url 'register' %}" class="btn-register">Sign Up</a>
                 {% endif %}
 
             </div>
@@ -205,76 +194,101 @@
 </nav>
 <!-- ================= END NAVBAR ================= -->
 
-
 <!-- ================= CONTENT ================= -->
-{% block content %}
-{% endblock %}
+{% block content %}{% endblock %}
 <!-- ================= END CONTENT ================= -->
 
-
 <!-- ================= FOOTER ================= -->
-<div class="container-fluid bg-dark text-light footer pt-5 mt-5">
+<footer class="cs-footer">
     <div class="container py-5">
         <div class="row g-5">
 
-            <div class="col-lg-3 col-md-6">
-                <h4 class="text-white mb-3">CodeShelf</h4>
-                <p>CodeShelf is your go-to platform for ready-made coding projects.
-                    Learn faster, build smarter, and download complete solutions.</p>
-                <div class="d-flex pt-2">
-                    <a class="btn btn-outline-light btn-social me-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-outline-light btn-social me-2" href="#"><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-outline-light btn-social me-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                    <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-instagram"></i></a>
+            <div class="col-lg-4 col-md-6">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="brand-icon small">
+                        <i class="fa fa-code"></i>
+                    </div>
+                    <span class="brand-text fs-5">Code<span class="brand-accent">Shelf</span></span>
+                </div>
+                <p class="footer-desc">
+                    Your go-to platform for ready-made coding projects.
+                    Learn faster, build smarter, and download complete solutions.
+                </p>
+                <div class="d-flex gap-2 mt-3">
+                    <a class="footer-social" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="footer-social" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="footer-social" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="footer-social" href="#"><i class="fab fa-instagram"></i></a>
+                    <a class="footer-social" href="#"><i class="fab fa-github"></i></a>
                 </div>
             </div>
 
-            <div class="col-lg-3 col-md-6">
-                <h4 class="text-white mb-3">Quick Links</h4>
-                <a class="btn btn-link" href="{% url 'home' %}">Home</a>
-                <a class="btn btn-link" href="{% url 'project_list' %}">Projects</a>
-                <a class="btn btn-link" href="{% url 'about' %}">About</a>
-                <a class="btn btn-link" href="{% url 'contact' %}">Contact</a>
+            <div class="col-lg-2 col-md-6">
+                <h6 class="footer-heading">Platform</h6>
+                <ul class="footer-links">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'project_list' %}">Projects</a></li>
+                    <li><a href="{% url 'course_list' %}">Courses</a></li>
+                    <li><a href="{% url 'about' %}">About Us</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                </ul>
             </div>
 
-            <div class="col-lg-3 col-md-6">
-                <h4 class="text-white mb-3">Legal</h4>
-                <a class="btn btn-link" href="{% url 'privacy' %}">Privacy Policy</a>
-                <a class="btn btn-link" href="{% url 'terms' %}">Terms & Conditions</a>
-                <a class="btn btn-link" href="#">Refund Policy</a>
-                <a class="btn btn-link" href="#">FAQs</a>
+            <div class="col-lg-2 col-md-6">
+                <h6 class="footer-heading">Legal</h6>
+                <ul class="footer-links">
+                    <li><a href="{% url 'privacy' %}">Privacy Policy</a></li>
+                    <li><a href="{% url 'terms' %}">Terms of Service</a></li>
+                    <li><a href="#">Refund Policy</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
             </div>
 
-            <div class="col-lg-3 col-md-6">
-                <h4 class="text-white mb-3">Contact</h4>
-                <p><i class="fa fa-map-marker-alt me-2"></i>Pune, India</p>
-                <p><i class="fa fa-phone-alt me-2"></i>+91 XXXXXXXX</p>
-                <p><i class="fa fa-envelope me-2"></i>info@codeshelf.com</p>
-                <h6 class="text-white mt-4 mb-2">Newsletter</h6>
-                <div class="position-relative">
-                    <input class="form-control border-0 w-100 py-2 ps-3 pe-5" type="text" placeholder="Your email">
-                    <button class="btn btn-primary position-absolute top-0 end-0 mt-1 me-1 px-3">Go</button>
+            <div class="col-lg-4 col-md-6">
+                <h6 class="footer-heading">Contact Us</h6>
+                <div class="footer-contact">
+                    <div class="contact-item">
+                        <i class="fa fa-map-marker-alt"></i>
+                        <span>Pune, Maharashtra, India</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa fa-phone-alt"></i>
+                        <span>+91 XXXXXXXX</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa fa-envelope"></i>
+                        <span>info@codeshelf.com</span>
+                    </div>
+                </div>
+                <h6 class="footer-heading mt-4">Newsletter</h6>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Enter your email" class="newsletter-input">
+                    <button class="newsletter-btn">
+                        <i class="fa fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <div class="container">
-        <div class="row border-top pt-3">
-            <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
-                <small>© 2026 CodeShelf. All Rights Reserved.</small>
-            </div>
-            <div class="col-md-6 text-center text-md-end">
-                <small>Designed with ❤️ by CodeShelf Team</small>
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row align-items-center py-3">
+                <div class="col-md-6 text-center text-md-start">
+                    <small>© 2026 CodeShelf. All Rights Reserved.</small>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <small>Designed with <i class="fa fa-heart text-danger"></i> by CodeShelf Team</small>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</footer>
 <!-- ================= END FOOTER ================= -->
 
 <!-- Back to Top -->
-<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top">
+<a href="#" class="back-to-top" id="backToTop">
     <i class="bi bi-arrow-up"></i>
 </a>
 

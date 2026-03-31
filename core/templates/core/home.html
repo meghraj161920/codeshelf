@@ -4,45 +4,58 @@
 {% block content %}
 
 <!-- HERO SECTION -->
-<div class="container-fluid py-5 bg-dark text-white">
-    <div class="container">
+<div class="hero-section py-5">
+    <div class="container py-4">
         <div class="row align-items-center">
 
             <div class="col-lg-6">
-                <h1 class="display-5 text-info fw-bold mb-3">
-                    Transform Your Coding Journey
+                <div class="mb-3">
+                    <span class="badge text-white px-3 py-2"
+                        style="background: rgba(6,187,204,0.25); border: 1px solid rgba(6,187,204,0.4); border-radius: 20px; font-size: 13px;">
+                        🚀 Learn by Building Real Projects
+                    </span>
+                </div>
+                <h1 class="display-5 text-white fw-bold mb-3" style="line-height: 1.2;">
+                    Transform Your
+                    <span style="color: var(--primary);">Coding Journey</span>
                 </h1>
-                <p class="text-light mb-4">
-                    Discover real-world coding projects, learn faster, and build powerful applications.
+                <p class="mb-4" style="color: rgba(255,255,255,0.75); font-size: 1.05rem;">
+                    Discover real-world coding projects, learn faster, and build powerful applications with complete source code.
                 </p>
-                <div class="d-flex gap-2 mb-4">
-                    <a href="{% url 'project_list' %}" class="btn btn-primary px-4">
+                <div class="d-flex gap-3 mb-5 flex-wrap">
+                    <a href="{% url 'project_list' %}" class="btn btn-primary px-4 py-2">
                         <i class="fas fa-rocket me-2"></i> Get Started
                     </a>
-                    <a href="{% url 'project_list' %}" class="btn btn-outline-light px-4">
-                        <i class="fas fa-code me-2"></i> Browse
+                    <a href="{% url 'project_list' %}" class="btn px-4 py-2"
+                        style="background: rgba(255,255,255,0.1); color: #fff; border: 1.5px solid rgba(255,255,255,0.25); backdrop-filter: blur(10px);">
+                        <i class="fas fa-code me-2"></i> Browse Projects
                     </a>
                 </div>
                 <div class="d-flex gap-4">
                     <div>
-                        <h5 class="fw-bold mb-0">150+</h5>
-                        <small class="text-muted">Projects</small>
+                        <h4 class="fw-bold mb-0" style="color: var(--primary);">150+</h4>
+                        <small style="color: rgba(255,255,255,0.55);">Projects</small>
                     </div>
+                    <div style="width: 1px; background: rgba(255,255,255,0.1);"></div>
                     <div>
-                        <h5 class="fw-bold mb-0">95%</h5>
-                        <small class="text-muted">Satisfaction</small>
+                        <h4 class="fw-bold mb-0" style="color: var(--primary);">95%</h4>
+                        <small style="color: rgba(255,255,255,0.55);">Satisfaction</small>
                     </div>
+                    <div style="width: 1px; background: rgba(255,255,255,0.1);"></div>
                     <div>
-                        <h5 class="fw-bold mb-0">24/7</h5>
-                        <small class="text-muted">Support</small>
+                        <h4 class="fw-bold mb-0" style="color: var(--primary);">24/7</h4>
+                        <small style="color: rgba(255,255,255,0.55);">Support</small>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-6 text-center mt-4 mt-lg-0">
-                <img src="{% static 'img/cat-2.jpg' %}"
-                    class="img-fluid"
-                    style="max-height: 400px; border-radius: 12px;">
+            <div class="col-lg-6 text-center mt-5 mt-lg-0">
+                <div style="position: relative; display: inline-block;">
+                    <div style="position: absolute; inset: -8px; background: linear-gradient(135deg, var(--primary), transparent); border-radius: 24px; opacity: 0.3;"></div>
+                    <img src="{% static 'img/cat-2.jpg' %}"
+                        class="img-fluid"
+                        style="max-height: 400px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); position: relative;">
+                </div>
             </div>
 
         </div>
@@ -52,52 +65,58 @@
 <!-- WHY CHOOSE US -->
 <div class="container py-5">
     <div class="text-center mb-5">
-        <h3 class="fw-bold">Why Choose CodeShelf?</h3>
+        <h3 class="fw-bold">Why Choose <span style="color: var(--primary);">CodeShelf?</span></h3>
         <p class="text-muted">Everything you need to learn & build faster</p>
     </div>
     <div class="row g-4">
         <div class="col-md-4">
-            <div class="p-4 h-100 rounded-4 shadow-sm border bg-white text-center">
-                <i class="fas fa-code fa-2x text-primary mb-3"></i>
+            <div class="feature-card h-100">
+                <div class="icon-wrap">
+                    <i class="fas fa-code fa-lg text-primary"></i>
+                </div>
                 <h5 class="fw-bold">Real Projects</h5>
-                <p class="text-muted small">Work on real-world applications, not just theory.</p>
+                <p class="text-muted small mb-0">Work on real-world applications, not just theory.</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="p-4 h-100 rounded-4 shadow-sm border bg-white text-center">
-                <i class="fas fa-bolt fa-2x text-warning mb-3"></i>
+            <div class="feature-card h-100">
+                <div class="icon-wrap">
+                    <i class="fas fa-bolt fa-lg text-primary"></i>
+                </div>
                 <h5 class="fw-bold">Instant Access</h5>
-                <p class="text-muted small">Download projects instantly and start learning.</p>
+                <p class="text-muted small mb-0">Download projects instantly and start learning.</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="p-4 h-100 rounded-4 shadow-sm border bg-white text-center">
-                <i class="fas fa-graduation-cap fa-2x text-success mb-3"></i>
+            <div class="feature-card h-100">
+                <div class="icon-wrap">
+                    <i class="fas fa-graduation-cap fa-lg text-primary"></i>
+                </div>
                 <h5 class="fw-bold">Learn Faster</h5>
-                <p class="text-muted small">Understand concepts through working code.</p>
+                <p class="text-muted small mb-0">Understand concepts through working code.</p>
             </div>
         </div>
     </div>
 </div>
 
 <!-- STATS STRIP -->
-<div class="container-fluid bg-light py-4 border-top border-bottom">
+<div class="stats-strip py-4">
     <div class="container">
-        <div class="row text-center">
-            <div class="col-md-3">
-                <h5 class="fw-bold">150+</h5>
+        <div class="row text-center g-3">
+            <div class="col-6 col-md-3">
+                <h5 class="fw-bold mb-0">150+</h5>
                 <small class="text-muted">Projects</small>
             </div>
-            <div class="col-md-3">
-                <h5 class="fw-bold">50+</h5>
+            <div class="col-6 col-md-3">
+                <h5 class="fw-bold mb-0">50+</h5>
                 <small class="text-muted">Technologies</small>
             </div>
-            <div class="col-md-3">
-                <h5 class="fw-bold">1000+</h5>
+            <div class="col-6 col-md-3">
+                <h5 class="fw-bold mb-0">1000+</h5>
                 <small class="text-muted">Downloads</small>
             </div>
-            <div class="col-md-3">
-                <h5 class="fw-bold">24/7</h5>
+            <div class="col-6 col-md-3">
+                <h5 class="fw-bold mb-0">24/7</h5>
                 <small class="text-muted">Support</small>
             </div>
         </div>
@@ -122,13 +141,6 @@
                     <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}"
                         class="w-100" style="height:200px; object-fit:cover;">
                     <span class="badge bg-success position-absolute top-0 start-0 m-2">New</span>
-                    {% if user.is_authenticated and user.profile.is_customer %}
-                    <button class="btn btn-sm position-absolute top-0 end-0 m-2 wishlist-btn"
-                        data-id="{{ project.id }}"
-                        style="background:rgba(255,255,255,0.9); border-radius:50%; width:36px; height:36px; padding:0;">
-                        <i class="fa-{% if project.id in wishlist_ids %}solid text-danger{% else %}regular text-muted{% endif %} fa-heart"></i>
-                    </button>
-                    {% endif %}
                 </div>
 
                 <div class="card-body">
@@ -191,19 +203,12 @@
                     <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}"
                         class="w-100" style="height:200px; object-fit:cover;">
                     <span class="badge bg-danger position-absolute top-0 start-0 m-2">🔥 Trending</span>
-                    {% if user.is_authenticated and user.profile.is_customer %}
-                    <button class="btn btn-sm position-absolute top-0 end-0 m-2 wishlist-btn"
-                        data-id="{{ project.id }}"
-                        style="background:rgba(255,255,255,0.9); border-radius:50%; width:36px; height:36px; padding:0;">
-                        <i class="fa-{% if project.id in wishlist_ids %}solid text-danger{% else %}regular text-muted{% endif %} fa-heart"></i>
-                    </button>
-                    {% endif %}
                 </div>
 
                 <div class="card-body">
                     <h6 class="fw-bold mb-1">{{ project.title }}</h6>
                     <p class="text-muted small mb-2">{{ project.description|truncatewords:10 }}</p>
-                    <span class="badge bg-info mb-2">{{ project.technology }}</span>
+                    <span class="badge bg-info mb-2 text-dark">{{ project.technology }}</span>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="fw-bold text-success">₹{{ project.price }}</span>
                         <small class="text-muted">
@@ -238,43 +243,17 @@
 {% endif %}
 
 <!-- CTA SECTION -->
-<div class="container-fluid bg-primary py-5 mt-4">
-    <div class="container text-center text-white">
+<div class="cta-section py-5 mt-4">
+    <div class="container text-center text-white py-3">
         <h3 class="fw-bold mb-3">Ready to Start Learning?</h3>
-        <p class="mb-4">Browse hundreds of real-world projects and start building today!</p>
-        <a href="{% url 'project_list' %}" class="btn btn-light btn-lg px-5">
+        <p class="mb-4" style="color: rgba(255,255,255,0.8);">
+            Browse hundreds of real-world projects and start building today!
+        </p>
+        <a href="{% url 'project_list' %}" class="btn btn-lg px-5 py-2"
+            style="background: #fff; color: var(--primary); font-weight: 700; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
             Browse Projects
         </a>
     </div>
 </div>
 
 {% endblock %}
-
-{% block extra_js %}
-<script>
-// Wishlist toggle
-document.querySelectorAll('.wishlist-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const projectId = this.dataset.id
-        const icon = this.querySelector('i')
-
-        fetch("{% url 'toggle_wishlist' %}", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": "{{ csrf_token }}",
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: `project_id=${projectId}`
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'added') {
-                icon.className = 'fa-solid fa-heart text-danger'
-            } else {
-                icon.className = 'fa-regular fa-heart text-muted'
-            }
-        })
-    })
-})
-</script>
-{% endblock extra_js %}
