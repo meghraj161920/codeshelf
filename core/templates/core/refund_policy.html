@@ -1,78 +1,287 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* =========================================
+       DYNAMIC POLICY PAGE STYLES (CodeShelf Theme)
+    ========================================= */
+    :root {
+        --cs-primary: #06BBCC;
+        --cs-dark: #181d38;
+        --cs-light: #f0f9ff;
+    }
+
+    .policy-header-gradient {
+        background: linear-gradient(135deg, #0f1322 0%, #181d38 100%);
+        padding: 5rem 0 4rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* Pattern Overlay */
+    .policy-header-gradient::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        opacity: 0.03;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2306BBCC' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* Key Rules Grid */
+    .rules-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: -3rem; /* Overlap header */
+        position: relative;
+        z-index: 10;
+    }
+
+    .rule-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid #eee;
+        transition: 0.3s;
+    }
+    [data-theme="dark"] .rule-card {
+        background: #1e2440;
+        border-color: rgba(255,255,255,0.1);
+        color: white;
+    }
+
+    .rule-card:hover { transform: translateY(-5px); border-color: var(--cs-primary); }
+
+    .rule-icon-box {
+        width: 50px; height: 50px;
+        background: rgba(6, 187, 204, 0.1);
+        color: var(--cs-primary);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.25rem; margin-bottom: 1.25rem;
+    }
+
+    /* Policy Content Area */
+    .main-policy-box {
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+        margin-top: 4rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        border: 1px solid #eee;
+    }
+    [data-theme="dark"] .main-policy-box { background: #1e2440; border-color: rgba(255,255,255,0.1); }
+
+    .policy-section-title {
+        font-size: 1.75rem; font-weight: 800; margin-bottom: 2rem;
+        display: flex; align-items: center; gap: 1rem;
+        color: var(--text);
+    }
+    [data-theme="dark"] .policy-section-title { color: white; }
+
+    /* Interactive FAQ Items */
+    .interactive-faq-item {
+        margin-bottom: 1rem; border-radius: 12px;
+        border: 1px solid #eee; background: #fafafa; overflow: hidden;
+    }
+    [data-theme="dark"] .interactive-faq-item { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.1); }
+
+    .faq-trigger {
+        padding: 1.5rem; cursor: pointer; display: flex;
+        justify-content: space-between; align-items: center;
+        font-weight: 700; color: var(--text);
+    }
+    [data-theme="dark"] .faq-trigger { color: white; }
+
+    .faq-trigger i { transition: 0.3s; color: var(--cs-primary); }
+    .interactive-faq-item.active .faq-trigger i { transform: rotate(180deg); }
+
+    .faq-content {
+        max-height: 0; overflow: hidden; transition: 0.4s ease;
+        padding: 0 1.5rem; color: var(--text-muted);
+    }
+    .interactive-faq-item.active .faq-content { max-height: 500px; padding-bottom: 1.5rem; }
+    [data-theme="dark"] .faq-content { color: #aaa; }
+
+    .highlight-note {
+        border-left: 4px solid var(--cs-primary);
+        background: rgba(6, 187, 204, 0.05);
+        padding: 1.5rem; border-radius: 0 12px 12px 0; margin: 1.5rem 0;
+    }
+
+    /* Contact Options */
+    .policy-contact-box {
+        background: linear-gradient(135deg, rgba(6, 187, 204, 0.1) 0%, rgba(24, 29, 56, 0.05) 100%);
+        border-radius: 20px; padding: 3rem; text-align: center; margin-top: 4rem;
+    }
+
+    .floating-print {
+        position: fixed; bottom: 2rem; right: 2rem;
+        background: var(--cs-primary); color: white;
+        border: none; border-radius: 50px; padding: 0.8rem 1.5rem;
+        font-weight: 700; box-shadow: 0 10px 20px rgba(6, 187, 204, 0.3);
+        z-index: 1000; transition: 0.3s;
+    }
+    .floating-print:hover { transform: translateY(-5px); background: #05a0af; color: white; }
+
+    @media print { .floating-print, .policy-contact-box, nav, footer { display: none !important; } }
+</style>
+{% endblock %}
 
 {% block content %}
 
-<div class="container py-5">
+<div class="policy-header-gradient">
+    <div class="container">
+        <span class="badge bg-primary bg-opacity-25 text-primary border border-primary px-3 py-2 rounded-pill mb-3">Transparency Policy</span>
+        <h1 class="display-3 fw-bold text-white mb-3">Refund & <span style="color: var(--cs-primary);">Cancellation</span></h1>
+        <p class="fs-5 text-light opacity-75 mx-auto" style="max-width: 700px;">
+            Clear, fair guidelines regarding digital asset purchases, seller commissions, and service cancellations.
+        </p>
+    </div>
+</div>
 
-    <!-- HEADER -->
-    <div class="text-center mb-5">
-        <h2 class="fw-bold">Refund Policy</h2>
-        <p class="text-muted">Last updated: {{ now|date:"F d, Y" }}</p>
+<div class="container pb-5">
+    
+    <div class="rules-grid">
+        <div class="rule-card">
+            <div class="rule-icon-box"><i class="fas fa-file-download"></i></div>
+            <h5 class="fw-bold">Digital Goods</h5>
+            <p class="small text-muted mb-0">Once source code is downloaded or accessed, it is generally non-refundable due to the nature of digital intellectual property.</p>
+        </div>
+        <div class="rule-card">
+            <div class="rule-icon-box"><i class="fas fa-clock"></i></div>
+            <h5 class="fw-bold">48-Hour Window</h5>
+            <p class="small text-muted mb-0">Refund requests for corrupted files or mismatched descriptions must be submitted within 48 hours of purchase.</p>
+        </div>
+        <div class="rule-card">
+            <div class="rule-icon-box"><i class="fas fa-user-shield"></i></div>
+            <h5 class="fw-bold">Seller Protection</h5>
+            <p class="small text-muted mb-0">We protect our creators by verifying claims before reversing any payments made to their seller wallets.</p>
+        </div>
     </div>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
+    <div class="main-policy-box">
+        
+        <section class="mb-5">
+            <h2 class="policy-section-title"><i class="fas fa-info-circle"></i> Our Commitment to Fairness</h2>
+            <p class="text-muted fs-5">At CodeShelf, we act as a bridge between high-quality developers and eager learners. This policy ensures that customers receive what they paid for, while creators are compensated fairly for their hard work.</p>
+            
+            <div class="highlight-note">
+                <h6 class="fw-bold text-primary"><i class="fas fa-balance-scale me-2"></i>The Golden Rule</h6>
+                <p class="mb-0 text-muted">We review every dispute manually. If the code is broken or the description is misleading, we will make it right.</p>
+            </div>
+        </section>
 
-            <div class="bg-white shadow-sm rounded p-4 p-md-5">
-
-                <!-- INTRO -->
-                <p class="text-muted">
-                    At <strong>CodeShelf</strong>, we aim to provide high-quality digital products.
-                    Please read our refund policy carefully before making a purchase.
-                </p>
-
-                <!-- SECTION -->
-                <h5 class="fw-bold mt-4">1. Digital Products</h5>
-                <p class="text-muted">
-                    All products sold on CodeShelf are digital downloads. Once a product is purchased
-                    and accessed, it cannot be returned physically.
-                </p>
-
-                <!-- SECTION -->
-                <h5 class="fw-bold mt-4">2. No Refund Policy</h5>
-                <p class="text-muted">
-                    Due to the nature of digital content, all sales are final and non-refundable.
-                    We do not offer refunds once the product has been downloaded or accessed.
-                </p>
-
-                <!-- SECTION -->
-                <h5 class="fw-bold mt-4">3. Exceptions</h5>
-                <p class="text-muted">
-                    Refunds may be considered in the following cases:
-                </p>
-                <ul class="text-muted">
-                    <li>The product file is corrupted or not accessible</li>
-                    <li>You were charged multiple times for the same product</li>
-                    <li>The product does not match the description significantly</li>
-                </ul>
-
-                <!-- SECTION -->
-                <h5 class="fw-bold mt-4">4. Refund Request Process</h5>
-                <p class="text-muted">
-                    To request a refund, please contact us within <strong>48 hours</strong> of purchase.
-                    Include your order details and reason for the request.
-                </p>
-
-                <!-- SECTION -->
-                <h5 class="fw-bold mt-4">5. Processing Time</h5>
-                <p class="text-muted">
-                    If your refund is approved, it will be processed within 5-7 business days
-                    to your original payment method.
-                </p>
-
-                <!-- SECTION -->
-                <h5 class="fw-bold mt-4">6. Contact Us</h5>
-                <p class="text-muted mb-0">
-                    If you have any questions about our refund policy, contact us at:
-                    <br>
-                    📧 support@codeshelf.com
-                </p>
-
+        <section class="mb-5">
+            <h2 class="policy-section-title"><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+            
+            <div class="interactive-faq-item active">
+                <div class="faq-trigger">
+                    <span>1. Can I get a refund if I change my mind?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-content">
+                    <p>Because our products are digital source codes that can be copied instantly, we do not offer refunds for "change of mind" once the files have been downloaded from your dashboard.</p>
+                </div>
             </div>
 
+            <div class="interactive-faq-item">
+                <div class="faq-trigger">
+                    <span>2. What if the code doesn't run on my machine?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-content">
+                    <p>Every project includes a README file. If you follow the steps and it still fails, please contact the Seller first. If they don't respond within 24 hours, CodeShelf support will intervene.</p>
+                </div>
+            </div>
+
+            <div class="interactive-faq-item">
+                <div class="faq-trigger">
+                    <span>3. When are refunds approved?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-content">
+                    <p>Refunds are typically approved if:</p>
+                    <ul class="mb-0">
+                        <li>The ZIP file is corrupted or empty.</li>
+                        <li>The tech stack mentioned (e.g., React) is completely different from the actual code (e.g., HTML).</li>
+                        <li>Critical features mentioned in the description are missing.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="policy-section-title"><i class="fas fa-exchange-alt"></i> The Process</h2>
+            <div class="row g-4 text-center mt-2">
+                <div class="col-md-4">
+                    <div class="p-3 border rounded-3 bg-light bg-opacity-10">
+                        <div class="fw-bold text-primary mb-2">Step 1</div>
+                        <p class="small text-muted mb-0">Contact the seller via the project comments section.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 border rounded-3 bg-light bg-opacity-10">
+                        <div class="fw-bold text-primary mb-2">Step 2</div>
+                        <p class="small text-muted mb-0">If unresolved, email support@codeshelf.com with your Order ID.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 border rounded-3 bg-light bg-opacity-10">
+                        <div class="fw-bold text-primary mb-2">Step 3</div>
+                        <p class="small text-muted mb-0">Receive a resolution or refund within 5-7 business days.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="policy-contact-box">
+        <h2 class="fw-bold mb-3">Still have questions?</h2>
+        <p class="text-muted mb-4 mx-auto" style="max-width: 600px;">Our legal and support teams are available to clarify any part of this policy to ensure you feel confident in your purchase.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="mailto:policy@codeshelf.com" class="btn btn-primary px-4 py-2 rounded-pill fw-bold">
+                <i class="fas fa-envelope me-2"></i> policy@codeshelf.com
+            </a>
+            <a href="{% url 'contact' %}" class="btn btn-outline-primary px-4 py-2 text-primary rounded-pill fw-bold">
+                <i class="fas fa-comments me-2"></i> Live Support
+            </a>
         </div>
     </div>
 
 </div>
 
+<button class="floating-print" onclick="window.print()">
+    <i class="fas fa-print me-2"></i> Print Policy
+</button>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // FAQ Accordion logic
+        const faqItems = document.querySelectorAll('.interactive-faq-item');
+        
+        faqItems.forEach(item => {
+            const trigger = item.querySelector('.faq-trigger');
+            trigger.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Close others
+                faqItems.forEach(i => i.classList.remove('active'));
+                
+                // Toggle current
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

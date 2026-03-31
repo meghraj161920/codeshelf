@@ -1,81 +1,238 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* =========================================
+       THEME ADAPTIVE VARIABLES 
+    ========================================= */
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.75);
+        --glass-border: rgba(0, 0, 0, 0.08);
+        --header-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        --accent-glow: rgba(6, 187, 204, 0.1);
+    }
+
+    [data-theme="dark"] {
+        --glass-bg: rgba(255, 255, 255, 0.03);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --header-gradient: linear-gradient(135deg, #0f1322 0%, #181d38 100%);
+        --accent-glow: rgba(6, 187, 204, 0.2);
+    }
+
+    .policy-page-bg {
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        position: relative;
+        overflow: hidden;
+        padding-bottom: 5rem;
+        min-height: 100vh;
+    }
+
+    /* Glowing Orbs */
+    .policy-page-bg::before, .policy-page-bg::after {
+        content: ''; position: absolute; border-radius: 50%; z-index: 0; pointer-events: none; filter: blur(150px);
+    }
+    .policy-page-bg::before {
+        width: 600px; height: 600px; background: var(--primary);
+        top: -200px; left: -200px; opacity: 0.1;
+    }
+    .policy-page-bg::after {
+        width: 500px; height: 500px; background: #8b5cf6;
+        bottom: 20%; right: -150px; opacity: 0.1;
+    }
+
+    /* Hero Section */
+    .policy-header {
+        background: var(--header-gradient);
+        padding: 6rem 0 4rem;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    .policy-header h1 { color: var(--bs-emphasis-color) !important; }
+
+    /* Policy Content Box */
+    .main-policy-box {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 4rem;
+        margin-top: 3rem;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        position: relative;
+        z-index: 1;
+    }
+
+    .policy-section {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    .policy-section:last-child { border-bottom: none; margin-bottom: 0; }
+
+    .policy-row {
+        display: flex;
+        gap: 25px;
+    }
+
+    .policy-icon {
+        width: 50px; height: 50px;
+        background: var(--accent-glow);
+        color: var(--primary);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.25rem; flex-shrink: 0;
+    }
+
+    .policy-content h4 {
+        font-weight: 800;
+        color: var(--bs-emphasis-color);
+        margin-bottom: 12px;
+    }
+
+    .policy-content p {
+        color: var(--bs-secondary-color);
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+
+    /* Floating Print Button */
+    .floating-print {
+        position: fixed; bottom: 2rem; right: 2rem;
+        background: var(--primary); color: white;
+        border: none; border-radius: 50px; padding: 0.8rem 1.8rem;
+        font-weight: 700; box-shadow: 0 10px 20px rgba(6, 187, 204, 0.3);
+        z-index: 1000; transition: 0.3s;
+    }
+    .floating-print:hover { transform: translateY(-5px); filter: brightness(1.1); color: white; }
+
+    @media (max-width: 768px) {
+        .main-policy-box { padding: 2rem 1.5rem; }
+        .policy-row { flex-direction: column; gap: 15px; }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="policy-page-bg">
 
-<!-- Hero Section -->
-<div class="container-fluid bg-primary py-5 mb-5">
-    <div class="container text-center text-white">
-        <h1 class="display-4 fw-bold">Privacy Policy</h1>
-        <p class="lead">Your privacy is important to us</p>
-    </div>
-</div>
+    <header class="policy-header">
+        <div class="container">
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 rounded-pill mb-3">Trust & Transparency</span>
+            <h1 class="display-3 fw-bold mb-3">Privacy <span class="text-primary">Policy</span></h1>
+            <p class="fs-5 opacity-75 mx-auto" style="max-width: 600px; color: var(--bs-secondary-color);">
+                We are committed to protecting your personal information and your right to privacy on CodeShelf.
+            </p>
+        </div>
+    </header>
 
-<!-- Privacy Content -->
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
 
-            <div class="bg-light p-4 p-md-5 rounded shadow-sm">
+                <div class="main-policy-box">
+                    
+                    <div class="policy-section">
+                        <div class="policy-row">
+                            <div class="policy-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div class="policy-content">
+                                <h4>1. Introduction</h4>
+                                <p>At CodeShelf, we value your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you visit our platform, purchase source code, or interact with our services.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mb-3">1. Introduction</h4>
-                <p>
-                    At CodeShelf, we value your privacy and are committed to protecting your
-                    personal information. This Privacy Policy explains how we collect, use,
-                    and safeguard your data.
-                </p>
+                    <div class="policy-section">
+                        <div class="policy-row">
+                            <div class="policy-icon"><i class="fas fa-id-card"></i></div>
+                            <div class="policy-content">
+                                <h4>2. Information We Collect</h4>
+                                <p>We collect information that you provide directly to us, such as your name, email address, and account credentials when you register. For sellers, we may collect additional verification details and payment information to facilitate earnings payouts.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">2. Information We Collect</h4>
-                <p>
-                    We may collect personal information such as your name, email address,
-                    and account details when you register or interact with our platform.
-                </p>
+                    <div class="policy-section">
+                        <div class="policy-row">
+                            <div class="policy-icon"><i class="fas fa-cog"></i></div>
+                            <div class="policy-content">
+                                <h4>3. How We Use Your Information</h4>
+                                <p>Your information is used to provide, maintain, and improve our services, including processing transactions, providing customer support, and communicating updates regarding your account or project purchases.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">3. How We Use Your Information</h4>
-                <p>
-                    Your information is used to provide and improve our services, process
-                    transactions, and communicate with you regarding your account or purchases.
-                </p>
+                    <div class="policy-section">
+                        <div class="policy-row">
+                            <div class="policy-icon"><i class="fas fa-user-lock"></i></div>
+                            <div class="policy-content">
+                                <h4>4. Data Protection</h4>
+                                <p>We implement industry-standard security measures, including encryption and secure server protocols, to protect your data from unauthorized access, alteration, or disclosure. Your account security is our highest priority.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">4. Data Protection</h4>
-                <p>
-                    We implement appropriate security measures to protect your data from
-                    unauthorized access, alteration, or disclosure.
-                </p>
+                    <div class="policy-section">
+                        <div class="policy-row">
+                            <div class="policy-icon"><i class="fas fa-share"></i></div>
+                            <div class="policy-content">
+                                <h4>5. Sharing of Information</h4>
+                                <p>We do not sell, rent, or trade your personal information with third parties. Data is only shared when necessary to provide our services (e.g., payment gateways) or when required by law to comply with legal obligations.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">5. Sharing of Information</h4>
-                <p>
-                    We do not sell or share your personal information with third parties,
-                    except when required by law or necessary to provide our services.
-                </p>
+                    <div class="policy-section">
+                        <div class="policy-row">
+                            <div class="policy-icon"><i class="fas fa-cookie-bite"></i></div>
+                            <div class="policy-content">
+                                <h4>6. Cookies & Tracking</h4>
+                                <p>CodeShelf uses cookies to enhance your browsing experience, remember your preferences, and analyze website traffic. You can choose to disable cookies through your browser settings, though some features may not function correctly.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">6. Cookies</h4>
-                <p>
-                    CodeShelf may use cookies to enhance user experience and analyze
-                    website traffic. You can disable cookies through your browser settings.
-                </p>
+                    <div class="policy-section">
+                        <div class="policy-row">
+                            <div class="policy-icon"><i class="fas fa-user-check"></i></div>
+                            <div class="policy-content">
+                                <h4>7. Your Rights</h4>
+                                <p>You have the right to access, update, or request the deletion of your personal data at any time. You can manage most of these details directly from your dashboard or contact our privacy officer for assistance.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">7. User Rights</h4>
-                <p>
-                    You have the right to access, update, or delete your personal data.
-                    You may contact us for any privacy-related requests.
-                </p>
+                    <div class="policy-section">
+                        <div class="policy-row">
+                            <div class="policy-icon"><i class="fas fa-sync"></i></div>
+                            <div class="policy-content">
+                                <h4>8. Changes to Policy</h4>
+                                <p>We may update this Privacy Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. Updates will be posted on this page with an updated "Last Modified" date.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">8. Changes to Policy</h4>
-                <p>
-                    We may update this Privacy Policy from time to time. Changes will be
-                    posted on this page.
-                </p>
+                    <div class="policy-section">
+                        <div class="policy-row">
+                            <div class="policy-icon"><i class="fas fa-envelope-open-text"></i></div>
+                            <div class="policy-content">
+                                <h4>9. Contact Us</h4>
+                                <p class="mb-0">If you have any questions or concerns regarding this Privacy Policy, please reach out to our team via the <a href="{% url 'contact' %}" class="text-primary fw-bold">Contact Page</a> or email us directly at <strong>privacy@codeshelf.com</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">9. Contact Us</h4>
-                <p>
-                    If you have any questions regarding this Privacy Policy, please
-                    contact us through the Contact page.
-                </p>
-
-            </div>
-
+                </div> </div>
         </div>
     </div>
 </div>
+
+<button class="floating-print" onclick="window.print()">
+    <i class="fas fa-print me-2"></i> Print Policy
+</button>
 
 {% endblock %}

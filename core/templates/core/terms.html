@@ -1,80 +1,237 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* =========================================
+       THEME ADAPTIVE VARIABLES 
+    ========================================= */
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-border: rgba(0, 0, 0, 0.08);
+        --header-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        --accent-glow: rgba(6, 187, 204, 0.1);
+    }
+
+    [data-theme="dark"] {
+        --glass-bg: rgba(255, 255, 255, 0.03);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --header-gradient: linear-gradient(135deg, #0f1322 0%, #181d38 100%);
+        --accent-glow: rgba(6, 187, 204, 0.2);
+    }
+
+    .terms-page-bg {
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        position: relative;
+        overflow: hidden;
+        padding-bottom: 5rem;
+        min-height: 100vh;
+    }
+
+    /* Floating Orbs */
+    .terms-page-bg::before, .terms-page-bg::after {
+        content: ''; position: absolute; border-radius: 50%; z-index: 0; pointer-events: none; filter: blur(150px);
+    }
+    .terms-page-bg::before {
+        width: 600px; height: 600px; background: var(--primary);
+        top: -200px; left: -200px; opacity: 0.1;
+    }
+    .terms-page-bg::after {
+        width: 500px; height: 500px; background: #8b5cf6;
+        bottom: 20%; right: -150px; opacity: 0.1;
+    }
+
+    /* Hero Section */
+    .terms-header {
+        background: var(--header-gradient);
+        padding: 6rem 0 4rem;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    .terms-header h1 { color: var(--bs-emphasis-color) !important; }
+
+    /* Policy Content Box */
+    .main-terms-box {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 4rem;
+        margin-top: 3rem;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        position: relative;
+        z-index: 1;
+    }
+
+    .terms-section {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    .terms-section:last-child { border-bottom: none; margin-bottom: 0; }
+
+    .terms-row {
+        display: flex;
+        gap: 25px;
+    }
+
+    .terms-icon {
+        width: 50px; height: 50px;
+        background: var(--accent-glow);
+        color: var(--primary);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.25rem; flex-shrink: 0;
+    }
+
+    .terms-content h4 {
+        font-weight: 800;
+        color: var(--bs-emphasis-color);
+        margin-bottom: 12px;
+    }
+
+    .terms-content p {
+        color: var(--bs-secondary-color);
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+
+    .floating-print {
+        position: fixed; bottom: 2rem; right: 2rem;
+        background: var(--primary); color: white;
+        border: none; border-radius: 50px; padding: 0.8rem 1.8rem;
+        font-weight: 700; box-shadow: 0 10px 20px rgba(6, 187, 204, 0.3);
+        z-index: 1000; transition: 0.3s;
+    }
+    .floating-print:hover { transform: translateY(-5px); filter: brightness(1.1); color: white; }
+
+    @media (max-width: 768px) {
+        .main-terms-box { padding: 2rem 1.5rem; }
+        .terms-row { flex-direction: column; gap: 15px; }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="terms-page-bg">
 
-<!-- Hero Section -->
-<div class="container-fluid bg-primary py-5 mb-5">
-    <div class="container text-center text-white">
-        <h1 class="display-4 fw-bold">Terms & Conditions</h1>
-        <p class="lead">Please read these terms carefully</p>
-    </div>
-</div>
+    <header class="terms-header">
+        <div class="container">
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 rounded-pill mb-3">Legal Agreement</span>
+            <h1 class="display-3 fw-bold mb-3">Terms & <span class="text-primary">Conditions</span></h1>
+            <p class="fs-5 opacity-75 mx-auto" style="max-width: 600px; color: var(--bs-secondary-color);">
+                Please review these guidelines carefully to understand your rights and obligations on CodeShelf.
+            </p>
+        </div>
+    </header>
 
-<!-- Terms Content -->
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
 
-            <div class="bg-light p-4 p-md-5 rounded shadow-sm">
+                <div class="main-terms-box">
+                    
+                    <div class="terms-section">
+                        <div class="terms-row">
+                            <div class="terms-icon"><i class="fas fa-info-circle"></i></div>
+                            <div class="terms-content">
+                                <h4>1. Introduction</h4>
+                                <p>Welcome to CodeShelf. By accessing or using our platform, you agree to comply with and be bound by the following terms and conditions. These terms govern your use of the website, the purchase of digital assets, and the interaction between buyers and sellers.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mb-3">1. Introduction</h4>
-                <p>
-                    Welcome to CodeShelf. By accessing or using our platform, you agree to comply
-                    with and be bound by the following terms and conditions.
-                </p>
+                    <div class="terms-section">
+                        <div class="terms-row">
+                            <div class="terms-icon"><i class="fas fa-laptop-code"></i></div>
+                            <div class="terms-content">
+                                <h4>2. Use of Platform</h4>
+                                <p>CodeShelf provides a specialized marketplace for ready-made coding projects intended for educational and development purposes. You agree not to misuse the platform, engage in unauthorized scraping, or use the downloaded projects for illegal activities.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">2. Use of Platform</h4>
-                <p>
-                    CodeShelf provides access to ready-made coding projects for educational and
-                    development purposes. Users must not misuse the platform or engage in any
-                    illegal activities.
-                </p>
+                    <div class="terms-section">
+                        <div class="terms-row">
+                            <div class="terms-icon"><i class="fas fa-user-shield"></i></div>
+                            <div class="terms-content">
+                                <h4>3. User Accounts</h4>
+                                <p>To access certain features, you must create an account. You are solely responsible for maintaining the confidentiality of your credentials and for all activities that occur under your account. CodeShelf reserves the right to terminate accounts that violate our safety policies.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">3. User Accounts</h4>
-                <p>
-                    Users are responsible for maintaining the confidentiality of their account
-                    credentials. Any activity under your account is your responsibility.
-                </p>
+                    <div class="terms-section">
+                        <div class="terms-row">
+                            <div class="terms-icon"><i class="fas fa-shopping-cart"></i></div>
+                            <div class="terms-content">
+                                <h4>4. Purchases & Downloads</h4>
+                                <p>Upon successful payment, you receive a non-exclusive license to use the project files. <strong>Redistribution, resale, or public sharing of purchased source code is strictly prohibited</strong> and may result in legal action and permanent account suspension.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">4. Purchases & Downloads</h4>
-                <p>
-                    Once a project is purchased, users gain access to download the project files.
-                    Redistribution, resale, or sharing of purchased content is strictly prohibited.
-                </p>
+                    <div class="terms-section">
+                        <div class="terms-row">
+                            <div class="terms-icon"><i class="fas fa-undo"></i></div>
+                            <div class="terms-content">
+                                <h4>5. Refund Policy</h4>
+                                <p>All purchases are final. Due to the digital nature of the products, refunds are only issued in exceptional cases (e.g., corrupted files). For more details, please visit our dedicated <a href="{% url 'refund_policy' %}" class="text-primary fw-bold">Refund Policy</a> page.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">5. Refund Policy</h4>
-                <p>
-                    All purchases are final. Refunds are not provided once the project files have
-                    been downloaded, except in exceptional cases.
-                </p>
+                    <div class="terms-section">
+                        <div class="terms-row">
+                            <div class="terms-icon"><i class="fas fa-copyright"></i></div>
+                            <div class="terms-content">
+                                <h4>6. Intellectual Property</h4>
+                                <p>All content available on CodeShelf, including branding, logos, and platform architecture, is protected by copyright laws. While you own the license to use a purchased project, the original creator retains the underlying intellectual property rights.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">6. Intellectual Property</h4>
-                <p>
-                    All content available on CodeShelf, including projects and documentation,
-                    is protected by intellectual property laws and belongs to CodeShelf.
-                </p>
+                    <div class="terms-section">
+                        <div class="terms-row">
+                            <div class="terms-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="terms-content">
+                                <h4>7. Limitation of Liability</h4>
+                                <p>CodeShelf is not responsible for any damages, data loss, or system failures resulting from the use of the platform or the execution of downloaded projects. We recommend running all downloaded code in a secure, sandboxed environment.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">7. Limitation of Liability</h4>
-                <p>
-                    CodeShelf is not responsible for any damages or losses resulting from the use
-                    of the platform or downloaded projects.
-                </p>
+                    <div class="terms-section">
+                        <div class="terms-row">
+                            <div class="terms-icon"><i class="fas fa-sync-alt"></i></div>
+                            <div class="terms-content">
+                                <h4>8. Changes to Terms</h4>
+                                <p>We reserve the right to update or modify these terms at any time to reflect platform changes or legal requirements. Continued use of the platform after updates constitutes acceptance of the new terms.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">8. Changes to Terms</h4>
-                <p>
-                    We reserve the right to update or modify these terms at any time without prior notice.
-                </p>
+                    <div class="terms-section">
+                        <div class="terms-row">
+                            <div class="terms-icon"><i class="fas fa-headset"></i></div>
+                            <div class="terms-content">
+                                <h4>9. Contact Us</h4>
+                                <p class="mb-0">If you have any questions regarding these terms, please reach out to our legal team via the <a href="{% url 'contact' %}" class="text-primary fw-bold">Contact Page</a> or email us directly at <strong>legal@codeshelf.com</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold mt-4 mb-3">9. Contact Us</h4>
-                <p>
-                    If you have any questions about these terms, please contact us through the
-                    Contact page.
-                </p>
-
-            </div>
-
+                </div> </div>
         </div>
     </div>
 </div>
+
+<button class="floating-print" onclick="window.print()">
+    <i class="fas fa-print me-2"></i> Print Terms
+</button>
 
 {% endblock %}
