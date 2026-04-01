@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.http import FileResponse
 from django.utils import timezone
 import os
+from django.http import JsonResponse
 
 from .models import Project, Category, ProjectDownload
 from .forms import ProjectUploadForm
@@ -143,3 +144,23 @@ def download_project(request, project_id):
     else:
         messages.error(request, "File not found on server.")
         return redirect('project_detail', slug=project.slug)
+    
+    
+def search_suggestions(request):
+    """
+    AJAX view that returns project suggestions as JSON.
+    Called every time user types in the search bar.
+    Returns max 6 results matching the query.
+    """
+    query = request.GET.get('q', '').strip()
+
+    if len(query) < 2:
+        return JsonResponse({'results': []})
+
+    projects = Project.objects.filter(
+        is_active=True,
+        title__icontains=query
+    ).values('title', 'slug', 'price', 'technology')[:6]
+
+    results = list(projects)
+    return JsonResponse({'results': results})
