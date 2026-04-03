@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0d1b3e, #0a3d4a);
+            padding: 32px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #06BBCC;
+            font-size: 28px;
+            margin: 0;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: 8px 0 0;
+        }
+
+        .body {
+            padding: 32px 40px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a1f36;
+            margin-bottom: 16px;
+        }
+
+        .message {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .order-box {
+            background: #f5f7fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .order-id {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 4px;
+        }
+
+        .order-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1f36;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 20px 0;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .item-title {
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: #06BBCC;
+            font-size: 14px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0 0;
+        }
+
+        .total-label {
+            font-weight: 700;
+            font-size: 16px;
+            color: #1a1f36;
+        }
+
+        .total-amount {
+            font-weight: 800;
+            font-size: 20px;
+            color: #06BBCC;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #06BBCC;
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .footer {
+            background: #f5f7fa;
+            padding: 20px 40px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CodeShelf</h1>
+            <p>Your order has been confirmed!</p>
+        </div>
+        <div class="body">
+            <div class="greeting">Hello, {{ user.username }}!</div>
+            <p class="message">
+                Thank you for your purchase. Your order has been successfully placed and your projects are now available
+                for download.
+            </p>
+
+            <div class="order-box">
+                <div class="order-id">Order ID</div>
+                <div class="order-title">#{{ order.id }}</div>
+                <hr class="divider">
+
+                {% for item in order.items.all %}
+                <div class="item-row">
+                    <span class="item-title">{{ item.project.title }}</span>
+                    <span class="item-price">₹{{ item.price }}</span>
+                </div>
+                {% endfor %}
+
+                <div class="total-row">
+                    <span class="total-label">Total Paid</span>
+                    <span class="total-amount">₹{{ order.total_amount }}</span>
+                </div>
+            </div>
+
+            <p class="message">
+                Payment Method: <strong>{{ order.payment_method|upper }}</strong><br>
+                Order Date: <strong>{{ order.order_date|date:"d M Y, h:i A" }}</strong>
+            </p>
+
+            <a href="http://127.0.0.1:8000/orders/history/" class="btn">
+                View My Orders
+            </a>
+        </div>
+        <div class="footer">
+            © 2026 CodeShelf. All Rights Reserved.<br>
+            This is an automated email, please do not reply.
+        </div>
+    </div>
+</body>
+
+</html>

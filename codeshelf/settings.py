@@ -27,7 +27,6 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'projects','orders','coupons','reviews','wishlist','accounts','core','cart','courses',
+    'projects', 'orders', 'coupons', 'reviews', 'wishlist', 'accounts', 'core', 'cart', 'courses',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +61,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'cart.views.cart_context', 
+                'cart.views.cart_context',
             ],
         },
     },
@@ -126,3 +125,12 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 # ✅ Admin aur website ke liye alag session cookies
 SESSION_COOKIE_NAME = 'codeshelf_session'  # Default 'sessionid' ki jagah
+
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'uvharode5@gmail.com'      # Your Gmail address
+EMAIL_HOST_PASSWORD = 'ulwm amju yzxz cwxm'
+DEFAULT_FROM_EMAIL = 'CodeShelf <uvharode5@gmail.com>'

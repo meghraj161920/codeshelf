@@ -4,9 +4,11 @@ from django.contrib import messages
 from .models import Order, OrderItem
 from projects.models import Project
 from coupons.models import Coupon, UserCoupon
-
+from core.email_utils import send_order_confirmation_email
 
 # ================= CHECKOUT =================
+
+
 @login_required
 def checkout(request):
     cart = request.session.get('cart', [])
@@ -56,10 +58,12 @@ def apply_coupon(request):
             ).first()
 
             if not user_coupon:
-                messages.error(request, "You don't have this coupon or it's already used.")
+                messages.error(
+                    request, "You don't have this coupon or it's already used.")
             else:
                 request.session['coupon_code'] = code
-                messages.success(request, f"Coupon applied! {coupon.discount_percent}% discount.")
+                messages.success(
+                    request, f"Coupon applied! {coupon.discount_percent}% discount.")
 
         except Coupon.DoesNotExist:
             messages.error(request, "Invalid coupon code.")
@@ -97,13 +101,15 @@ def place_order(request):
 
         # ✅ If all projects already purchased
         if not valid_projects:
-            messages.error(request, "You have already purchased all projects in your cart.")
+            messages.error(
+                request, "You have already purchased all projects in your cart.")
             request.session['cart'] = []
             return redirect('cart')
 
         # ✅ Warn about some already purchased
         if already_purchased:
-            messages.warning(request, f"Skipped already purchased: {', '.join(already_purchased)}")
+            messages.warning(
+                request, f"Skipped already purchased: {', '.join(already_purchased)}")
 
         subtotal = sum(p.price for p in valid_projects)
 
@@ -113,7 +119,8 @@ def place_order(request):
         coupon_code = request.session.get('coupon_code')
         if coupon_code:
             try:
-                coupon_obj = Coupon.objects.get(code=coupon_code, is_active=True)
+                coupon_obj = Coupon.objects.get(
+                    code=coupon_code, is_active=True)
                 discount = (subtotal * coupon_obj.discount_percent) / 100
             except Coupon.DoesNotExist:
                 pass
@@ -145,6 +152,8 @@ def place_order(request):
                 coupon=coupon_obj
             ).update(is_used=True)
             request.session.pop('coupon_code', None)
+
+        send_order_confirmation_email(request.user, order)
 
         # Clear cart
         request.session['cart'] = []
