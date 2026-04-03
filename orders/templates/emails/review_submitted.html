@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0d1b3e, #0a3d4a);
+            padding: 32px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #06BBCC;
+            font-size: 28px;
+            margin: 0;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: 8px 0 0;
+        }
+
+        .body {
+            padding: 32px 40px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a1f36;
+            margin-bottom: 16px;
+        }
+
+        .message {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .coupon-box {
+            background: linear-gradient(135deg, #06BBCC, #059aaa);
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            margin: 24px 0;
+        }
+
+        .coupon-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .coupon-code {
+            color: #fff;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            font-family: monospace;
+        }
+
+        .coupon-discount {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .review-box {
+            background: #f5f7fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border-left: 4px solid #06BBCC;
+        }
+
+        .review-project {
+            font-weight: 700;
+            color: #1a1f36;
+            margin-bottom: 6px;
+        }
+
+        .review-rating {
+            color: #f59e0b;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .review-text {
+            color: #6b7280;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #06BBCC;
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .footer {
+            background: #f5f7fa;
+            padding: 20px 40px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CodeShelf</h1>
+            <p>Thank you for your review!</p>
+        </div>
+        <div class="body">
+            <div class="greeting">Hello, {{ user.username }}!</div>
+            <p class="message">
+                Thank you for taking the time to share your experience. Your review helps other learners make better
+                decisions. As a token of appreciation, here is your exclusive discount coupon!
+            </p>
+
+            <div class="review-box">
+                <div class="review-project">{{ review.project.title }}</div>
+                <div class="review-rating">
+                    {% for i in "12345" %}
+                    {% if forloop.counter <= review.rating %}⭐{% endif %} {% endfor %} </div>
+                        <div class="review-text">"{{ review.review_text|truncatewords:20 }}"</div>
+                </div>
+
+                <div class="coupon-box">
+                    <div class="coupon-label">Your Exclusive Coupon</div>
+                    <div class="coupon-code">{{ coupon.code }}</div>
+                    <div class="coupon-discount">{{ coupon.discount_percent }}% OFF on your next purchase</div>
+                    <div class="coupon-discount" style="font-size:12px;margin-top:6px;">
+                        Valid until {{ coupon.expiry_date|date:"d M Y" }}
+                    </div>
+                </div>
+
+                <p class="message">
+                    Apply this coupon at checkout to get {{ coupon.discount_percent }}% off on your next project
+                    purchase!
+                </p>
+
+                <a href="http://127.0.0.1:8000/projects/" class="btn">
+                    Browse More Projects
+                </a>
+            </div>
+            <div class="footer">
+                © 2026 CodeShelf. All Rights Reserved.<br>
+                This is an automated email, please do not reply.
+            </div>
+        </div>
+</body>
+
+</html>

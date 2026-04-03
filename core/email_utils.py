@@ -28,3 +28,31 @@ def send_order_confirmation_email(user, order):
         print(f"Order confirmation email sent to {user.email}")
     except Exception as e:
         print(f"Email sending failed: {e}")
+
+
+def send_review_thank_you_email(user, review, coupon):
+    """
+    Sends a thank you email after user submits a review.
+    Includes the generated coupon code as a reward.
+    """
+    subject = f"Thank you for your review! Here's your {coupon.discount_percent}% coupon - CodeShelf"
+
+    html_content = render_to_string('emails/review_submitted.html', {
+        'user': user,
+        'review': review,
+        'coupon': coupon,
+    })
+
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body=f"Thank you for your review! Use coupon {coupon.code} for {coupon.discount_percent}% off.",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[user.email]
+    )
+    email.attach_alternative(html_content, "text/html")
+
+    try:
+        email.send()
+        print(f"Review thank you email sent to {user.email}")
+    except Exception as e:
+        print(f"Email sending failed: {e}")

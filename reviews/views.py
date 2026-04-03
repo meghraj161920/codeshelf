@@ -8,6 +8,7 @@ from coupons.models import Coupon, UserCoupon
 import random
 import string
 from django.utils import timezone
+from core.email_utils import send_review_thank_you_email
 
 
 # ================= REVIEW LIST =================
@@ -34,7 +35,8 @@ def add_review(request):
         ).exists()
 
         if not has_purchased:
-            messages.error(request, "You can only review projects you have purchased.")
+            messages.error(
+                request, "You can only review projects you have purchased.")
             return redirect('project_detail', slug=project.slug)
 
         # ✅ Check — user ne pehle se review diya hai?
@@ -48,7 +50,7 @@ def add_review(request):
             return redirect('project_detail', slug=project.slug)
 
         # ✅ Review save karo
-        Review.objects.create(
+        review_obj = Review.objects.create(
             user=request.user,
             project=project,
             rating=int(rating),
@@ -56,9 +58,12 @@ def add_review(request):
         )
 
         # ✅ Coupon generate karo
-        generate_coupon_for_user(request.user)
+        coupon = generate_coupon_for_user(request.user)
 
-        messages.success(request, "Review submitted! A discount coupon has been added to your account.")
+        send_review_thank_you_email(request.user, review_obj, coupon)
+        messages.success(
+            request, "Review submitted! Check your email for your discount coupon.")
+
         return redirect('project_detail', slug=project.slug)
 
     return redirect('project_list')
@@ -85,3 +90,5 @@ def generate_coupon_for_user(user):
         coupon=coupon,
         is_used=False
     )
+
+    return coupon
