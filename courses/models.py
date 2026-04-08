@@ -84,6 +84,14 @@ class CourseVideo(models.Model):
     youtube_url = models.URLField(help_text="Use embed URL: https://www.youtube.com/embed/VIDEO_ID")
     order = models.PositiveIntegerField(default=1)
     duration = models.CharField(max_length=20, blank=True, help_text="e.g. 10:30")
+
+    # NEW FIELD - paste HTML notes content here
+    notes = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Paste full HTML notes content for this video topic."
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -91,3 +99,4 @@ class CourseVideo(models.Model):
 
     def __str__(self):
         return f"{self.course.title} - {self.order}. {self.title}"
+
