@@ -16,7 +16,7 @@
             <form method="GET">
                 <div class="d-flex gap-2">
                     <div class="position-relative flex-grow-1">
-                        <i class="fa fa-search position-absolute"
+                        <i class="fa-solid fa-magnifying-glass position-absolute"
                            style="left:13px;top:50%;transform:translateY(-50%);
                                   color:var(--text-muted);font-size:13px;
                                   z-index:1;pointer-events:none;"></i>
@@ -26,7 +26,7 @@
                                placeholder="Search projects...">
                     </div>
                     <button class="btn btn-primary" style="border-radius:10px;white-space:nowrap;">
-                        <i class="fa fa-search me-1"></i> Search
+                        <i class="fa-solid fa-magnifying-glass me-1"></i> Search
                     </button>
                 </div>
             </form>
@@ -37,68 +37,46 @@
     <div class="filter-bar-wrap mb-4">
         <form method="GET" class="row g-3 align-items-end">
 
-            <!-- CATEGORY -->
             <div class="col-md-3">
                 <label class="form-label" style="font-size:12px;margin-bottom:5px;">
-                    <i class="fa fa-layer-group me-1" style="color:var(--primary);"></i>
-                    Category
+                    <i class="fa-solid fa-layer-group me-1" style="color:var(--primary);"></i>Category
                 </label>
                 <select name="category" class="form-select">
                     <option value="">All Categories</option>
                     {% for cat in categories %}
-                    <option value="{{ cat.slug }}"
-                        {% if request.GET.category == cat.slug %}selected{% endif %}>
+                    <option value="{{ cat.slug }}" {% if request.GET.category == cat.slug %}selected{% endif %}>
                         {{ cat.name }}
                     </option>
                     {% endfor %}
                 </select>
             </div>
 
-            <!-- TECHNOLOGY -->
             <div class="col-md-3">
                 <label class="form-label" style="font-size:12px;margin-bottom:5px;">
-                    <i class="fa fa-code me-1" style="color:var(--primary);"></i>
-                    Technology
+                    <i class="fa-solid fa-code me-1" style="color:var(--primary);"></i>Technology
                 </label>
-                <input type="text" name="technology"
-                       value="{{ request.GET.technology }}"
-                       class="form-control"
-                       placeholder="e.g. Python, Django">
+                <input type="text" name="technology" value="{{ request.GET.technology }}"
+                       class="form-control" placeholder="e.g. Python, Django">
             </div>
 
-            <!-- DIFFICULTY -->
             <div class="col-md-3">
                 <label class="form-label" style="font-size:12px;margin-bottom:5px;">
-                    <i class="fa fa-signal me-1" style="color:var(--primary);"></i>
-                    Difficulty
+                    <i class="fa-solid fa-signal me-1" style="color:var(--primary);"></i>Difficulty
                 </label>
                 <select name="difficulty" class="form-select">
                     <option value="">All Difficulty</option>
-                    <option value="beginner"
-                        {% if request.GET.difficulty == 'beginner' %}selected{% endif %}>
-                        🟢 Beginner
-                    </option>
-                    <option value="intermediate"
-                        {% if request.GET.difficulty == 'intermediate' %}selected{% endif %}>
-                        🟡 Intermediate
-                    </option>
-                    <option value="advanced"
-                        {% if request.GET.difficulty == 'advanced' %}selected{% endif %}>
-                        🔴 Advanced
-                    </option>
+                    <option value="beginner" {% if request.GET.difficulty == 'beginner' %}selected{% endif %}>🟢 Beginner</option>
+                    <option value="intermediate" {% if request.GET.difficulty == 'intermediate' %}selected{% endif %}>🟡 Intermediate</option>
+                    <option value="advanced" {% if request.GET.difficulty == 'advanced' %}selected{% endif %}>🔴 Advanced</option>
                 </select>
             </div>
 
-            <!-- ACTIONS -->
             <div class="col-md-3 d-flex gap-2">
-                <button type="submit" class="btn btn-primary flex-grow-1"
-                        style="border-radius:10px;">
-                    <i class="fa fa-filter me-1"></i> Apply
+                <button type="submit" class="btn btn-primary flex-grow-1" style="border-radius:10px;">
+                    <i class="fa-solid fa-filter me-1"></i> Apply
                 </button>
-                <a href="{% url 'project_list' %}"
-                   class="btn btn-outline-secondary"
-                   style="border-radius:10px;">
-                    <i class="fa fa-times"></i>
+                <a href="{% url 'project_list' %}" class="btn btn-outline-secondary" style="border-radius:10px;">
+                    <i class="fa-solid fa-xmark"></i>
                 </a>
             </div>
 
@@ -129,54 +107,41 @@
                                    border:none;cursor:pointer;
                                    display:flex;align-items:center;justify-content:center;
                                    transition:all 0.22s var(--ease);">
-                        <i class="fa-{% if project.id in wishlist_ids %}solid text-danger{% else %}regular{% endif %} fa-heart"
-                           style="font-size:14px;{% if project.id not in wishlist_ids %}color:var(--text-muted);{% endif %}"></i>
+                        {% if project.id in wishlist_ids %}
+                            <i class="fa-solid fa-heart" style="font-size:14px;color:#f43f5e;"></i>
+                        {% else %}
+                            <i class="fa-regular fa-heart" style="font-size:14px;color:var(--text-muted);"></i>
+                        {% endif %}
                     </button>
                     {% endif %}
 
-                    <!-- DIFFICULTY -->
+                    <!-- DIFFICULTY BADGE -->
                     <span class="position-absolute"
-                          style="bottom:10px;left:10px;
-                                 padding:3px 10px;border-radius:99px;
-                                 font-size:11px;font-weight:700;
-                                 backdrop-filter:blur(8px);
-                                 {% if project.difficulty_level == 'beginner' %}
-                                     background:rgba(16,185,129,0.85);color:#fff;
-                                 {% elif project.difficulty_level == 'intermediate' %}
-                                     background:rgba(245,158,11,0.85);color:#fff;
-                                 {% else %}
-                                     background:rgba(244,63,94,0.85);color:#fff;
-                                 {% endif %}">
+                          style="bottom:10px;left:10px;padding:3px 10px;border-radius:99px;
+                                 font-size:11px;font-weight:700;backdrop-filter:blur(8px);
+                                 {% if project.difficulty_level == 'beginner' %}background:rgba(16,185,129,0.85);color:#fff;
+                                 {% elif project.difficulty_level == 'intermediate' %}background:rgba(245,158,11,0.85);color:#fff;
+                                 {% else %}background:rgba(244,63,94,0.85);color:#fff;{% endif %}">
                         {{ project.difficulty_level|capfirst }}
                     </span>
                 </div>
 
                 <!-- CARD BODY -->
                 <div class="card-body p-3 d-flex flex-column flex-grow-1">
-
-                    <!-- TECH PILL -->
                     <span class="neu-pressed rounded d-inline-block mb-2"
                           style="font-size:11px;font-weight:700;padding:3px 10px;
                                  color:var(--primary);width:fit-content;">
                         {{ project.technology }}
                     </span>
-
-                    <h5 class="card-title fw-bold mb-1"
-                        style="font-size:15px;line-height:1.4;">
+                    <h5 class="card-title fw-bold mb-1" style="font-size:15px;line-height:1.4;">
                         {{ project.title }}
                     </h5>
-
-                    <p class="card-text mb-3 flex-grow-1"
-                       style="font-size:13px;line-height:1.6;">
+                    <p class="card-text mb-3 flex-grow-1" style="font-size:13px;line-height:1.6;">
                         {{ project.description|truncatewords:12 }}
                     </p>
-
-                    <!-- PRICE -->
-                    <div class="fw-bold mb-3"
-                         style="font-size:1.15rem;color:#10b981;">
+                    <div class="fw-bold mb-3" style="font-size:1.15rem;color:#10b981;">
                         ₹{{ project.price }}
                     </div>
-
                 </div>
 
                 <!-- CARD FOOTER -->
@@ -184,9 +149,8 @@
                     <a href="{% url 'project_detail' project.slug %}"
                        class="btn btn-outline-primary btn-sm flex-grow-1"
                        style="border-radius:9px;">
-                        <i class="fa fa-eye me-1"></i> Details
+                        <i class="fa-solid fa-eye me-1"></i> Details
                     </a>
-
                     {% if user.is_authenticated and user.profile.is_customer %}
                     <a href="{% url 'add_to_cart' project.id %}"
                        class="btn btn-success btn-sm flex-grow-1"
@@ -207,11 +171,9 @@
 
         {% empty %}
         <div class="col-12">
-            <div class="neu-raised rounded p-5 text-center"
-                 style="max-width:480px;margin:0 auto;">
+            <div class="neu-raised rounded p-5 text-center" style="max-width:480px;margin:0 auto;">
                 <div class="stat-icon mx-auto mb-4" style="width:72px;height:72px;">
-                    <i class="fa fa-folder-open"
-                       style="font-size:28px;color:var(--text-muted);"></i>
+                    <i class="fa-solid fa-folder-open" style="font-size:28px;color:var(--text-muted);"></i>
                 </div>
                 <h5 class="fw-bold mb-2" style="color:var(--text);">No projects found.</h5>
                 <p class="text-muted mb-0" style="font-size:14px;">
@@ -239,10 +201,11 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
     btn.addEventListener('click', function () {
         const projectId = this.dataset.id;
         const icon = this.querySelector('i');
+        const self = this;
 
-        /* Button press effect */
-        this.style.boxShadow = 'var(--neu-pressed)';
-        setTimeout(() => this.style.boxShadow = 'var(--neu-raised)', 300);
+        /* Neumorphic press effect */
+        self.style.boxShadow = 'var(--neu-pressed)';
+        setTimeout(() => self.style.boxShadow = 'var(--neu-raised)', 300);
 
         fetch("{% url 'toggle_wishlist' %}", {
             method: 'POST',
@@ -255,12 +218,25 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
         .then(res => res.json())
         .then(data => {
             if (data.status === 'added') {
-                icon.className = 'fa-solid fa-heart text-danger';
+                icon.className = 'fa-solid fa-heart';
+                icon.style.color = '#f43f5e';
             } else {
                 icon.className = 'fa-regular fa-heart';
                 icon.style.color = 'var(--text-muted)';
             }
-        });
+
+            /* Update navbar wishlist badge */
+            const countEl = document.getElementById('wishlist-count');
+            if (countEl && data.wishlist_count !== undefined) {
+                if (data.wishlist_count > 0) {
+                    countEl.textContent = data.wishlist_count;
+                    countEl.style.display = 'inline';
+                } else {
+                    countEl.style.display = 'none';
+                }
+            }
+        })
+        .catch(err => console.error('Wishlist error:', err));
     });
 });
 </script>

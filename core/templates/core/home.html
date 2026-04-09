@@ -3,9 +3,6 @@
 
 {% block extra_css %}
 <style>
-    /* =========================================
-       HERO SLIDER — unchanged
-    ========================================= */
     .hero-slider-section {
         position: relative; width: 100%; height: 75vh; min-height: 500px;
         background-color: #111; overflow: hidden; margin-bottom: 3rem;
@@ -72,42 +69,29 @@
         .hero-slider-section .content .description { font-size: 0.9rem; }
     }
 
-    /* =========================================
-       STATS SECTION — neumorphism
-    ========================================= */
     .stats-section {
-        background: var(--neu-bg);
-        position: relative; z-index: 10;
+        background: var(--neu-bg); position: relative; z-index: 10;
         border-top: 1px solid rgba(var(--primary-rgb), 0.08);
         border-bottom: 1px solid rgba(var(--primary-rgb), 0.08);
     }
     .counter-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .counter-circle {
         width: 120px; height: 120px; border-radius: 50%;
-        background: var(--neu-bg);
-        box-shadow: var(--neu-raised);
+        background: var(--neu-bg); box-shadow: var(--neu-raised);
         border: 2px solid rgba(6, 187, 204, 0.15);
         display: flex; flex-direction: column; justify-content: center; align-items: center;
         transition: box-shadow 0.4s ease, border-color 0.4s ease; margin-bottom: 20px;
     }
-    .counter-circle:hover {
-        box-shadow: var(--neu-pressed);
-        border-color: var(--primary);
-    }
+    .counter-circle:hover { box-shadow: var(--neu-pressed); border-color: var(--primary); }
     .counter-circle i { color: var(--primary); font-size: 2rem; margin-bottom: 10px; }
     .counter-number { font-size: 1.5rem; font-weight: 800; color: var(--text); line-height: 1; display: flex; align-items: center; }
     .counter-label { color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem; }
 
-    /* =========================================
-       PROJECT CARDS — unchanged (angled design)
-    ========================================= */
     .project-card {
-        background-color: var(--bg-card);
-        overflow: hidden; box-shadow: var(--shadow-md);
+        background-color: var(--bg-card); overflow: hidden; box-shadow: var(--shadow-md);
         padding: 0; text-align: center; border-radius: 16px;
         position: relative; transition: all 0.3s ease;
-        border: 1px solid var(--border); height: 100%;
-        display: flex; flex-direction: column;
+        border: 1px solid var(--border); height: 100%; display: flex; flex-direction: column;
     }
     .project-card:hover { transform: translateY(-10px); box-shadow: 0px 15px 40px rgba(6, 187, 204, 0.15); }
     .project-card .img-container {
@@ -137,11 +121,12 @@
         display: flex; align-items: center; justify-content: center;
         color: #fff; font-size: 18px; transition: all 0.3s ease;
         box-shadow: var(--neu-raised); position: relative; overflow: hidden;
+        border: none; cursor: pointer;
     }
     .wishlist-btn { background-color: #ff5f56; margin-top: 9px; }
-    .wishlist-btn:hover { background-color: #e04a42; transform: scale(1.1); color: #fff; }
+    .wishlist-btn:hover { background-color: #e04a42; transform: scale(1.1); }
     .buy-btn { background-color: var(--primary); }
-    .buy-btn:hover { background-color: #05a0af; transform: scale(1.1); color: #fff; }
+    .buy-btn:hover { background-color: #05a0af; transform: scale(1.1); }
     .buy-btn .expansion {
         width: 100%; height: 100%; background-color: #06D6A0; display: block; border-radius: 50%;
         position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0);
@@ -165,50 +150,35 @@
     .box-footer .stars { color: #ffbd2e; font-size: 0.8rem; }
     .box-footer .downloads { font-size: 0.85rem; color: var(--text-muted); font-weight: bold; }
 
-    /* =========================================
-       TESTIMONIAL CARDS — neumorphism
-    ========================================= */
     .testimonial-card {
-        background: var(--neu-bg);
-        box-shadow: var(--neu-raised);
-        border: none;
-        border-radius: 16px;
-        padding: 30px;
-        position: relative;
+        background: var(--neu-bg); box-shadow: var(--neu-raised); border: none;
+        border-radius: 16px; padding: 30px; position: relative;
         transition: box-shadow 0.3s var(--ease);
     }
     .testimonial-card:hover { box-shadow: var(--neu-raised-lg); }
     .testimonial-card::after {
-        content: "\f10d"; font-family: "Font Awesome 5 Free"; font-weight: 900;
+        content: "\f10d"; font-family: "Font Awesome 6 Free"; font-weight: 900;
         position: absolute; top: 20px; right: 30px; font-size: 3rem;
         color: rgba(6, 187, 204, 0.1);
     }
 
-    /* =========================================
-       TRENDING SECTION BG — neumorphism
-    ========================================= */
     .trending-section {
         background: var(--neu-bg);
         border-top: 1px solid rgba(var(--primary-rgb), 0.08);
         border-bottom: 1px solid rgba(var(--primary-rgb), 0.08);
     }
 
-    /* =========================================
-       CTA CARD — neumorphism
-    ========================================= */
     .cta-card {
         background: linear-gradient(135deg, #0c1022 0%, #091e3a 100%);
-        border-radius: 20px;
-        border: 1px solid rgba(6,187,204,0.15);
-        box-shadow: var(--neu-raised-lg);
-        overflow: hidden;
+        border-radius: 20px; border: 1px solid rgba(6,187,204,0.15);
+        box-shadow: var(--neu-raised-lg); overflow: hidden;
     }
 </style>
 {% endblock %}
 
 {% block content %}
 
-<!-- HERO SLIDER — unchanged -->
+<!-- HERO SLIDER -->
 <div class="hero-slider-section">
     <ul class='slider'>
         <li class='slider-item' style="background-image: url('{% static 'img/carousel-1.jpg' %}');">
@@ -260,34 +230,34 @@
     </nav>
 </div>
 
-<!-- STATS — neumorphic circles -->
+<!-- STATS -->
 <div class="container-fluid stats-section py-5">
     <div class="container">
         <div class="row g-4 justify-content-center">
             <div class="col-md-3 counter-wrapper">
                 <div class="counter-circle">
-                    <i class="fas fa-layer-group"></i>
+                    <i class="fa-solid fa-layer-group"></i>
                     <div class="counter-number"><span class="counter" data-count="150">0</span><span class="text-primary ms-1">+</span></div>
                 </div>
                 <div class="counter-label">Ready Projects</div>
             </div>
             <div class="col-md-3 counter-wrapper">
                 <div class="counter-circle">
-                    <i class="fas fa-users"></i>
+                    <i class="fa-solid fa-users"></i>
                     <div class="counter-number"><span class="counter" data-count="98">0</span><span class="text-primary ms-1">%</span></div>
                 </div>
                 <div class="counter-label">Satisfaction Rate</div>
             </div>
             <div class="col-md-3 counter-wrapper">
                 <div class="counter-circle">
-                    <i class="fas fa-download"></i>
+                    <i class="fa-solid fa-download"></i>
                     <div class="counter-number"><span class="counter" data-count="5000">0</span><span class="text-primary ms-1">+</span></div>
                 </div>
                 <div class="counter-label">Total Downloads</div>
             </div>
             <div class="col-md-3 counter-wrapper">
                 <div class="counter-circle">
-                    <i class="fas fa-user"></i>
+                    <i class="fa-solid fa-user"></i>
                     <div class="counter-number"><span class="counter" data-count="1000">0</span><span class="text-primary ms-1">+</span></div>
                 </div>
                 <div class="counter-label">Active Users</div>
@@ -317,15 +287,32 @@
                     <span class="badge bg-success position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill shadow-sm">New</span>
                     <div class="card-img-overlay-hover">
                         <a href="{% url 'project_detail' project.slug %}" class="btn btn-light rounded-circle" style="width:45px;height:45px;display:flex;align-items:center;justify-content:center;">
-                            <i class="fas fa-eye text-primary"></i>
+                            <i class="fa-solid fa-eye text-primary"></i>
                         </a>
                     </div>
                 </div>
                 <div class="box-content">
                     <div class="action-buttons">
-                        <a href="#" class="action-btn wishlist-btn" title="Add to Wishlist"><i class="fas fa-heart"></i></a>
-                        <a href="{% if user.is_authenticated %}{% url 'add_to_cart' project.id %}{% else %}{% url 'login' %}{% endif %}" class="action-btn buy-btn buy-trigger" title="Add to Cart">
-                            <i class="fas fa-cart-plus"></i><span class="expansion"></span>
+                        <!-- ✅ FIXED: data-id added, proper button tag -->
+                        {% if user.is_authenticated and user.profile.is_customer %}
+                        <button class="action-btn wishlist-btn"
+                                data-id="{{ project.id }}"
+                                title="Add to Wishlist">
+                            {% if project.id in wishlist_ids %}
+                                <i class="fa-solid fa-heart" style="color:#fff;"></i>
+                            {% else %}
+                                <i class="fa-regular fa-heart" style="color:#fff;"></i>
+                            {% endif %}
+                        </button>
+                        {% else %}
+                        <a href="{% url 'login' %}" class="action-btn wishlist-btn" title="Login to Wishlist">
+                            <i class="fa-regular fa-heart" style="color:#fff;"></i>
+                        </a>
+                        {% endif %}
+
+                        <a href="{% if user.is_authenticated %}{% url 'add_to_cart' project.id %}{% else %}{% url 'login' %}{% endif %}"
+                           class="action-btn buy-btn buy-trigger" title="Add to Cart">
+                            <i class="fa-solid fa-cart-plus"></i><span class="expansion"></span>
                         </a>
                     </div>
                     <div class="success-mark"></div>
@@ -336,8 +323,8 @@
                     <p class="box-desc">{{ project.description|truncatewords:8 }}</p>
                     <div class="box-price">₹{{ project.price }}</div>
                     <div class="box-footer">
-                        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
-                        <div class="downloads"><i class="fas fa-download text-primary me-1"></i> {{ project.total_downloads }}</div>
+                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+                        <div class="downloads"><i class="fa-solid fa-download text-primary me-1"></i> {{ project.total_downloads }}</div>
                     </div>
                 </div>
             </div>
@@ -345,7 +332,7 @@
         {% empty %}
         <div class="col-12 text-center py-5">
             <div class="neu-pressed rounded p-5">
-                <i class="fas fa-folder-open fa-3x mb-3 d-block" style="color:var(--text-muted);opacity:0.4;"></i>
+                <i class="fa-solid fa-folder-open fa-3x mb-3 d-block" style="color:var(--text-muted);opacity:0.4;"></i>
                 <h5 class="fw-bold" style="color:var(--text);">No projects uploaded yet.</h5>
             </div>
         </div>
@@ -372,15 +359,31 @@
                         <span class="badge bg-danger position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill shadow-sm">🔥 Hot</span>
                         <div class="card-img-overlay-hover">
                             <a href="{% url 'project_detail' project.slug %}" class="btn btn-light rounded-circle" style="width:45px;height:45px;display:flex;align-items:center;justify-content:center;">
-                                <i class="fas fa-eye text-danger"></i>
+                                <i class="fa-solid fa-eye text-danger"></i>
                             </a>
                         </div>
                     </div>
                     <div class="box-content">
                         <div class="action-buttons">
-                            <a href="#" class="action-btn wishlist-btn" title="Add to Wishlist"><i class="fas fa-heart"></i></a>
-                            <a href="{% if user.is_authenticated %}{% url 'add_to_cart' project.id %}{% else %}{% url 'login' %}{% endif %}" class="action-btn buy-btn buy-trigger" title="Add to Cart">
-                                <i class="fas fa-cart-plus"></i><span class="expansion"></span>
+                            {% if user.is_authenticated and user.profile.is_customer %}
+                            <button class="action-btn wishlist-btn"
+                                    data-id="{{ project.id }}"
+                                    title="Add to Wishlist">
+                                {% if project.id in wishlist_ids %}
+                                    <i class="fa-solid fa-heart" style="color:#fff;"></i>
+                                {% else %}
+                                    <i class="fa-regular fa-heart" style="color:#fff;"></i>
+                                {% endif %}
+                            </button>
+                            {% else %}
+                            <a href="{% url 'login' %}" class="action-btn wishlist-btn" title="Login to Wishlist">
+                                <i class="fa-regular fa-heart" style="color:#fff;"></i>
+                            </a>
+                            {% endif %}
+
+                            <a href="{% if user.is_authenticated %}{% url 'add_to_cart' project.id %}{% else %}{% url 'login' %}{% endif %}"
+                               class="action-btn buy-btn buy-trigger" title="Add to Cart">
+                                <i class="fa-solid fa-cart-plus"></i><span class="expansion"></span>
                             </a>
                         </div>
                         <div class="success-mark"></div>
@@ -391,8 +394,8 @@
                         <p class="box-desc">{{ project.description|truncatewords:8 }}</p>
                         <div class="box-price">₹{{ project.price }}</div>
                         <div class="box-footer">
-                            <div class="stars"><i class="fas fa-star text-danger"></i><i class="fas fa-star text-danger"></i><i class="fas fa-star text-danger"></i><i class="fas fa-star text-danger"></i><i class="fas fa-star-half-alt text-danger"></i></div>
-                            <div class="downloads"><i class="fas fa-fire text-danger me-1"></i> {{ project.total_downloads }}</div>
+                            <div class="stars"><i class="fa-solid fa-star text-danger"></i><i class="fa-solid fa-star text-danger"></i><i class="fa-solid fa-star text-danger"></i><i class="fa-solid fa-star text-danger"></i><i class="fa-solid fa-star-half-stroke text-danger"></i></div>
+                            <div class="downloads"><i class="fa-solid fa-fire text-danger me-1"></i> {{ project.total_downloads }}</div>
                         </div>
                     </div>
                 </div>
@@ -403,7 +406,7 @@
 </div>
 {% endif %}
 
-<!-- TESTIMONIALS — neumorphic cards -->
+<!-- TESTIMONIALS -->
 <div class="container py-5 my-5">
     <div class="text-center mb-5">
         <h6 class="text-primary text-uppercase fw-bold" style="letter-spacing:1px;">Testimonials</h6>
@@ -413,7 +416,7 @@
         <div class="col-md-4">
             <div class="testimonial-card h-100">
                 <div class="text-warning mb-3">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                 </div>
                 <p class="fst-italic mb-4" style="color:var(--text-muted);">"The MERN stack ecommerce project I downloaded helped me understand Redux better than any video tutorial. The code was clean and well documented!"</p>
                 <div class="d-flex align-items-center">
@@ -428,7 +431,7 @@
         <div class="col-md-4">
             <div class="testimonial-card h-100">
                 <div class="text-warning mb-3">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                 </div>
                 <p class="fst-italic mb-4" style="color:var(--text-muted);">"Absolutely brilliant platform. I used a Django hospital management template for my final year submission and scored an A+!"</p>
                 <div class="d-flex align-items-center">
@@ -443,7 +446,7 @@
         <div class="col-md-4">
             <div class="testimonial-card h-100">
                 <div class="text-warning mb-3">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
                 </div>
                 <p class="fst-italic mb-4" style="color:var(--text-muted);">"I have started selling my own scripts here. The dashboard is intuitive and payouts are fast. Great community to be a part of."</p>
                 <div class="d-flex align-items-center">
@@ -458,13 +461,13 @@
     </div>
 </div>
 
-<!-- CTA — neumorphic dark card -->
+<!-- CTA -->
 {% if not user.is_authenticated %}
 <div class="container py-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="cta-card p-5 text-center position-relative">
-                <i class="fas fa-code position-absolute" style="font-size:15rem;color:rgba(255,255,255,0.03);right:-20px;bottom:-40px;transform:rotate(-15deg);"></i>
+                <i class="fa-solid fa-code position-absolute" style="font-size:15rem;color:rgba(255,255,255,0.03);right:-20px;bottom:-40px;transform:rotate(-15deg);"></i>
                 <div class="position-relative" style="z-index:1;">
                     <h2 class="display-6 fw-bold mb-3" style="color:var(--primary);">Ready to upgrade your skills?</h2>
                     <p class="fs-5 mb-4 mx-auto" style="max-width:600px;color:rgba(255,255,255,0.65);">
@@ -486,16 +489,18 @@
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 <script>
+    // Slider
     const slider = document.querySelector('.slider');
     function activate(e) {
         const items = document.querySelectorAll('.slider-item');
-        if (e.target.closest('.next')) { slider.append(items[0]); }
-        if (e.target.closest('.prev')) { slider.prepend(items[items.length - 1]); }
+        if (e.target.closest('.next')) slider.append(items[0]);
+        if (e.target.closest('.prev')) slider.prepend(items[items.length - 1]);
     }
     const navControls = document.querySelector('.nav-controls');
-    if (navControls) { navControls.addEventListener('click', activate, false); }
+    if (navControls) navControls.addEventListener('click', activate, false);
 
     $(document).ready(function() {
+        // Stats counter
         let counted = false;
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting && !counted) {
@@ -510,14 +515,53 @@
                 });
             }
         }, { threshold: 0.5 });
-        if (document.querySelector('.stats-section')) { observer.observe(document.querySelector('.stats-section')); }
+        if (document.querySelector('.stats-section')) observer.observe(document.querySelector('.stats-section'));
 
+        // Buy trigger animation
         $('.buy-trigger').on('click', function(e) {
             e.preventDefault();
             var $card = $(this).closest('.project-card');
             var targetUrl = $(this).attr('href');
             $card.addClass('expanded');
             setTimeout(function() { window.location.href = targetUrl; }, 800);
+        });
+    });
+
+    // ✅ Wishlist AJAX for homepage cards
+    document.querySelectorAll('.wishlist-btn[data-id]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const projectId = this.dataset.id;
+            const icon = this.querySelector('i');
+
+            fetch("{% url 'toggle_wishlist' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `project_id=${projectId}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'added') {
+                    icon.className = 'fa-solid fa-heart';
+                    icon.style.color = '#fff';
+                } else {
+                    icon.className = 'fa-regular fa-heart';
+                    icon.style.color = '#fff';
+                }
+                // Update navbar badge
+                const countEl = document.getElementById('wishlist-count');
+                if (countEl) {
+                    if (data.wishlist_count > 0) {
+                        countEl.textContent = data.wishlist_count;
+                        countEl.style.display = 'inline';
+                    } else {
+                        countEl.style.display = 'none';
+                    }
+                }
+            })
+            .catch(err => console.error('Wishlist error:', err));
         });
     });
 </script>

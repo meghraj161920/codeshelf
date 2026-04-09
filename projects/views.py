@@ -19,9 +19,11 @@ def project_list(request):
     categories = Category.objects.all()
 
     wishlist_ids = []
+    wishlist_count = 0
     if request.user.is_authenticated:
-        wishlist_ids = list(Wishlist.objects.filter(user=request.user)
-                        .values_list('project_id', flat=True))
+        wishlist_qs = Wishlist.objects.filter(user=request.user)
+        wishlist_ids = list(wishlist_qs.values_list('project_id', flat=True))
+        wishlist_count = wishlist_qs.count()
 
     category = request.GET.get('category')
     technology = request.GET.get('technology')
@@ -41,6 +43,7 @@ def project_list(request):
         'projects': projects,
         'categories': categories,
         'wishlist_ids': wishlist_ids,
+        'wishlist_count': wishlist_count,
     })
 
 

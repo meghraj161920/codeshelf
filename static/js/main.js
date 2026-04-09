@@ -26,20 +26,14 @@
     // ================= BACK TO TOP =================
     $(window).scroll(function () {
         if ($(this).scrollTop() > 300) {
-            $('.back-to-top').css({
-                opacity: 1,
-                visibility: 'visible'
-            });
+            $('.back-to-top').css({ opacity: 1, visibility: 'visible' });
         } else {
-            $('.back-to-top').css({
-                opacity: 0,
-                visibility: 'hidden'
-            });
+            $('.back-to-top').css({ opacity: 0, visibility: 'hidden' });
         }
     });
 
     $('.back-to-top').click(function () {
-        $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
+        $('html, body').animate({ scrollTop: 0 }, 1500, 'easeInOutExpo');
         return false;
     });
 
@@ -48,7 +42,6 @@
     const searchWrap = document.querySelector('.search-wrap');
 
     if (searchInput && searchWrap) {
-
         const dropdown = document.createElement('div');
         dropdown.id = 'search-dropdown';
         dropdown.style.cssText = `
@@ -94,7 +87,6 @@
                         data.results.forEach(project => {
                             const item = document.createElement('a');
                             item.href = `/projects/${project.slug}/`;
-
                             item.style.cssText = `
                                 display: flex;
                                 justify-content: space-between;
@@ -106,28 +98,18 @@
                                 border-bottom: 1px solid var(--border, #f0f0f0);
                                 transition: background 0.15s;
                             `;
-
                             item.innerHTML = `
                                 <div>
-                                    <i class="fa fa-search" style="color:#06BBCC;margin-right:8px;font-size:11px;"></i>
+                                    <i class="fa-solid fa-magnifying-glass" style="color:#06BBCC;margin-right:8px;font-size:11px;"></i>
                                     <strong>${project.title}</strong>
                                     <span style="color:var(--text-muted);font-size:11px;margin-left:6px;">
                                         ${project.technology}
                                     </span>
                                 </div>
-                                <span style="color:#06BBCC;font-weight:700;">
-                                    ₹${project.price}
-                                </span>
+                                <span style="color:#06BBCC;font-weight:700;">₹${project.price}</span>
                             `;
-
-                            item.addEventListener('mouseenter', () => {
-                                item.style.background = 'var(--bg-hover)';
-                            });
-
-                            item.addEventListener('mouseleave', () => {
-                                item.style.background = 'transparent';
-                            });
-
+                            item.addEventListener('mouseenter', () => item.style.background = 'var(--bg-hover)');
+                            item.addEventListener('mouseleave', () => item.style.background = 'transparent');
                             dropdown.appendChild(item);
                         });
 
@@ -143,9 +125,7 @@
                             text-decoration: none;
                         `;
                         viewAll.textContent = `View all results for "${q}"`;
-
                         dropdown.appendChild(viewAll);
-
                         dropdown.style.display = 'block';
                     });
             }, 300);
@@ -212,57 +192,7 @@
 
     function updateIcon(theme) {
         if (!themeIcon) return;
-        themeIcon.className = theme === 'dark' ? 'fa fa-sun' : 'fa fa-moon';
+        themeIcon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     }
-
-    // ================= CSRF =================
-    function getCSRFToken() {
-        let cookieValue = null;
-        document.cookie.split(';').forEach(function (cookie) {
-            cookie = cookie.trim();
-            if (cookie.startsWith('csrftoken=')) {
-                cookieValue = cookie.substring('csrftoken='.length);
-            }
-        });
-        return cookieValue;
-    }
-
-    // ================= WISHLIST =================
-    $(document).on("click", ".wishlist-btn", function (e) {
-        e.preventDefault();
-
-        const btn = $(this);
-        const projectId = btn.data("id");
-        const icon = btn.find("i");
-
-        $.ajax({
-            url: "/wishlist/toggle/",
-            method: "POST",
-            data: {
-                project_id: projectId,
-                csrfmiddlewaretoken: getCSRFToken()
-            },
-            success: function (data) {
-                const countEl = $("#wishlist-count");
-
-                if (data.wishlist_count > 0) {
-                    countEl.text(data.wishlist_count).show();
-                } else {
-                    countEl.hide();
-                }
-
-                if (data.status === "added") {
-                    icon.removeClass("fa-heart-o").addClass("fa-heart").css("color", "red");
-                } else {
-                    icon.removeClass("fa-heart").addClass("fa-heart-o").css("color", "");
-                }
-            },
-            error: function (xhr) {
-                if (xhr.status === 403) {
-                    window.location.href = "/accounts/login/";
-                }
-            }
-        });
-    });
 
 })(jQuery);

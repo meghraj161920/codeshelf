@@ -3,115 +3,97 @@
 
 {% block extra_css %}
 <style>
-    /* =========================================
-       THEME ADAPTIVE VARIABLES 
-    ========================================= */
-    :root {
-        --glass-bg: rgba(255, 255, 255, 0.7);
-        --glass-border: rgba(0, 0, 0, 0.08);
-        --header-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        --accent-glow: rgba(6, 187, 204, 0.1);
-    }
-
-    [data-theme="dark"] {
-        --glass-bg: rgba(255, 255, 255, 0.03);
-        --glass-border: rgba(255, 255, 255, 0.1);
-        --header-gradient: linear-gradient(135deg, #0f1322 0%, #181d38 100%);
-        --accent-glow: rgba(6, 187, 204, 0.2);
-    }
-
     .terms-page-bg {
-        background-color: var(--bs-body-bg);
-        color: var(--bs-body-color);
-        position: relative;
-        overflow: hidden;
-        padding-bottom: 5rem;
-        min-height: 100vh;
+        background: var(--bg);
+        position: relative; overflow: hidden;
+        padding-bottom: 5rem; min-height: 100vh;
     }
 
-    /* Floating Orbs */
+    /* Glowing Orbs */
     .terms-page-bg::before, .terms-page-bg::after {
-        content: ''; position: absolute; border-radius: 50%; z-index: 0; pointer-events: none; filter: blur(150px);
+        content: ''; position: absolute; border-radius: 50%;
+        z-index: 0; pointer-events: none; filter: blur(150px);
     }
     .terms-page-bg::before {
         width: 600px; height: 600px; background: var(--primary);
-        top: -200px; left: -200px; opacity: 0.1;
+        top: -200px; left: -200px; opacity: 0.08;
     }
     .terms-page-bg::after {
         width: 500px; height: 500px; background: #8b5cf6;
-        bottom: 20%; right: -150px; opacity: 0.1;
+        bottom: 20%; right: -150px; opacity: 0.08;
     }
 
-    /* Hero Section */
+    /* HEADER */
     .terms-header {
-        background: var(--header-gradient);
+        background: var(--neu-bg);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.06);
         padding: 6rem 0 4rem;
         text-align: center;
-        position: relative;
-        z-index: 1;
-        border-bottom: 1px solid var(--glass-border);
+        position: relative; z-index: 1;
+        border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
     }
-    .terms-header h1 { color: var(--bs-emphasis-color) !important; }
 
-    /* Policy Content Box */
+    /* MAIN BOX — neumorphism */
     .main-terms-box {
-        background: var(--glass-bg);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid var(--glass-border);
+        background: var(--neu-bg);
+        box-shadow: var(--neu-raised-lg);
+        border: none;
         border-radius: 24px;
         padding: 4rem;
         margin-top: 3rem;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
-        position: relative;
-        z-index: 1;
+        position: relative; z-index: 1;
     }
 
     .terms-section {
-        margin-bottom: 3rem;
-        padding-bottom: 2rem;
-        border-bottom: 1px solid var(--glass-border);
+        margin-bottom: 2.5rem;
+        padding-bottom: 2.5rem;
+        border-bottom: 1px solid rgba(var(--primary-rgb), 0.08);
     }
-    .terms-section:last-child { border-bottom: none; margin-bottom: 0; }
+    .terms-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 
-    .terms-row {
-        display: flex;
-        gap: 25px;
-    }
+    .terms-row { display: flex; gap: 20px; }
 
+    /* ICON — neumorphism */
     .terms-icon {
-        width: 50px; height: 50px;
-        background: var(--accent-glow);
+        width: 52px; height: 52px;
+        background: var(--neu-bg);
+        box-shadow: var(--neu-raised);
         color: var(--primary);
-        border-radius: 12px;
+        border-radius: 14px;
         display: flex; align-items: center; justify-content: center;
-        font-size: 1.25rem; flex-shrink: 0;
+        font-size: 1.2rem; flex-shrink: 0;
+        transition: box-shadow 0.3s var(--ease), background 0.3s;
+    }
+    .terms-section:hover .terms-icon {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        box-shadow: var(--neu-pressed), 0 4px 14px rgba(6,187,204,0.3);
+        color: #fff;
     }
 
     .terms-content h4 {
-        font-weight: 800;
-        color: var(--bs-emphasis-color);
-        margin-bottom: 12px;
+        font-weight: 800; color: var(--text); margin-bottom: 10px; font-size: 1.05rem;
     }
-
     .terms-content p {
-        color: var(--bs-secondary-color);
-        line-height: 1.8;
-        font-size: 1.05rem;
+        color: var(--text-muted); line-height: 1.8; font-size: 1rem; margin-bottom: 0;
     }
 
+    /* FLOATING PRINT */
     .floating-print {
         position: fixed; bottom: 2rem; right: 2rem;
-        background: var(--primary); color: white;
-        border: none; border-radius: 50px; padding: 0.8rem 1.8rem;
-        font-weight: 700; box-shadow: 0 10px 20px rgba(6, 187, 204, 0.3);
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white; border: none; border-radius: 50px;
+        padding: 0.8rem 1.8rem; font-weight: 700;
+        box-shadow: var(--neu-raised-lg), 0 4px 18px rgba(6,187,204,0.3);
         z-index: 1000; transition: 0.3s;
     }
-    .floating-print:hover { transform: translateY(-5px); filter: brightness(1.1); color: white; }
+    .floating-print:hover {
+        box-shadow: var(--neu-pressed);
+        transform: translateY(-3px); color: white;
+    }
 
     @media (max-width: 768px) {
         .main-terms-box { padding: 2rem 1.5rem; }
-        .terms-row { flex-direction: column; gap: 15px; }
+        .terms-row { flex-direction: column; gap: 12px; }
     }
 </style>
 {% endblock %}
@@ -119,11 +101,17 @@
 {% block content %}
 <div class="terms-page-bg">
 
+    <!-- HEADER -->
     <header class="terms-header">
         <div class="container">
-            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 rounded-pill mb-3">Legal Agreement</span>
-            <h1 class="display-3 fw-bold mb-3">Terms & <span class="text-primary">Conditions</span></h1>
-            <p class="fs-5 opacity-75 mx-auto" style="max-width: 600px; color: var(--bs-secondary-color);">
+            <span class="neu-pressed rounded px-3 py-2 d-inline-block mb-3"
+                  style="font-size:13px;font-weight:700;color:var(--primary);">
+                Legal Agreement
+            </span>
+            <h1 class="display-3 fw-bold mb-3" style="color:var(--text);">
+                Terms &amp; <span style="color:var(--primary);">Conditions</span>
+            </h1>
+            <p class="fs-5 mx-auto" style="max-width:600px;color:var(--text-muted);">
                 Please review these guidelines carefully to understand your rights and obligations on CodeShelf.
             </p>
         </div>
@@ -132,9 +120,8 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-
                 <div class="main-terms-box">
-                    
+
                     <div class="terms-section">
                         <div class="terms-row">
                             <div class="terms-icon"><i class="fas fa-info-circle"></i></div>
@@ -169,7 +156,7 @@
                         <div class="terms-row">
                             <div class="terms-icon"><i class="fas fa-shopping-cart"></i></div>
                             <div class="terms-content">
-                                <h4>4. Purchases & Downloads</h4>
+                                <h4>4. Purchases &amp; Downloads</h4>
                                 <p>Upon successful payment, you receive a non-exclusive license to use the project files. <strong>Redistribution, resale, or public sharing of purchased source code is strictly prohibited</strong> and may result in legal action and permanent account suspension.</p>
                             </div>
                         </div>
@@ -180,7 +167,7 @@
                             <div class="terms-icon"><i class="fas fa-undo"></i></div>
                             <div class="terms-content">
                                 <h4>5. Refund Policy</h4>
-                                <p>All purchases are final. Due to the digital nature of the products, refunds are only issued in exceptional cases (e.g., corrupted files). For more details, please visit our dedicated <a href="{% url 'refund_policy' %}" class="text-primary fw-bold">Refund Policy</a> page.</p>
+                                <p>All purchases are final. Due to the digital nature of the products, refunds are only issued in exceptional cases (e.g., corrupted files). For more details, please visit our dedicated <a href="{% url 'refund_policy' %}" style="color:var(--primary);font-weight:700;">Refund Policy</a> page.</p>
                             </div>
                         </div>
                     </div>
@@ -220,12 +207,16 @@
                             <div class="terms-icon"><i class="fas fa-headset"></i></div>
                             <div class="terms-content">
                                 <h4>9. Contact Us</h4>
-                                <p class="mb-0">If you have any questions regarding these terms, please reach out to our legal team via the <a href="{% url 'contact' %}" class="text-primary fw-bold">Contact Page</a> or email us directly at <strong>legal@codeshelf.com</strong>.</p>
+                                <p>If you have any questions regarding these terms, please reach out to our legal team via the
+                                    <a href="{% url 'contact' %}" style="color:var(--primary);font-weight:700;">Contact Page</a>
+                                    or email us directly at <strong>legal@codeshelf.com</strong>.
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                </div> </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
