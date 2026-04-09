@@ -24,34 +24,42 @@
     <div class="row g-3 mb-5">
 
         <div class="col-6 col-md-3">
-            <div class="card shadow-sm border-0 p-3 text-center">
-                <i class="fa-solid fa-basket-shopping fa-2x text-primary mb-2"></i>
-                <h4 class="fw-bold mb-0">{{ total_orders }}</h4>
-                <p class="text-muted mb-0 small">Total Orders</p>
+            <div class="stat-card text-center">
+                <div class="stat-icon mx-auto">
+                    <i class="fa-solid fa-basket-shopping text-primary"></i>
+                </div>
+                <div class="stat-value">{{ total_orders }}</div>
+                <div class="stat-label">Total Orders</div>
             </div>
         </div>
 
         <div class="col-6 col-md-3">
-            <div class="card shadow-sm border-0 p-3 text-center">
-                <i class="fa-regular fa-heart fa-2x text-danger mb-2"></i>
-                <h4 class="fw-bold mb-0">{{ wishlist_count }}</h4>
-                <p class="text-muted mb-0 small">Wishlist Items</p>
+            <div class="stat-card text-center">
+                <div class="stat-icon mx-auto">
+                    <i class="fa-regular fa-heart" style="color:#f43f5e;"></i>
+                </div>
+                <div class="stat-value" style="color:#f43f5e;">{{ wishlist_count }}</div>
+                <div class="stat-label">Wishlist Items</div>
             </div>
         </div>
 
         <div class="col-6 col-md-3">
-            <div class="card shadow-sm border-0 p-3 text-center">
-                <i class="fa-regular fa-star fa-2x text-warning mb-2"></i>
-                <h4 class="fw-bold mb-0">{{ reviews_count }}</h4>
-                <p class="text-muted mb-0 small">Reviews Given</p>
+            <div class="stat-card text-center">
+                <div class="stat-icon mx-auto">
+                    <i class="fa-regular fa-star" style="color:#f59e0b;"></i>
+                </div>
+                <div class="stat-value" style="color:#f59e0b;">{{ reviews_count }}</div>
+                <div class="stat-label">Reviews Given</div>
             </div>
         </div>
 
         <div class="col-6 col-md-3">
-            <div class="card shadow-sm border-0 p-3 text-center">
-                <i class="fa-solid fa-ticket fa-2x text-success mb-2"></i>
-                <h4 class="fw-bold mb-0">{{ coupons_count }}</h4>
-                <p class="text-muted mb-0 small">Active Coupons</p>
+            <div class="stat-card text-center">
+                <div class="stat-icon mx-auto">
+                    <i class="fa-solid fa-ticket" style="color:#10b981;"></i>
+                </div>
+                <div class="stat-value" style="color:#10b981;">{{ coupons_count }}</div>
+                <div class="stat-label">Active Coupons</div>
             </div>
         </div>
 
@@ -61,73 +69,99 @@
     <div class="row g-3 mb-5">
 
         <div class="col-6 col-md-3">
-            <a href="{% url 'profile' %}" class="card shadow-sm border-0 p-3 text-center text-decoration-none text-dark h-100">
-                <i class="fa-regular fa-user fa-2x text-primary mb-2"></i>
-                <p class="mb-0 fw-semibold">My Profile</p>
+            <a href="{% url 'profile' %}"
+               class="stat-card text-center text-decoration-none d-block h-100"
+               style="cursor:pointer;">
+                <div class="stat-icon mx-auto">
+                    <i class="fa-regular fa-user" style="color:var(--primary);"></i>
+                </div>
+                <p class="mb-0 fw-semibold" style="color:var(--text);">My Profile</p>
             </a>
         </div>
 
         <div class="col-6 col-md-3">
-            <a href="{% url 'order_history' %}" class="card shadow-sm border-0 p-3 text-center text-decoration-none text-dark h-100">
-                <i class="fa-solid fa-box fa-2x text-warning mb-2"></i>
-                <p class="mb-0 fw-semibold">My Orders</p>
+            <a href="{% url 'order_history' %}"
+               class="stat-card text-center text-decoration-none d-block h-100"
+               style="cursor:pointer;">
+                <div class="stat-icon mx-auto">
+                    <i class="fa-solid fa-box" style="color:#f59e0b;"></i>
+                </div>
+                <p class="mb-0 fw-semibold" style="color:var(--text);">My Orders</p>
             </a>
         </div>
 
         <div class="col-6 col-md-3">
-            <a href="{% url 'wishlist' %}" class="card shadow-sm border-0 p-3 text-center text-decoration-none text-dark h-100">
-                <i class="fa-regular fa-heart fa-2x text-danger mb-2"></i>
-                <p class="mb-0 fw-semibold">Wishlist</p>
+            <a href="{% url 'wishlist' %}"
+               class="stat-card text-center text-decoration-none d-block h-100"
+               style="cursor:pointer;">
+                <div class="stat-icon mx-auto">
+                    <i class="fa-regular fa-heart" style="color:#f43f5e;"></i>
+                </div>
+                <p class="mb-0 fw-semibold" style="color:var(--text);">Wishlist</p>
             </a>
         </div>
 
         <div class="col-6 col-md-3">
-            <a href="{% url 'coupons' %}" class="card shadow-sm border-0 p-3 text-center text-decoration-none text-dark h-100">
-                <i class="fa-solid fa-ticket fa-2x text-success mb-2"></i>
-                <p class="mb-0 fw-semibold">My Coupons</p>
+            <a href="{% url 'coupons' %}"
+               class="stat-card text-center text-decoration-none d-block h-100"
+               style="cursor:pointer;">
+                <div class="stat-icon mx-auto">
+                    <i class="fa-solid fa-ticket" style="color:#10b981;"></i>
+                </div>
+                <p class="mb-0 fw-semibold" style="color:var(--text);">My Coupons</p>
             </a>
         </div>
 
     </div>
 
     <!-- RECENT ORDERS -->
-    <div class="card shadow-sm border-0 p-4">
+    <div class="neu-raised rounded p-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold mb-0">📦 Recent Orders</h5>
-            <a href="{% url 'order_history' %}" class="text-primary text-decoration-none small">
+            <h5 class="fw-bold mb-0" style="color:var(--text);">📦 Recent Orders</h5>
+            <a href="{% url 'order_history' %}"
+               class="text-decoration-none small fw-semibold"
+               style="color:var(--primary);">
                 View All →
             </a>
         </div>
 
         {% if recent_orders %}
-        {% for order in recent_orders %}
-        <div class="border rounded p-3 mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <strong>Order #{{ order.id }}</strong>
-                <div>
-                    <span class="badge bg-success me-2">{{ order.payment_status }}</span>
-                    <small class="text-muted">{{ order.order_date|date:"d M Y" }}</small>
+            {% for order in recent_orders %}
+            <div class="order-card p-3 mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong style="color:var(--text);">Order #{{ order.id }}</strong>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="status-pill paid">
+                            <i class="fa-solid fa-circle-check" style="font-size:10px;"></i>
+                            {{ order.payment_status }}
+                        </span>
+                        <small class="text-muted">{{ order.order_date|date:"d M Y" }}</small>
+                    </div>
                 </div>
-            </div>
 
-            {% for item in order.items.all %}
-            <div class="d-flex justify-content-between">
-                <span class="text-muted small">{{ item.project.title }}</span>
-                <span class="small">₹{{ item.price }}</span>
+                {% for item in order.items.all %}
+                <div class="d-flex justify-content-between py-1"
+                     style="border-bottom:1px solid rgba(var(--primary-rgb),0.06);">
+                    <span class="text-muted small">{{ item.project.title }}</span>
+                    <span class="small fw-semibold" style="color:var(--text);">₹{{ item.price }}</span>
+                </div>
+                {% endfor %}
+
+                <div class="text-end mt-2">
+                    <strong style="color:#10b981;">Total: ₹{{ order.total_amount }}</strong>
+                </div>
             </div>
             {% endfor %}
 
-            <div class="text-end mt-2">
-                <strong class="text-success">Total: ₹{{ order.total_amount }}</strong>
-            </div>
-        </div>
-        {% endfor %}
-
         {% else %}
-        <div class="text-center py-4">
-            <i class="fa-solid fa-box-open fa-3x text-muted mb-3"></i>
-            <p class="text-muted">No orders yet!</p>
-            <a href="{% url 'project_list' %}" class="btn btn-primary btn-sm">Browse Projects</a>
+        <div class="text-center py-5">
+            <div class="stat-icon mx-auto mb-3" style="width:64px;height:64px;">
+                <i class="fa-solid fa-box-open" style="font-size:24px;color:var(--text-muted);"></i>
+            </div>
+            <p class="text-muted mb-3">No orders yet!</p>
+            <a href="{% url 'project_list' %}" class="btn btn-primary btn-sm">
+                <i class="fa fa-search me-1"></i> Browse Projects
+            </a>
         </div>
         {% endif %}
 

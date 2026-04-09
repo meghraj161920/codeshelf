@@ -5,123 +5,190 @@
 <div class="container py-5">
 
     <!-- PAGE HEADER -->
-    <div class="row mb-4">
+    <div class="row align-items-center mb-4 g-3">
         <div class="col-md-6">
-            <h2 class="fw-bold">Browse Courses</h2>
-            <p class="text-muted">Free courses to help you learn faster</p>
+            <h2 class="fw-bold mb-1" style="color:var(--text);">Browse Courses</h2>
+            <p class="text-muted mb-0" style="font-size:14px;">
+                Free courses to help you learn faster
+            </p>
         </div>
         <div class="col-md-6">
-            <form method="GET" class="d-flex">
-                <input type="text" name="q" value="{{ request.GET.q }}"
-                    class="form-control me-2" placeholder="Search courses...">
-                <button class="btn btn-primary">Search</button>
+            <form method="GET">
+                <div class="d-flex gap-2">
+                    <div class="position-relative flex-grow-1">
+                        <i class="fa fa-search position-absolute"
+                           style="left:13px;top:50%;transform:translateY(-50%);
+                                  color:var(--text-muted);font-size:13px;
+                                  z-index:1;pointer-events:none;"></i>
+                        <input type="text" name="q" value="{{ request.GET.q }}"
+                               class="form-control"
+                               style="padding-left:36px;"
+                               placeholder="Search courses...">
+                    </div>
+                    <button class="btn btn-primary" style="border-radius:10px;white-space:nowrap;">
+                        <i class="fa fa-search me-1"></i> Search
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 
     <!-- FILTERS -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <form method="GET" class="row g-2">
+    <div class="filter-bar-wrap mb-4">
+        <form method="GET" class="row g-3 align-items-center">
 
-                <!-- CATEGORY FILTER -->
-                <div class="col-md-4">
-                    <select name="category" class="form-select"
+            <!-- CATEGORY FILTER -->
+            <div class="col-md-4">
+                <label class="form-label" style="font-size:12px;margin-bottom:5px;">
+                    <i class="fa fa-layer-group me-1" style="color:var(--primary);"></i>
+                    Category
+                </label>
+                <select name="category" class="form-select"
                         onchange="this.form.submit()">
-                        <option value="">All Categories</option>
-                        {% for cat in categories %}
-                        <option value="{{ cat.slug }}"
-                            {% if request.GET.category == cat.slug %}selected{% endif %}>
-                            {{ cat.name }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.slug }}"
+                        {% if request.GET.category == cat.slug %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-                <!-- DIFFICULTY FILTER -->
-                <div class="col-md-4">
-                    <select name="difficulty" class="form-select"
+            <!-- DIFFICULTY FILTER -->
+            <div class="col-md-4">
+                <label class="form-label" style="font-size:12px;margin-bottom:5px;">
+                    <i class="fa fa-signal me-1" style="color:var(--primary);"></i>
+                    Difficulty
+                </label>
+                <select name="difficulty" class="form-select"
                         onchange="this.form.submit()">
-                        <option value="">All Difficulty</option>
-                        <option value="beginner"
-                            {% if request.GET.difficulty == 'beginner' %}selected{% endif %}>
-                            Beginner
-                        </option>
-                        <option value="intermediate"
-                            {% if request.GET.difficulty == 'intermediate' %}selected{% endif %}>
-                            Intermediate
-                        </option>
-                        <option value="advanced"
-                            {% if request.GET.difficulty == 'advanced' %}selected{% endif %}>
-                            Advanced
-                        </option>
-                    </select>
-                </div>
+                    <option value="">All Difficulty</option>
+                    <option value="beginner"
+                        {% if request.GET.difficulty == 'beginner' %}selected{% endif %}>
+                        🟢 Beginner
+                    </option>
+                    <option value="intermediate"
+                        {% if request.GET.difficulty == 'intermediate' %}selected{% endif %}>
+                        🟡 Intermediate
+                    </option>
+                    <option value="advanced"
+                        {% if request.GET.difficulty == 'advanced' %}selected{% endif %}>
+                        🔴 Advanced
+                    </option>
+                </select>
+            </div>
 
-                <!-- CLEAR FILTERS -->
-                <div class="col-md-4">
-                    <a href="{% url 'course_list' %}"
-                        class="btn btn-outline-secondary w-100">
-                        Clear Filters
-                    </a>
-                </div>
+            <!-- CLEAR -->
+            <div class="col-md-4 d-flex align-items-end">
+                <a href="{% url 'course_list' %}"
+                   class="btn btn-outline-secondary w-100"
+                   style="border-radius:10px;">
+                    <i class="fa fa-times me-1"></i> Clear Filters
+                </a>
+            </div>
 
-            </form>
-        </div>
+        </form>
     </div>
 
     <!-- COURSE CARDS -->
     <div class="row g-4">
         {% for course in courses %}
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 h-100 rounded-4 overflow-hidden">
+        <div class="col-xl-3 col-md-4 col-sm-6">
+            <div class="course-card neu-raised rounded overflow-hidden h-100 d-flex flex-column">
 
                 <!-- THUMBNAIL -->
-                <div class="position-relative">
+                <div class="position-relative" style="overflow:hidden;">
                     <img src="{{ course.thumbnail.url }}"
-                        class="w-100"
-                        style="height: 180px; object-fit: cover;">
+                         class="w-100"
+                         style="height:180px;object-fit:cover;
+                                transition:transform 0.45s var(--ease);"
+                         onmouseover="this.style.transform='scale(1.06)'"
+                         onmouseout="this.style.transform='scale(1)'">
 
                     <!-- DIFFICULTY BADGE -->
-                    <span class="badge position-absolute top-0 start-0 m-2
-                        {% if course.difficulty_level == 'beginner' %}bg-success
-                        {% elif course.difficulty_level == 'intermediate' %}bg-warning text-dark
-                        {% else %}bg-danger{% endif %}">
+                    <span class="position-absolute m-2"
+                          style="top:0;left:0;
+                                 padding:4px 10px;border-radius:99px;
+                                 font-size:11px;font-weight:700;
+                                 backdrop-filter:blur(8px);
+                                 {% if course.difficulty_level == 'beginner' %}
+                                     background:rgba(16,185,129,0.85);color:#fff;
+                                 {% elif course.difficulty_level == 'intermediate' %}
+                                     background:rgba(245,158,11,0.85);color:#fff;
+                                 {% else %}
+                                     background:rgba(244,63,94,0.85);color:#fff;
+                                 {% endif %}">
                         {{ course.difficulty_level|capfirst }}
                     </span>
 
                     <!-- FREE BADGE -->
-                    <span class="badge bg-primary position-absolute top-0 end-0 m-2">
+                    <span class="position-absolute m-2"
+                          style="top:0;right:0;
+                                 padding:4px 10px;border-radius:99px;
+                                 font-size:11px;font-weight:800;
+                                 background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+                                 color:#fff;
+                                 box-shadow:0 2px 8px rgba(var(--primary-rgb),0.4);">
                         FREE
                     </span>
                 </div>
 
-                <div class="card-body">
-                    <span class="badge bg-info mb-2">{{ course.category.name }}</span>
-                    <h6 class="fw-bold mb-1">{{ course.title }}</h6>
-                    <p class="text-muted small mb-2">
+                <!-- CARD BODY -->
+                <div class="p-3 d-flex flex-column flex-grow-1">
+
+                    <!-- CATEGORY PILL -->
+                    <span class="neu-pressed rounded d-inline-block mb-2"
+                          style="font-size:11px;font-weight:700;
+                                 padding:3px 10px;color:var(--primary);
+                                 width:fit-content;letter-spacing:0.3px;">
+                        {{ course.category.name }}
+                    </span>
+
+                    <!-- TITLE -->
+                    <h6 class="fw-bold mb-1" style="color:var(--text);line-height:1.4;">
+                        {{ course.title }}
+                    </h6>
+
+                    <!-- DESCRIPTION -->
+                    <p class="text-muted mb-3 flex-grow-1"
+                       style="font-size:13px;line-height:1.6;">
                         {{ course.description|truncatewords:12 }}
                     </p>
-                    <small class="text-muted">
-                        <i class="fa fa-play-circle me-1 text-primary"></i>
-                        {{ course.total_videos }} Videos
-                    </small>
-                </div>
 
-                <div class="card-footer bg-white border-0">
+                    <!-- VIDEO COUNT -->
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="neu-pressed rounded d-flex align-items-center justify-content-center"
+                             style="width:28px;height:28px;flex-shrink:0;">
+                            <i class="fa fa-play-circle"
+                               style="font-size:12px;color:var(--primary);"></i>
+                        </div>
+                        <span style="font-size:13px;font-weight:600;color:var(--text-muted);">
+                            {{ course.total_videos }} Videos
+                        </span>
+                    </div>
+
+                    <!-- CTA -->
                     <a href="{% url 'course_detail' course.slug %}"
-                        class="btn btn-primary w-100 rounded-3">
+                       class="btn btn-primary w-100"
+                       style="border-radius:10px;">
                         <i class="fa fa-play me-1"></i> Start Learning
                     </a>
-                </div>
 
+                </div>
             </div>
         </div>
+
         {% empty %}
-        <div class="col-12 text-center py-5">
-            <i class="fa fa-book-open fa-4x text-muted mb-4"></i>
-            <h5 class="text-muted">No courses available yet.</h5>
-            <p class="text-muted">Check back soon!</p>
+        <div class="col-12">
+            <div class="neu-raised rounded p-5 text-center" style="max-width:480px;margin:0 auto;">
+                <div class="stat-icon mx-auto mb-4" style="width:72px;height:72px;">
+                    <i class="fa fa-book-open"
+                       style="font-size:28px;color:var(--text-muted);"></i>
+                </div>
+                <h5 class="fw-bold mb-2" style="color:var(--text);">No courses available yet.</h5>
+                <p class="text-muted mb-0" style="font-size:14px;">Check back soon!</p>
+            </div>
         </div>
         {% endfor %}
     </div>

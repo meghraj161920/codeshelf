@@ -1,0 +1,929 @@
+/* ============================================================
+   CODESHELF — NEUMORPHISM LAYER
+   Link this AFTER style.css on every Django template:
+   <link rel="stylesheet" href="{% static 'css/neumorphism.css' %}">
+
+   Teal/Cyan (#06BBCC) based neumorphism.
+   Works on both light and dark themes automatically.
+   ============================================================ */
+
+
+/* ═══════════════════════════════════════════════════════════
+   1. NEUMORPHISM TOKENS
+   ═══════════════════════════════════════════════════════════ */
+[data-theme="light"] {
+  /* Light neumorphism — classic raised/pressed on cool grey */
+  --neu-bg: #e8edf2;
+  --neu-shadow-a: #ffffff;
+  --neu-shadow-b: #c8d0da;
+  --neu-raised: 6px 6px 14px var(--neu-shadow-b), -6px -6px 14px var(--neu-shadow-a);
+  --neu-raised-lg: 10px 10px 24px var(--neu-shadow-b), -10px -10px 24px var(--neu-shadow-a);
+  --neu-pressed: inset 4px 4px 10px var(--neu-shadow-b), inset -4px -4px 10px var(--neu-shadow-a);
+  --neu-flat: 3px 3px 8px var(--neu-shadow-b), -3px -3px 8px var(--neu-shadow-a);
+  --neu-primary-glow: 0 0 0 3px rgba(6, 187, 204, 0.18);
+}
+
+[data-theme="dark"] {
+  /* Dark neumorphism — depth on deep slate */
+  --neu-bg: #141b2d;
+  --neu-shadow-a: #1e2844;
+  --neu-shadow-b: #0c1220;
+  --neu-raised: 6px 6px 14px var(--neu-shadow-b), -6px -6px 14px var(--neu-shadow-a);
+  --neu-raised-lg: 10px 10px 24px var(--neu-shadow-b), -10px -10px 24px var(--neu-shadow-a);
+  --neu-pressed: inset 4px 4px 10px var(--neu-shadow-b), inset -4px -4px 10px var(--neu-shadow-a);
+  --neu-flat: 3px 3px 8px var(--neu-shadow-b), -3px -3px 8px var(--neu-shadow-a);
+  --neu-primary-glow: 0 0 0 3px rgba(6, 187, 204, 0.20);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   2. UTILITY CLASSES (use anywhere in templates)
+   ═══════════════════════════════════════════════════════════ */
+.neu-raised {
+  box-shadow: var(--neu-raised) !important;
+  border: none !important;
+  background: var(--neu-bg) !important;
+}
+
+.neu-raised-lg {
+  box-shadow: var(--neu-raised-lg) !important;
+  border: none !important;
+  background: var(--neu-bg) !important;
+}
+
+.neu-pressed {
+  box-shadow: var(--neu-pressed) !important;
+  border: none !important;
+  background: var(--neu-bg) !important;
+}
+
+.neu-flat {
+  box-shadow: var(--neu-flat) !important;
+  border: none !important;
+  background: var(--neu-bg) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   3. NAVBAR
+   ═══════════════════════════════════════════════════════════ */
+#mainNavbar {
+  background: var(--neu-bg) !important;
+  box-shadow: 0 4px 16px var(--neu-shadow-b), 0 -1px 0 var(--neu-shadow-a) !important;
+  border-bottom: none !important;
+  backdrop-filter: blur(20px) saturate(1.6) !important;
+}
+
+/* Nav icon buttons — neumorphic raised */
+.nav-icon-btn {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised) !important;
+  border: none !important;
+  transition: box-shadow 0.25s var(--ease), transform 0.25s var(--ease), color 0.25s !important;
+}
+
+.nav-icon-btn:hover {
+  box-shadow: var(--neu-pressed) !important;
+  transform: translateY(0) !important;
+  color: var(--primary) !important;
+  background: var(--neu-bg) !important;
+}
+
+/* Theme toggle */
+.theme-toggle {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised) !important;
+  border: none !important;
+}
+
+.theme-toggle:hover {
+  box-shadow: var(--neu-pressed) !important;
+  transform: rotate(22deg) scale(1.05) !important;
+  background: var(--neu-bg) !important;
+}
+
+/* Search input */
+.search-input {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-pressed) !important;
+  border: none !important;
+}
+
+.search-input:focus {
+  box-shadow: var(--neu-pressed), var(--neu-primary-glow) !important;
+  border: none !important;
+}
+
+/* Auth buttons */
+.btn-login {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised) !important;
+  border: none !important;
+  color: var(--text-nav) !important;
+}
+
+.btn-login:hover {
+  box-shadow: var(--neu-pressed) !important;
+  color: var(--primary) !important;
+}
+
+.btn-register {
+  box-shadow: var(--neu-raised), 0 4px 16px rgba(6, 187, 204, 0.3) !important;
+  border: none !important;
+}
+
+.btn-register:hover {
+  box-shadow: var(--neu-pressed), 0 2px 8px rgba(6, 187, 204, 0.2) !important;
+  transform: translateY(0) !important;
+}
+
+/* Avatar */
+.avatar-initials {
+  box-shadow: var(--neu-raised) !important;
+  border: none !important;
+}
+
+.avatar-btn:hover .avatar-initials {
+  box-shadow: var(--neu-pressed) !important;
+  transform: scale(1.04) !important;
+}
+
+/* Dropdown */
+.cs-dropdown {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised-lg) !important;
+  border: none !important;
+}
+
+.cs-item:hover {
+  background: var(--neu-pressed) !important;
+  box-shadow: var(--neu-pressed) !important;
+  border-radius: 10px;
+  transform: translateX(0) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   4. CARDS
+   ═══════════════════════════════════════════════════════════ */
+.card,
+.project-card,
+.feature-card {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised) !important;
+  border: none !important;
+  transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease) !important;
+}
+
+.card:hover,
+.project-card:hover,
+.feature-card:hover {
+  box-shadow: var(--neu-raised-lg) !important;
+  transform: translateY(-4px) !important;
+  border: none !important;
+}
+
+/* Card footer */
+.card-footer {
+  background: var(--neu-bg) !important;
+  border-top: 1px solid rgba(var(--primary-rgb), 0.08) !important;
+}
+
+/* Feature card icon wrap */
+.feature-card .icon-wrap {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised) !important;
+  border: none !important;
+}
+
+.feature-card:hover .icon-wrap {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
+  box-shadow: var(--neu-pressed), 0 4px 16px rgba(6, 187, 204, 0.3) !important;
+}
+
+/* Feature card top line — keep it */
+.feature-card::before {
+  background: linear-gradient(90deg, transparent, var(--primary), transparent) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   5. BUTTONS
+   ═══════════════════════════════════════════════════════════ */
+
+/* Primary — teal gradient + neumorphic depth */
+.btn-primary {
+  box-shadow: var(--neu-raised), 0 4px 16px rgba(6, 187, 204, 0.28) !important;
+  border: none !important;
+}
+
+.btn-primary:hover,
+.btn-primary:active {
+  box-shadow: var(--neu-pressed), 0 2px 8px rgba(6, 187, 204, 0.18) !important;
+  transform: translateY(0) !important;
+  border: none !important;
+}
+
+.btn-primary:active {
+  transform: scale(0.98) !important;
+}
+
+/* Outline primary */
+.btn-outline-primary {
+  box-shadow: var(--neu-raised) !important;
+  background: var(--neu-bg) !important;
+  border: none !important;
+}
+
+.btn-outline-primary:hover {
+  box-shadow: var(--neu-pressed), 0 4px 16px rgba(6, 187, 204, 0.28) !important;
+  border: none !important;
+  transform: translateY(0) !important;
+}
+
+/* Success */
+.btn-success {
+  box-shadow: var(--neu-raised), 0 4px 14px rgba(16, 185, 129, 0.22) !important;
+  border: none !important;
+}
+
+.btn-success:hover {
+  box-shadow: var(--neu-pressed) !important;
+  transform: translateY(0) !important;
+}
+
+/* Generic btn active state */
+.btn:active {
+  box-shadow: var(--neu-pressed) !important;
+  transform: scale(0.97) !important;
+}
+
+/* Square buttons */
+.btn-square,
+.btn-sm-square,
+.btn-lg-square {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised) !important;
+  border: none !important;
+}
+
+.btn-square:hover,
+.btn-sm-square:hover,
+.btn-lg-square:hover {
+  box-shadow: var(--neu-pressed) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   6. FORMS & INPUTS
+   ═══════════════════════════════════════════════════════════ */
+.form-control,
+.form-select {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-pressed) !important;
+  border: none !important;
+  color: var(--text) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  box-shadow: var(--neu-pressed), var(--neu-primary-glow) !important;
+  border: none !important;
+  background: var(--neu-bg) !important;
+}
+
+/* Labels */
+label {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   7. DASHBOARD STAT CARDS
+   (Used in customer/seller dashboards)
+   ═══════════════════════════════════════════════════════════ */
+.stat-card {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised-lg) !important;
+  border: none !important;
+  border-radius: 18px !important;
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 12px 12px 28px var(--neu-shadow-b), -12px -12px 28px var(--neu-shadow-a) !important;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  width: 80px;
+  height: 80px;
+  background: rgba(6, 187, 204, 0.07);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Icon inside stat card */
+.stat-card .stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--neu-bg);
+  box-shadow: var(--neu-raised);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: var(--primary);
+  margin-bottom: 16px;
+  transition: box-shadow 0.25s var(--ease);
+}
+
+.stat-card:hover .stat-icon {
+  box-shadow: var(--neu-pressed);
+  color: var(--primary-dark);
+}
+
+.stat-card .stat-value {
+  font-family: 'Nunito', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--primary);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-card .stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   8. SIDEBAR (Dashboard pages)
+   ═══════════════════════════════════════════════════════════ */
+.dashboard-sidebar {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised-lg) !important;
+  border: none !important;
+  border-radius: 18px !important;
+  padding: 20px 12px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.22s var(--ease);
+  margin-bottom: 4px;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.sidebar-link i {
+  font-size: 16px;
+  color: var(--text-muted);
+  transition: color 0.22s;
+}
+
+.sidebar-link:hover {
+  background: var(--neu-bg);
+  box-shadow: var(--neu-pressed);
+  color: var(--primary);
+}
+
+.sidebar-link:hover i {
+  color: var(--primary);
+}
+
+.sidebar-link.active {
+  background: var(--neu-bg);
+  box-shadow: var(--neu-pressed);
+  color: var(--primary);
+}
+
+.sidebar-link.active i {
+  color: var(--primary);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   9. TABLE
+   ═══════════════════════════════════════════════════════════ */
+.table-neu {
+  background: var(--neu-bg);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--neu-raised);
+  border: none;
+}
+
+.table-neu thead th {
+  background: var(--neu-bg);
+  box-shadow: inset 0 -2px 0 rgba(6, 187, 204, 0.15);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border: none !important;
+  padding: 14px 18px;
+}
+
+.table-neu tbody td {
+  background: var(--neu-bg);
+  color: var(--text);
+  border: none !important;
+  border-bottom: 1px solid rgba(var(--primary-rgb), 0.06) !important;
+  padding: 14px 18px;
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+.table-neu tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+.table-neu tbody tr:hover td {
+  background: var(--neu-bg);
+  box-shadow: inset 0 0 0 1000px rgba(6, 187, 204, 0.04);
+  color: var(--text);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   10. BADGES
+   ═══════════════════════════════════════════════════════════ */
+.badge {
+  box-shadow: var(--neu-flat) !important;
+}
+
+.badge.bg-primary,
+.badge.bg-info {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+  color: #fff !important;
+}
+
+.badge.bg-success {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: #fff !important;
+}
+
+.badge.bg-danger {
+  background: linear-gradient(135deg, #f43f5e, #e11d48) !important;
+  color: #fff !important;
+}
+
+.badge.bg-warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  color: #fff !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   11. ALERTS
+   ═══════════════════════════════════════════════════════════ */
+.alert {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised) !important;
+  border: none !important;
+  border-left: 3px solid var(--primary) !important;
+  border-radius: 14px !important;
+}
+
+.alert-success {
+  border-left-color: #10b981 !important;
+}
+
+.alert-danger {
+  border-left-color: #f43f5e !important;
+}
+
+.alert-warning {
+  border-left-color: #f59e0b !important;
+}
+
+.alert-info {
+  border-left-color: var(--primary) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   12. MODALS
+   ═══════════════════════════════════════════════════════════ */
+.modal-content {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised-lg) !important;
+  border: none !important;
+  border-radius: 20px !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(var(--primary-rgb), 0.1) !important;
+  border-radius: 20px 20px 0 0 !important;
+}
+
+.modal-footer {
+  border-top: 1px solid rgba(var(--primary-rgb), 0.1) !important;
+}
+
+.btn-close {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised) !important;
+  border-radius: 50% !important;
+  opacity: 1 !important;
+  width: 30px !important;
+  height: 30px !important;
+  padding: 0 !important;
+}
+
+.btn-close:hover {
+  box-shadow: var(--neu-pressed) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   13. PAGINATION
+   ═══════════════════════════════════════════════════════════ */
+.page-item .page-link {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised) !important;
+  border: none !important;
+  color: var(--text) !important;
+  border-radius: 10px !important;
+  margin: 0 3px;
+  font-weight: 600;
+  transition: box-shadow 0.2s var(--ease);
+}
+
+.page-item .page-link:hover {
+  box-shadow: var(--neu-pressed) !important;
+  color: var(--primary) !important;
+}
+
+.page-item.active .page-link {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+  box-shadow: var(--neu-pressed), 0 4px 14px rgba(6, 187, 204, 0.28) !important;
+  color: #fff !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   14. BACK TO TOP
+   ═══════════════════════════════════════════════════════════ */
+.back-to-top {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised-lg) !important;
+  color: var(--primary) !important;
+  border: none !important;
+  border-radius: 14px !important;
+}
+
+.back-to-top:hover {
+  box-shadow: var(--neu-pressed), 0 4px 14px rgba(6, 187, 204, 0.25) !important;
+  transform: translateY(-2px) !important;
+  color: var(--primary-dark) !important;
+  background: var(--neu-bg) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   15. STATS STRIP (Homepage)
+   ═══════════════════════════════════════════════════════════ */
+.stats-strip {
+  background: var(--neu-bg) !important;
+  box-shadow: 0 4px 20px var(--neu-shadow-b), 0 -2px 8px var(--neu-shadow-a) !important;
+  border: none !important;
+}
+
+.stats-strip .stat-divider {
+  background: rgba(var(--primary-rgb), 0.15) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   16. SERVICE ITEMS
+   ═══════════════════════════════════════════════════════════ */
+.service-item {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised) !important;
+  border: none !important;
+}
+
+.service-item:hover {
+  box-shadow: var(--neu-pressed), 0 4px 16px rgba(6, 187, 204, 0.25) !important;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   17. ORDER / WISHLIST / REVIEW CARDS
+   (Django template specific card wrappers)
+   ═══════════════════════════════════════════════════════════ */
+.order-card,
+.wishlist-card,
+.review-card,
+.course-card {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised) !important;
+  border: none !important;
+  border-radius: 16px !important;
+  transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+}
+
+.order-card:hover,
+.wishlist-card:hover,
+.review-card:hover,
+.course-card:hover {
+  box-shadow: var(--neu-raised-lg) !important;
+  transform: translateY(-3px);
+}
+
+/* Status pill inside order card */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--neu-bg);
+  box-shadow: var(--neu-pressed);
+}
+
+.status-pill.paid {
+  color: #10b981;
+}
+
+.status-pill.pending {
+  color: #f59e0b;
+}
+
+.status-pill.failed {
+  color: #f43f5e;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   18. SEARCH / FILTER BAR
+   ═══════════════════════════════════════════════════════════ */
+.filter-bar-wrap {
+  background: var(--neu-bg);
+  box-shadow: var(--neu-raised);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  border: none;
+}
+
+.filter-bar-wrap .form-control,
+.filter-bar-wrap .form-select {
+  box-shadow: var(--neu-pressed) !important;
+  border: none !important;
+  background: var(--neu-bg) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   19. PRODUCT IMAGE WRAP
+   ═══════════════════════════════════════════════════════════ */
+.project-card .img-wrap {
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+  box-shadow: inset 0 -4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   20. HERO SECTION — keep dark, add subtle neu depth
+   ═══════════════════════════════════════════════════════════ */
+.hero-section {
+  /* Hero stays dark gradient — we only add depth to inner elements */
+  position: relative;
+}
+
+/* Hero card / glass panel inside hero */
+.hero-glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(6, 187, 204, 0.18);
+  border-radius: 20px;
+  box-shadow:
+    8px 8px 20px rgba(0, 0, 0, 0.3),
+    -4px -4px 12px rgba(6, 187, 204, 0.06);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   21. CTA SECTION — keep teal gradient, add depth
+   ═══════════════════════════════════════════════════════════ */
+.cta-btn {
+  box-shadow: var(--neu-raised), 0 4px 18px rgba(0, 0, 0, 0.18) !important;
+}
+
+.cta-btn:hover {
+  box-shadow: var(--neu-pressed), 0 2px 8px rgba(0, 0, 0, 0.14) !important;
+  transform: translateY(0) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   22. FOOTER — keep dark, subtle inner panels
+   ═══════════════════════════════════════════════════════════ */
+.newsletter-input {
+  background: rgba(255, 255, 255, 0.05) !important;
+  box-shadow: inset 3px 3px 8px rgba(0, 0, 0, 0.25), inset -2px -2px 6px rgba(6, 187, 204, 0.06) !important;
+  border: none !important;
+}
+
+.newsletter-btn {
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.25), -2px -2px 6px rgba(6, 187, 204, 0.1) !important;
+  border: none !important;
+}
+
+.newsletter-btn:hover {
+  box-shadow: inset 3px 3px 8px rgba(0, 0, 0, 0.2) !important;
+  transform: translateY(0) !important;
+}
+
+.footer-social {
+  background: rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.25), -2px -2px 6px rgba(6, 187, 204, 0.05) !important;
+  border: none !important;
+}
+
+.footer-social:hover {
+  background: var(--primary) !important;
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.2), 0 4px 14px rgba(6, 187, 204, 0.35) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   23. SCROLLBAR — neumorphic teal
+   ═══════════════════════════════════════════════════════════ */
+::-webkit-scrollbar-track {
+  background: var(--neu-bg) !important;
+  box-shadow: inset 2px 2px 5px var(--neu-shadow-b), inset -2px -2px 5px var(--neu-shadow-a) !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+  border-radius: 99px !important;
+  box-shadow: 2px 2px 5px var(--neu-shadow-b) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   24. LIVE SEARCH SUGGESTIONS DROPDOWN
+   ═══════════════════════════════════════════════════════════ */
+#search-suggestions {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised-lg) !important;
+  border: none !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+  padding: 6px;
+}
+
+#search-suggestions .suggestion-item {
+  padding: 9px 12px;
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 14px;
+  transition: box-shadow 0.15s var(--ease);
+  cursor: pointer;
+}
+
+#search-suggestions .suggestion-item:hover {
+  background: var(--neu-bg);
+  box-shadow: var(--neu-pressed);
+  color: var(--primary);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   25. COUPON INPUT AREA
+   ═══════════════════════════════════════════════════════════ */
+.coupon-wrap {
+  background: var(--neu-bg);
+  box-shadow: var(--neu-raised);
+  border-radius: 14px;
+  padding: 16px;
+  border: none;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.coupon-wrap .form-control {
+  box-shadow: var(--neu-pressed) !important;
+  border: none !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   26. CHECKOUT / CART SUMMARY BOX
+   ═══════════════════════════════════════════════════════════ */
+.cart-summary,
+.checkout-summary {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-raised-lg) !important;
+  border: none !important;
+  border-radius: 18px !important;
+  padding: 24px;
+}
+
+.cart-summary hr,
+.checkout-summary hr {
+  border-color: rgba(var(--primary-rgb), 0.1) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   27. PROGRESS / RATING BARS
+   ═══════════════════════════════════════════════════════════ */
+.progress {
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-pressed) !important;
+  border: none !important;
+  border-radius: 99px !important;
+  height: 8px !important;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark)) !important;
+  border-radius: 99px !important;
+  box-shadow: 0 2px 8px rgba(6, 187, 204, 0.3) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   28. STAR RATING
+   ═══════════════════════════════════════════════════════════ */
+.star-rating {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.star-rating .star {
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 18px;
+  transition: color 0.15s, text-shadow 0.15s;
+}
+
+.star-rating .star.active,
+.star-rating .star:hover {
+  color: #f59e0b;
+  text-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE ADJUSTMENTS
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* Reduce shadow depth on mobile for performance */
+  :root {
+    --neu-raised: 4px 4px 10px var(--neu-shadow-b), -4px -4px 10px var(--neu-shadow-a);
+    --neu-raised-lg: 6px 6px 16px var(--neu-shadow-b), -6px -6px 16px var(--neu-shadow-a);
+    --neu-pressed: inset 3px 3px 7px var(--neu-shadow-b), inset -3px -3px 7px var(--neu-shadow-a);
+  }
+
+  .stat-card {
+    padding: 20px 16px;
+  }
+
+  .dashboard-sidebar {
+    border-radius: 14px !important;
+  }
+
+  .cart-summary,
+  .checkout-summary {
+    padding: 18px;
+  }
+}
+
+#spinner {
+  background: var(--neu-bg) !important;
+}

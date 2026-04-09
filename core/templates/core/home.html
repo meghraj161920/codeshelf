@@ -4,18 +4,12 @@
 {% block extra_css %}
 <style>
     /* =========================================
-       CUSTOM HERO SLIDER STYLES
+       HERO SLIDER — unchanged
     ========================================= */
     .hero-slider-section {
-        position: relative;
-        width: 100%;
-        height: 75vh;
-        min-height: 500px;
-        background-color: #111;
-        overflow: hidden;
-        margin-bottom: 3rem;
+        position: relative; width: 100%; height: 75vh; min-height: 500px;
+        background-color: #111; overflow: hidden; margin-bottom: 3rem;
     }
-
     .hero-slider-section .slider { list-style-type: none; margin: 0; padding: 0; width: 100%; height: 100%; }
     .hero-slider-section .slider-item {
         width: 200px; height: 300px; position: absolute; top: 50%; transform: translateY(-50%);
@@ -34,7 +28,6 @@
     .hero-slider-section .slider-item:nth-child(4) { left: calc(50% + 220px); }
     .hero-slider-section .slider-item:nth-child(5) { left: calc(50% + 440px); }
     .hero-slider-section .slider-item:nth-child(6) { left: calc(50% + 660px); opacity: 0; }
-
     .hero-slider-section .content {
         width: min(40vw, 500px); position: absolute; top: 50%; left: 5rem; transform: translateY(-50%);
         color: white; text-shadow: 0 3px 8px rgba(0,0,0,0.5); opacity: 0; display: none; z-index: 2;
@@ -50,19 +43,16 @@
     }
     .hero-slider-section .content button:hover { background-color: #05a0af; transform: translateY(-3px); }
     .hero-slider-section .slider-item:nth-of-type(2) .content { display: block; animation: showContent 0.75s ease-in-out 0.3s forwards; }
-
     @keyframes showContent {
         0% { filter: blur(5px); transform: translateY(calc(-50% + 75px)); opacity: 0; }
         100% { opacity: 1; filter: blur(0); transform: translateY(-50%); }
     }
-
     .hero-slider-section .nav-controls { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 5; user-select: none; display: flex; gap: 15px; }
     .hero-slider-section .nav-controls .btn-slide {
         background-color: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; border: 2px solid rgba(255,255,255,0.5);
         width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.5rem; transition: 0.3s;
     }
     .hero-slider-section .nav-controls .btn-slide:hover { background-color: var(--primary); border-color: var(--primary); }
-
     @media (max-width: 900px) {
         .hero-slider-section .slider-item { width: 160px; height: 270px; }
         .hero-slider-section .slider-item:nth-child(3) { left: 50%; }
@@ -83,167 +73,142 @@
     }
 
     /* =========================================
-       ANIMATED CIRCULAR COUNTERS
+       STATS SECTION — neumorphism
     ========================================= */
-    .stats-section { background-color: #f8f9fa; position: relative; z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .stats-section {
+        background: var(--neu-bg);
+        position: relative; z-index: 10;
+        border-top: 1px solid rgba(var(--primary-rgb), 0.08);
+        border-bottom: 1px solid rgba(var(--primary-rgb), 0.08);
+    }
     .counter-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .counter-circle {
-        width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(145deg, rgba(255,255,255,1), rgba(240,251,252,1));
-        border: 2px solid rgba(6, 187, 204, 0.2); display: flex; flex-direction: column; justify-content: center; align-items: center;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.05); transition: transform 0.4s ease, border-color 0.4s ease; margin-bottom: 20px;
+        width: 120px; height: 120px; border-radius: 50%;
+        background: var(--neu-bg);
+        box-shadow: var(--neu-raised);
+        border: 2px solid rgba(6, 187, 204, 0.15);
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        transition: box-shadow 0.4s ease, border-color 0.4s ease; margin-bottom: 20px;
     }
-    .counter-circle:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(6, 187, 204, 0.15); }
+    .counter-circle:hover {
+        box-shadow: var(--neu-pressed);
+        border-color: var(--primary);
+    }
     .counter-circle i { color: var(--primary); font-size: 2rem; margin-bottom: 10px; }
-    .counter-number { font-size: 1.5rem; font-weight: 800; color: var(--dark); line-height: 1; display: flex; align-items: center; }
-    .counter-label { color: #6c757d; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem; }
-
-    .testimonial-card { background: #f8f9fa; border-radius: 15px; padding: 30px; position: relative; border: 1px solid #eeeeee; }
-    .testimonial-card::after { content: "\f10d"; font-family: "Font Awesome 5 Free"; font-weight: 900; position: absolute; top: 20px; right: 30px; font-size: 3rem; color: rgba(6, 187, 204, 0.1); }
+    .counter-number { font-size: 1.5rem; font-weight: 800; color: var(--text); line-height: 1; display: flex; align-items: center; }
+    .counter-label { color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem; }
 
     /* =========================================
-       NEW PROJECT CARD STYLES (Angled Design)
+       PROJECT CARDS — unchanged (angled design)
     ========================================= */
     .project-card {
-        background-color: #fff;
-        overflow: hidden;
-        box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.08);
-        padding: 0;
-        text-align: center;
-        border-radius: 16px;
-        position: relative;
-        transition: all 0.3s ease;
-        border: none;
-        height: 100%;
-        display: flex;
-        flex-direction: column; /* Forces equal height layout */
+        background-color: var(--bg-card);
+        overflow: hidden; box-shadow: var(--shadow-md);
+        padding: 0; text-align: center; border-radius: 16px;
+        position: relative; transition: all 0.3s ease;
+        border: 1px solid var(--border); height: 100%;
+        display: flex; flex-direction: column;
     }
-    
-    .project-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0px 15px 40px rgba(6, 187, 204, 0.15);
-    }
-
+    .project-card:hover { transform: translateY(-10px); box-shadow: 0px 15px 40px rgba(6, 187, 204, 0.15); }
     .project-card .img-container {
-        position: relative;
-        overflow: hidden;
-        border-radius: 16px 16px 0 0;
-        height: 170px;
-        flex-shrink: 0; 
-        z-index: 1; /* Explicitly low so it stays underneath the card buttons */
+        position: relative; overflow: hidden; border-radius: 16px 16px 0 0;
+        height: 170px; flex-shrink: 0; z-index: 1;
     }
-
     .card-img-overlay-hover {
         position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(24, 29, 56, 0.7);
         opacity: 0; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;
         border-radius: 16px 16px 0 0; z-index: 5;
     }
     .project-card:hover .card-img-overlay-hover { opacity: 1; }
-
     .box-content {
-        position: relative;
-        z-index: 10; /* FIXED: Must be higher than the image overlay so buttons remain clickable! */
-        padding-bottom: 20px; 
-        background: #fff;
-        flex-grow: 1; 
-        display: flex;
-        flex-direction: column; 
+        position: relative; z-index: 10; padding-bottom: 20px;
+        background: var(--bg-card); flex-grow: 1; display: flex; flex-direction: column;
     }
-
     .box-content::before {
-        content: '';
-        width: 120%;
-        height: 100px;
-        position: absolute;
-        display: block;
-        background-color: #fff;
-        transform: rotate(-8deg);
-        top: -25px;
-        left: -10%;
-        z-index: -1;
+        content: ''; width: 120%; height: 100px; position: absolute; display: block;
+        background-color: var(--bg-card); transform: rotate(-8deg); top: -25px; left: -10%; z-index: -1;
     }
-
     .action-buttons {
-        display: flex;
-        gap: 12px;
-        position: absolute;
-        top: -58px; /* FIXED: Moved down slightly so the line cuts precisely through the middle */
-        right: 20px;
-        z-index: 20; /* Keep well above everything else */
-        align-items: flex-start;
+        display: flex; gap: 12px; position: absolute;
+        top: -58px; right: 20px; z-index: 20; align-items: flex-start;
     }
-
     .action-btn {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-size: 18px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        position: relative;
-        overflow: hidden;
+        width: 50px; height: 50px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 18px; transition: all 0.3s ease;
+        box-shadow: var(--neu-raised); position: relative; overflow: hidden;
     }
-    
-    .wishlist-btn { 
-        background-color: #ff5f56; 
-        margin-top: 9px; /* FIXED: Perfect trigonometric drop for an 8-degree angle over 62px */
-    }
-    .wishlist-btn:hover { background-color: #e04a42; transform: scale(1.1); color: #fff;}
-    
+    .wishlist-btn { background-color: #ff5f56; margin-top: 9px; }
+    .wishlist-btn:hover { background-color: #e04a42; transform: scale(1.1); color: #fff; }
     .buy-btn { background-color: var(--primary); }
-    .buy-btn:hover { background-color: #05a0af; transform: scale(1.1); color: #fff;}
-
+    .buy-btn:hover { background-color: #05a0af; transform: scale(1.1); color: #fff; }
     .buy-btn .expansion {
-        width: 100%; height: 100%; background-color: #06D6A0;
-        display: block; border-radius: 50%; position: absolute;
-        top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0);
+        width: 100%; height: 100%; background-color: #06D6A0; display: block; border-radius: 50%;
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0);
         transition: transform 0.4s ease; z-index: -1;
     }
     .project-card.expanded .buy-btn .expansion { transform: translate(-50%,-50%) scale(25); z-index: 10; }
     .project-card.expanded .buy-btn i { display: none; }
-
-    .success-mark {
-        position: absolute; top: 30%; left: 50%; transform: translate(-50%,-50%);
-        opacity: 0; z-index: 999; pointer-events: none;
-    }
+    .success-mark { position: absolute; top: 30%; left: 50%; transform: translate(-50%,-50%); opacity: 0; z-index: 999; pointer-events: none; }
     .project-card.expanded .success-mark { opacity: 1; transition: opacity 0.3s 0.3s; }
-    .success-mark::before, .success-mark::after { content: ''; display: block; position: absolute; background-color: #fff; border-radius: 2px;}
+    .success-mark::before, .success-mark::after { content: ''; display: block; position: absolute; background-color: #fff; border-radius: 2px; }
     .success-mark::before { width: 20px; height: 6px; transform: rotate(45deg); top: 0px; left: -10px; }
     .success-mark::after { width: 35px; height: 6px; transform: rotate(-45deg); top: -9px; left: -3px; }
-
-    .box-title { font-size: 1.1rem; font-weight: 800; text-transform: uppercase; margin: 0; padding: 0 15px; color: #181d38; }
+    .box-title { font-size: 1.1rem; font-weight: 800; text-transform: uppercase; margin: 0; padding: 0 15px; color: var(--text); }
     .box-title a { color: inherit; text-decoration: none; }
-    
-    .box-desc { 
-        font-size: 0.9rem; 
-        color: #6c757d; 
-        margin: 5px 0 15px; 
-        padding: 0 15px; 
-        flex-grow: 1; 
-    }
-    
-    .box-price { 
-        font-size: 1.4rem; font-weight: 900; color: #28a745; 
-        margin-top: auto; 
-        margin-bottom: 0;
-        align-self: center;
-        position: relative; 
-    }
-    .box-price::after, .box-price::before { content: ''; height: 1px; width: 25px; display: block; position: absolute; background-color: #ddd; top: 50%; }
+    .box-desc { font-size: 0.9rem; color: var(--text-muted); margin: 5px 0 15px; padding: 0 15px; flex-grow: 1; }
+    .box-price { font-size: 1.4rem; font-weight: 900; color: #10b981; margin-top: auto; margin-bottom: 0; align-self: center; position: relative; }
+    .box-price::after, .box-price::before { content: ''; height: 1px; width: 25px; display: block; position: absolute; background-color: var(--border); top: 50%; }
     .box-price::before { left: -35px; }
     .box-price::after { right: -35px; }
-
     .box-footer { margin-top: 15px; display: flex; justify-content: space-between; padding: 0 20px; align-items: center; }
     .box-footer .stars { color: #ffbd2e; font-size: 0.8rem; }
-    .box-footer .downloads { font-size: 0.85rem; color: #6c757d; font-weight: bold; }
+    .box-footer .downloads { font-size: 0.85rem; color: var(--text-muted); font-weight: bold; }
+
+    /* =========================================
+       TESTIMONIAL CARDS — neumorphism
+    ========================================= */
+    .testimonial-card {
+        background: var(--neu-bg);
+        box-shadow: var(--neu-raised);
+        border: none;
+        border-radius: 16px;
+        padding: 30px;
+        position: relative;
+        transition: box-shadow 0.3s var(--ease);
+    }
+    .testimonial-card:hover { box-shadow: var(--neu-raised-lg); }
+    .testimonial-card::after {
+        content: "\f10d"; font-family: "Font Awesome 5 Free"; font-weight: 900;
+        position: absolute; top: 20px; right: 30px; font-size: 3rem;
+        color: rgba(6, 187, 204, 0.1);
+    }
+
+    /* =========================================
+       TRENDING SECTION BG — neumorphism
+    ========================================= */
+    .trending-section {
+        background: var(--neu-bg);
+        border-top: 1px solid rgba(var(--primary-rgb), 0.08);
+        border-bottom: 1px solid rgba(var(--primary-rgb), 0.08);
+    }
+
+    /* =========================================
+       CTA CARD — neumorphism
+    ========================================= */
+    .cta-card {
+        background: linear-gradient(135deg, #0c1022 0%, #091e3a 100%);
+        border-radius: 20px;
+        border: 1px solid rgba(6,187,204,0.15);
+        box-shadow: var(--neu-raised-lg);
+        overflow: hidden;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 
+<!-- HERO SLIDER — unchanged -->
 <div class="hero-slider-section">
     <ul class='slider'>
         <li class='slider-item' style="background-image: url('{% static 'img/carousel-1.jpg' %}');">
@@ -289,18 +254,18 @@
             </div>
         </li>
     </ul>
-    
     <nav class='nav-controls'>
         <div class='btn-slide prev'><ion-icon name="arrow-back-outline"></ion-icon></div>
         <div class='btn-slide next'><ion-icon name="arrow-forward-outline"></ion-icon></div>
     </nav>
 </div>
 
-<div class="container-fluid stats-section ">
-    <div class="container mb-3">
-        <div class="row g-4 justify-content-center ">
+<!-- STATS — neumorphic circles -->
+<div class="container-fluid stats-section py-5">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
             <div class="col-md-3 counter-wrapper">
-                <div class="counter-circle ">
+                <div class="counter-circle">
                     <i class="fas fa-layer-group"></i>
                     <div class="counter-number"><span class="counter" data-count="150">0</span><span class="text-primary ms-1">+</span></div>
                 </div>
@@ -331,13 +296,14 @@
     </div>
 </div>
 
+<!-- LATEST PROJECTS -->
 <div class="container py-5 mt-4">
     <div class="d-flex justify-content-between align-items-end mb-4">
         <div>
-            <h6 class="text-primary text-uppercase fw-bold mb-1" style="letter-spacing: 1px;">Fresh Arrivals</h6>
-            <h2 class="fw-bold mb-0">Latest Projects</h2>
+            <h6 class="text-primary text-uppercase fw-bold mb-1" style="letter-spacing:1px;">Fresh Arrivals</h6>
+            <h2 class="fw-bold mb-0" style="color:var(--text);">Latest Projects</h2>
         </div>
-        <a href="{% url 'project_list' %}" class="btn btn-outline-primary rounded-pill px-4 d-none d-md-inline-block">
+        <a href="{% url 'project_list' %}" class="btn btn-outline-primary d-none d-md-inline-block" style="border-radius:10px;">
             View All Collection
         </a>
     </div>
@@ -349,68 +315,54 @@
                 <div class="img-container">
                     <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100 h-100" style="object-fit:cover;">
                     <span class="badge bg-success position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill shadow-sm">New</span>
-                    
                     <div class="card-img-overlay-hover">
-                        <a href="{% url 'project_detail' project.slug %}" class="btn btn-light rounded-circle" style="width: 45px; height: 45px; display:flex; align-items:center; justify-content:center;">
+                        <a href="{% url 'project_detail' project.slug %}" class="btn btn-light rounded-circle" style="width:45px;height:45px;display:flex;align-items:center;justify-content:center;">
                             <i class="fas fa-eye text-primary"></i>
                         </a>
                     </div>
                 </div>
-
                 <div class="box-content">
                     <div class="action-buttons">
-                        <a href="#" class="action-btn wishlist-btn" title="Add to Wishlist">
-                            <i class="fas fa-heart"></i>
-                        </a>
+                        <a href="#" class="action-btn wishlist-btn" title="Add to Wishlist"><i class="fas fa-heart"></i></a>
                         <a href="{% if user.is_authenticated %}{% url 'add_to_cart' project.id %}{% else %}{% url 'login' %}{% endif %}" class="action-btn buy-btn buy-trigger" title="Add to Cart">
-                            <i class="fas fa-cart-plus"></i>
-                            <span class="expansion"></span>
+                            <i class="fas fa-cart-plus"></i><span class="expansion"></span>
                         </a>
                     </div>
-                    
                     <div class="success-mark"></div>
-
                     <div class="mt-3 mb-2">
-                        <span class="badge bg-light text-primary border rounded-pill">{{ project.technology }}</span>
+                        <span class="neu-pressed rounded px-2 py-1" style="font-size:11px;font-weight:700;color:var(--primary);">{{ project.technology }}</span>
                     </div>
-                    
                     <h3 class="box-title"><a href="{% url 'project_detail' project.slug %}">{{ project.title }}</a></h3>
                     <p class="box-desc">{{ project.description|truncatewords:8 }}</p>
-                    
                     <div class="box-price">₹{{ project.price }}</div>
-
                     <div class="box-footer">
-                        <div class="stars">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                        </div>
-                        <div class="downloads">
-                            <i class="fas fa-download text-primary me-1"></i> {{ project.total_downloads }}
-                        </div>
+                        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+                        <div class="downloads"><i class="fas fa-download text-primary me-1"></i> {{ project.total_downloads }}</div>
                     </div>
                 </div>
             </div>
         </div>
         {% empty %}
         <div class="col-12 text-center py-5">
-            <div class="p-5 bg-light rounded-4 border border-dashed">
-                <i class="fas fa-folder-open fa-3x mb-3 text-muted"></i>
-                <h4 class="text-muted">No projects uploaded yet.</h4>
+            <div class="neu-pressed rounded p-5">
+                <i class="fas fa-folder-open fa-3x mb-3 d-block" style="color:var(--text-muted);opacity:0.4;"></i>
+                <h5 class="fw-bold" style="color:var(--text);">No projects uploaded yet.</h5>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
 
+<!-- TRENDING PROJECTS -->
 {% if trending_projects %}
-<div class="container-fluid bg-light py-5">
+<div class="container-fluid trending-section py-5">
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-end mb-4">
             <div>
-                <h6 class="text-danger text-uppercase fw-bold mb-1" style="letter-spacing: 1px;">Most Popular</h6>
-                <h2 class="fw-bold mb-0">🔥 Trending Now</h2>
+                <h6 class="text-danger text-uppercase fw-bold mb-1" style="letter-spacing:1px;">Most Popular</h6>
+                <h2 class="fw-bold mb-0" style="color:var(--text);">🔥 Trending Now</h2>
             </div>
         </div>
-
         <div class="row g-4 pt-3">
             {% for project in trending_projects|slice:":4" %}
             <div class="col-md-4 col-lg-3 d-flex">
@@ -418,43 +370,29 @@
                     <div class="img-container">
                         <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100 h-100" style="object-fit:cover;">
                         <span class="badge bg-danger position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill shadow-sm">🔥 Hot</span>
-                        
                         <div class="card-img-overlay-hover">
-                            <a href="{% url 'project_detail' project.slug %}" class="btn btn-light rounded-circle" style="width: 45px; height: 45px; display:flex; align-items:center; justify-content:center;">
+                            <a href="{% url 'project_detail' project.slug %}" class="btn btn-light rounded-circle" style="width:45px;height:45px;display:flex;align-items:center;justify-content:center;">
                                 <i class="fas fa-eye text-danger"></i>
                             </a>
                         </div>
                     </div>
-
                     <div class="box-content">
                         <div class="action-buttons">
-                            <a href="#" class="action-btn wishlist-btn" title="Add to Wishlist">
-                                <i class="fas fa-heart"></i>
-                            </a>
+                            <a href="#" class="action-btn wishlist-btn" title="Add to Wishlist"><i class="fas fa-heart"></i></a>
                             <a href="{% if user.is_authenticated %}{% url 'add_to_cart' project.id %}{% else %}{% url 'login' %}{% endif %}" class="action-btn buy-btn buy-trigger" title="Add to Cart">
-                                <i class="fas fa-cart-plus"></i>
-                                <span class="expansion"></span>
+                                <i class="fas fa-cart-plus"></i><span class="expansion"></span>
                             </a>
                         </div>
-                        
                         <div class="success-mark"></div>
-
                         <div class="mt-3 mb-2">
-                            <span class="badge bg-light text-danger border border-danger rounded-pill">{{ project.technology }}</span>
+                            <span class="neu-pressed rounded px-2 py-1" style="font-size:11px;font-weight:700;color:#f43f5e;">{{ project.technology }}</span>
                         </div>
-                        
                         <h3 class="box-title"><a href="{% url 'project_detail' project.slug %}">{{ project.title }}</a></h3>
                         <p class="box-desc">{{ project.description|truncatewords:8 }}</p>
-                        
                         <div class="box-price">₹{{ project.price }}</div>
-
                         <div class="box-footer">
-                            <div class="stars">
-                                <i class="fas fa-star text-danger"></i><i class="fas fa-star text-danger"></i><i class="fas fa-star text-danger"></i><i class="fas fa-star text-danger"></i><i class="fas fa-star-half-alt text-danger"></i>
-                            </div>
-                            <div class="downloads">
-                                <i class="fas fa-fire text-danger me-1"></i> {{ project.total_downloads }}
-                            </div>
+                            <div class="stars"><i class="fas fa-star text-danger"></i><i class="fas fa-star text-danger"></i><i class="fas fa-star text-danger"></i><i class="fas fa-star text-danger"></i><i class="fas fa-star-half-alt text-danger"></i></div>
+                            <div class="downloads"><i class="fas fa-fire text-danger me-1"></i> {{ project.total_downloads }}</div>
                         </div>
                     </div>
                 </div>
@@ -465,52 +403,53 @@
 </div>
 {% endif %}
 
+<!-- TESTIMONIALS — neumorphic cards -->
 <div class="container py-5 my-5">
     <div class="text-center mb-5">
-        <h6 class="text-primary text-uppercase fw-bold" style="letter-spacing: 1px;">Testimonials</h6>
-        <h2 class="fw-bold">What Our Students Say</h2>
+        <h6 class="text-primary text-uppercase fw-bold" style="letter-spacing:1px;">Testimonials</h6>
+        <h2 class="fw-bold" style="color:var(--text);">What Our Students Say</h2>
     </div>
     <div class="row g-4">
         <div class="col-md-4">
-            <div class="testimonial-card h-100 shadow-sm">
+            <div class="testimonial-card h-100">
                 <div class="text-warning mb-3">
                     <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                 </div>
-                <p class="fst-italic text-muted mb-4">"The MERN stack ecommerce project I downloaded helped me understand Redux better than any video tutorial. The code was clean and well documented!"</p>
+                <p class="fst-italic mb-4" style="color:var(--text-muted);">"The MERN stack ecommerce project I downloaded helped me understand Redux better than any video tutorial. The code was clean and well documented!"</p>
                 <div class="d-flex align-items-center">
-                    <img class="img-fluid flex-shrink-0 rounded-circle border" src="{% static 'img/testimonial-1.jpg' %}" style="width: 50px; height: 50px;">
+                    <img class="img-fluid flex-shrink-0 rounded-circle" src="{% static 'img/testimonial-1.jpg' %}" style="width:50px;height:50px;box-shadow:var(--neu-raised);">
                     <div class="ps-3">
-                        <h6 class="fw-bold mb-1">Rahul Sharma</h6>
+                        <h6 class="fw-bold mb-1" style="color:var(--text);">Rahul Sharma</h6>
                         <small class="text-muted">Web Developer</small>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="testimonial-card h-100 shadow-sm">
+            <div class="testimonial-card h-100">
                 <div class="text-warning mb-3">
                     <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                 </div>
-                <p class="fst-italic text-muted mb-4">"Absolutely brilliant platform. I used a Django hospital management template for my final year submission and scored an A+!"</p>
+                <p class="fst-italic mb-4" style="color:var(--text-muted);">"Absolutely brilliant platform. I used a Django hospital management template for my final year submission and scored an A+!"</p>
                 <div class="d-flex align-items-center">
-                    <img class="img-fluid flex-shrink-0 rounded-circle border" src="{% static 'img/testimonial-2.jpg' %}" style="width: 50px; height: 50px;">
+                    <img class="img-fluid flex-shrink-0 rounded-circle" src="{% static 'img/testimonial-2.jpg' %}" style="width:50px;height:50px;box-shadow:var(--neu-raised);">
                     <div class="ps-3">
-                        <h6 class="fw-bold mb-1">Priya Patel</h6>
+                        <h6 class="fw-bold mb-1" style="color:var(--text);">Priya Patel</h6>
                         <small class="text-muted">CS Student</small>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="testimonial-card h-100 shadow-sm">
+            <div class="testimonial-card h-100">
                 <div class="text-warning mb-3">
                     <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
                 </div>
-                <p class="fst-italic text-muted mb-4">"I have started selling my own scripts here. The dashboard is intuitive and payouts are fast. Great community to be a part of."</p>
+                <p class="fst-italic mb-4" style="color:var(--text-muted);">"I have started selling my own scripts here. The dashboard is intuitive and payouts are fast. Great community to be a part of."</p>
                 <div class="d-flex align-items-center">
-                    <img class="img-fluid flex-shrink-0 rounded-circle border" src="{% static 'img/testimonial-3.jpg' %}" style="width: 50px; height: 50px;">
+                    <img class="img-fluid flex-shrink-0 rounded-circle" src="{% static 'img/testimonial-3.jpg' %}" style="width:50px;height:50px;box-shadow:var(--neu-raised);">
                     <div class="ps-3">
-                        <h6 class="fw-bold mb-1">Amit Kumar</h6>
+                        <h6 class="fw-bold mb-1" style="color:var(--text);">Amit Kumar</h6>
                         <small class="text-muted">Freelancer</small>
                     </div>
                 </div>
@@ -519,22 +458,21 @@
     </div>
 </div>
 
+<!-- CTA — neumorphic dark card -->
 {% if not user.is_authenticated %}
 <div class="container py-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <div class="card border-0 rounded-4 shadow-lg overflow-hidden">
-                <div class="card-body p-5 text-center bg-dark text-white position-relative">
-                    <i class="fas fa-code position-absolute" style="font-size: 15rem; color: rgba(255,255,255,0.03); right: -20px; bottom: -40px; transform: rotate(-15deg);"></i>
-                    <div class="position-relative z-1">
-                        <h2 class="display-6 fw-bold mb-3 text-primary">Ready to upgrade your skills?</h2>
-                        <p class="fs-5 text-light opacity-75 mb-4 mx-auto" style="max-width: 600px;">
-                            Join thousands of developers downloading, learning from, and contributing to our premium codebases.
-                        </p>
-                        <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow">
-                            Create a Free Account
-                        </a>
-                    </div>
+            <div class="cta-card p-5 text-center position-relative">
+                <i class="fas fa-code position-absolute" style="font-size:15rem;color:rgba(255,255,255,0.03);right:-20px;bottom:-40px;transform:rotate(-15deg);"></i>
+                <div class="position-relative" style="z-index:1;">
+                    <h2 class="display-6 fw-bold mb-3" style="color:var(--primary);">Ready to upgrade your skills?</h2>
+                    <p class="fs-5 mb-4 mx-auto" style="max-width:600px;color:rgba(255,255,255,0.65);">
+                        Join thousands of developers downloading, learning from, and contributing to our premium codebases.
+                    </p>
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-5 py-3 fw-bold" style="border-radius:12px;">
+                        Create a Free Account
+                    </a>
                 </div>
             </div>
         </div>
@@ -547,9 +485,7 @@
 {% block extra_js %}
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-
 <script>
-    // Slider JS
     const slider = document.querySelector('.slider');
     function activate(e) {
         const items = document.querySelectorAll('.slider-item');
@@ -559,37 +495,29 @@
     const navControls = document.querySelector('.nav-controls');
     if (navControls) { navControls.addEventListener('click', activate, false); }
 
-    // Stats Counters
     $(document).ready(function() {
-        let counted = false; 
+        let counted = false;
         const observer = new IntersectionObserver((entries) => {
-            if(entries[0].isIntersecting && !counted) {
+            if (entries[0].isIntersecting && !counted) {
                 counted = true;
                 $('.counter').each(function() {
                     var $this = $(this), countTo = $this.attr('data-count');
-                    $({ countNum: $this.text()}).animate({ countNum: countTo }, {
-                        duration: 2500, easing:'swing',
+                    $({ countNum: $this.text() }).animate({ countNum: countTo }, {
+                        duration: 2500, easing: 'swing',
                         step: function() { $this.text(Math.floor(this.countNum)); },
                         complete: function() { $this.text(this.countNum); }
-                    });  
+                    });
                 });
             }
         }, { threshold: 0.5 });
-        if(document.querySelector('.stats-section')) { observer.observe(document.querySelector('.stats-section')); }
+        if (document.querySelector('.stats-section')) { observer.observe(document.querySelector('.stats-section')); }
 
-        // Custom Card Animation Logic
         $('.buy-trigger').on('click', function(e) {
-            e.preventDefault(); // Stop immediate redirect to play animation
+            e.preventDefault();
             var $card = $(this).closest('.project-card');
             var targetUrl = $(this).attr('href');
-            
-            // Trigger animation
             $card.addClass('expanded');
-            
-            // Wait 800ms for green circle and checkmark, then redirect
-            setTimeout(function() {
-                window.location.href = targetUrl;
-            }, 800);
+            setTimeout(function() { window.location.href = targetUrl; }, 800);
         });
     });
 </script>

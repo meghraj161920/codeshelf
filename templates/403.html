@@ -2,46 +2,55 @@
 {% load static %}
 
 {% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-center align-items-center" style="min-height:75vh;">
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="neu-raised rounded text-center p-5" style="max-width:480px;width:100%;">
 
-        <div class="card text-center shadow-lg border-0 p-5"
-            style="max-width: 500px; width: 100%; border-radius: 20px;">
-
-            <!-- Icon -->
-            <div class="mb-3">
-                <i class="fas fa-ban display-4 text-warning"></i>
+            <!-- ICON -->
+            <div class="mx-auto mb-4 d-flex align-items-center justify-content-center"
+                 style="width:80px;height:80px;border-radius:50%;
+                        background:rgba(245,158,11,0.12);
+                        box-shadow:var(--neu-raised);">
+                <i class="fas fa-ban" style="font-size:2rem;color:#f59e0b;"></i>
             </div>
 
-            <!-- 403 Code -->
-            <h1 class="display-1 fw-bold text-warning">403</h1>
+            <!-- 403 CODE -->
+            <div style="font-size:5rem;font-weight:900;line-height:1;
+                        font-family:'Nunito',sans-serif;
+                        background:linear-gradient(135deg,#f59e0b,#d97706);
+                        -webkit-background-clip:text;
+                        -webkit-text-fill-color:transparent;
+                        background-clip:text;">
+                403
+            </div>
 
-            <!-- Message -->
-            <h4 class="fw-semibold">Access Forbidden</h4>
-            <p class="text-muted">
-                You don’t have permission to access this page.
+            <!-- MESSAGE -->
+            <h5 class="fw-bold mt-2 mb-1" style="color:var(--text);">Access Forbidden</h5>
+            <p class="text-muted mb-4" style="font-size:14px;line-height:1.7;">
+                You don't have permission to access this page.<br>
+                Please login with the correct account.
             </p>
 
-            <!-- Buttons -->
-            <div class="mt-4">
-                <a href="{% url 'home' %}" class="btn btn-primary rounded-pill px-4 me-2">
-                    <i class="fas fa-home"></i> Home
+            <!-- BUTTONS -->
+            <div class="d-flex gap-3 justify-content-center">
+                <a href="{% url 'home' %}" class="btn btn-primary" style="border-radius:10px;min-width:120px;">
+                    <i class="fas fa-home me-1"></i> Home
                 </a>
-
-                <a href="{% url 'login' %}" class="btn btn-outline-secondary rounded-pill px-4">
-                    <i class="fas fa-sign-in-alt"></i> Login
+                <a href="{% url 'login' %}" class="btn btn-outline-secondary" style="border-radius:10px;min-width:120px;">
+                    <i class="fas fa-sign-in-alt me-1"></i> Login
                 </a>
             </div>
 
-            <!-- Badge -->
-            <div class="mt-3">
-                <span class="badge bg-secondary">CodeShelf Error • 403</span>
+            <!-- BADGE -->
+            <div class="mt-4">
+                <span class="neu-pressed rounded px-3 py-1"
+                      style="font-size:12px;font-weight:700;color:var(--text-muted);">
+                    CodeShelf Error • 403
+                </span>
             </div>
 
         </div>
-
     </div>
 </div>
-
-{% endblock %}
+{% endblock content %}

@@ -2,25 +2,107 @@
 {% load static %}
 
 {% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-sm-8">
 
-<div class="container mt-5">
+            <!-- CARD -->
+            <div class="neu-raised rounded p-5">
 
-    <div class="card shadow p-4 col-md-6 mx-auto">
+                <!-- HEADER -->
+                <div class="text-center mb-4">
+                    <div class="stat-icon mx-auto mb-3">
+                        <i class="fa fa-ticket" style="font-size:22px;color:var(--primary);"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1" style="color:var(--text);">Apply Coupon</h4>
+                    <p class="text-muted mb-0" style="font-size:13px;">
+                        Enter your discount code to save on checkout
+                    </p>
+                </div>
 
-        <h3>🎟 Apply Coupon</h3>
+                <!-- MESSAGES -->
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} mb-3">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
 
-        <input type="text" name="coupon_code" class="form-control mb-3" placeholder="Enter coupon code">
+                <!-- FORM -->
+                <form method="POST">
+                    {% csrf_token %}
 
-        <button class="btn btn-primary w-100">
-            Apply Coupon
-        </button>
+                    <!-- COUPON INPUT -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold"
+                               style="color:var(--text-muted);font-size:13px;">
+                            Coupon Code
+                        </label>
+                        <div class="position-relative">
+                            <i class="fa fa-tag position-absolute"
+                               style="left:14px;top:50%;transform:translateY(-50%);
+                                      color:var(--text-muted);font-size:13px;
+                                      z-index:1;pointer-events:none;"></i>
+                            <input type="text" name="coupon_code"
+                                   id="couponInput"
+                                   class="form-control text-uppercase"
+                                   style="padding-left:38px;letter-spacing:2px;
+                                          font-weight:700;font-family:monospace;font-size:15px;"
+                                   placeholder="e.g. REVIEW10"
+                                   autocomplete="off">
+                        </div>
+                    </div>
 
-        <p class="mt-3 text-success">
-            Coupon REVIEW10 applied successfully!
-        </p>
+                    <!-- APPLY BUTTON -->
+                    <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
+                        <i class="fa fa-check-circle me-2"></i> Apply Coupon
+                    </button>
 
+                </form>
+
+                <!-- DIVIDER -->
+                <div style="height:1px;background:rgba(var(--primary-rgb),0.1);margin:16px 0;"></div>
+
+                <!-- HINT -->
+                <div class="neu-pressed rounded p-3 d-flex align-items-start gap-3">
+                    <div style="flex-shrink:0;margin-top:2px;">
+                        <i class="fa fa-info-circle" style="color:var(--primary);font-size:15px;"></i>
+                    </div>
+                    <p class="mb-0 text-muted" style="font-size:12px;line-height:1.65;">
+                        You can earn coupons by leaving a review after purchasing a project.
+                        Check <a href="{% url 'coupons' %}"
+                                 class="fw-bold text-decoration-none"
+                                 style="color:var(--primary);">My Coupons</a>
+                        to see your available codes.
+                    </p>
+                </div>
+
+                <!-- BACK LINK -->
+                <div class="text-center mt-4">
+                    <a href="{% url 'cart' %}"
+                       class="text-decoration-none fw-semibold"
+                       style="font-size:13px;color:var(--text-muted);">
+                        <i class="fa fa-arrow-left me-1"></i> Back to Cart
+                    </a>
+                </div>
+
+            </div>
+            <!-- END CARD -->
+
+        </div>
     </div>
-
 </div>
+{% endblock %}
 
+{% block extra_js %}
+<script>
+    /* Auto uppercase the coupon input */
+    const couponInput = document.getElementById('couponInput');
+    if (couponInput) {
+        couponInput.addEventListener('input', function () {
+            const pos = this.selectionStart;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(pos, pos);
+        });
+    }
+</script>
 {% endblock %}

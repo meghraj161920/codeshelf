@@ -1554,3 +1554,33 @@ a {
     color: rgba(255, 255, 255, 0.35);
     font-size: 13px;
 }
+
+
+/* ── Footer brand text always white (footer is always dark) ── */
+.cs-footer .brand-text {
+    color: #ffffff !important;
+}
+
+/* ── Footer contact icon pill ── */
+.footer-contact-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba(6, 187, 204, 0.12);
+    border: 1px solid rgba(6, 187, 204, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 14px;
+    margin-bottom: 10px;
+}

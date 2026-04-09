@@ -2,60 +2,230 @@
 {% load static %}
 
 {% block content %}
-<div class="container-xxl py-5">
-    <div class="container">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
 
-        <div class="text-center">
-            <h6 class="section-title bg-white text-center text-primary px-3">Account</h6>
-            <h1 class="mb-5">Reset Password</h1>
-        </div>
+            <!-- CARD WRAPPER -->
+            <div class="neu-raised rounded p-5">
 
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="bg-light p-5 rounded shadow">
-
-                    {% if messages %}
-                        {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
-
-                    <!-- STEP 1 : Email -->
-                    {% if step == 'email' or not step %}
-                    <form method="POST">
-                        {% csrf_token %}
-                        <h5 class="mb-3">Enter your email</h5>
-                        <input type="email" name="email" class="form-control mb-3" placeholder="Enter Email" required>
-                        <button name="send_otp" class="btn btn-primary w-100">Send OTP</button>
-                    </form>
-                    {% endif %}
-
-                    <!-- STEP 2 : OTP Verify -->
-                    {% if step == 'verify' %}
-                    <form method="POST">
-                        {% csrf_token %}
-                        <h5 class="mb-3">Enter OTP</h5>
-                        <p class="text-muted">OTP sent to: <strong>{{ email }}</strong> (check terminal)</p>
-                        <input type="text" name="otp" class="form-control mb-3" placeholder="Enter OTP" required>
-                        <button name="verify_otp" class="btn btn-success w-100">Verify OTP</button>
-                    </form>
-                    {% endif %}
-
-                    <!-- STEP 3 : New Password -->
-                    {% if step == 'reset' %}
-                    <form method="POST">
-                        {% csrf_token %}
-                        <h5 class="mb-3">Set New Password</h5>
-                        <input type="password" name="password" class="form-control mb-3" placeholder="New Password" required>
-                        <input type="password" name="confirm_password" class="form-control mb-3" placeholder="Confirm Password" required>
-                        <button name="reset_password" class="btn btn-warning w-100">Reset Password</button>
-                    </form>
-                    {% endif %}
-
+                <!-- HEADER -->
+                <div class="text-center mb-4">
+                    <div class="stat-icon mx-auto mb-3">
+                        <i class="fa-solid fa-lock" style="font-size:22px;color:var(--primary);"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1" style="color:var(--text);">Reset Password</h4>
+                    <p class="text-muted mb-0" style="font-size:14px;">
+                        {% if step == 'verify' %}
+                            Check your email for the OTP
+                        {% elif step == 'reset' %}
+                            Create a strong new password
+                        {% else %}
+                            We'll send an OTP to your email
+                        {% endif %}
+                    </p>
                 </div>
-            </div>
-        </div>
 
+                <!-- STEP INDICATOR -->
+                <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
+                    <!-- Step 1 -->
+                    <div class="d-flex flex-column align-items-center">
+                        <div style="
+                            width:32px;height:32px;border-radius:50%;
+                            display:flex;align-items:center;justify-content:center;
+                            font-size:13px;font-weight:700;
+                            box-shadow:{% if step == 'email' or not step %}var(--neu-pressed){% else %}var(--neu-raised){% endif %};
+                            background:{% if step == 'email' or not step %}linear-gradient(135deg,var(--primary),var(--primary-dark)){% else %}var(--neu-bg){% endif %};
+                            color:{% if step == 'email' or not step %}#fff{% else %}var(--text-muted){% endif %};">
+                            {% if step == 'verify' or step == 'reset' %}
+                                <i class="fa-solid fa-check" style="font-size:11px;"></i>
+                            {% else %}1{% endif %}
+                        </div>
+                        <span style="font-size:10px;color:var(--text-muted);margin-top:4px;">Email</span>
+                    </div>
+                    <div style="flex:1;height:2px;background:rgba(var(--primary-rgb),0.15);border-radius:2px;margin-bottom:16px;"></div>
+                    <!-- Step 2 -->
+                    <div class="d-flex flex-column align-items-center">
+                        <div style="
+                            width:32px;height:32px;border-radius:50%;
+                            display:flex;align-items:center;justify-content:center;
+                            font-size:13px;font-weight:700;
+                            box-shadow:{% if step == 'verify' %}var(--neu-pressed){% else %}var(--neu-raised){% endif %};
+                            background:{% if step == 'verify' %}linear-gradient(135deg,var(--primary),var(--primary-dark)){% elif step == 'reset' %}var(--neu-bg){% else %}var(--neu-bg){% endif %};
+                            color:{% if step == 'verify' %}#fff{% else %}var(--text-muted){% endif %};">
+                            {% if step == 'reset' %}
+                                <i class="fa-solid fa-check" style="font-size:11px;color:#10b981;"></i>
+                            {% else %}2{% endif %}
+                        </div>
+                        <span style="font-size:10px;color:var(--text-muted);margin-top:4px;">OTP</span>
+                    </div>
+                    <div style="flex:1;height:2px;background:rgba(var(--primary-rgb),0.15);border-radius:2px;margin-bottom:16px;"></div>
+                    <!-- Step 3 -->
+                    <div class="d-flex flex-column align-items-center">
+                        <div style="
+                            width:32px;height:32px;border-radius:50%;
+                            display:flex;align-items:center;justify-content:center;
+                            font-size:13px;font-weight:700;
+                            box-shadow:{% if step == 'reset' %}var(--neu-pressed){% else %}var(--neu-raised){% endif %};
+                            background:{% if step == 'reset' %}linear-gradient(135deg,var(--primary),var(--primary-dark)){% else %}var(--neu-bg){% endif %};
+                            color:{% if step == 'reset' %}#fff{% else %}var(--text-muted){% endif %};">
+                            3
+                        </div>
+                        <span style="font-size:10px;color:var(--text-muted);margin-top:4px;">Reset</span>
+                    </div>
+                </div>
+
+                <!-- MESSAGES -->
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} mb-3">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- ── STEP 1: Email ── -->
+                {% if step == 'email' or not step %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">Email Address</label>
+                        <div class="position-relative">
+                            <i class="fa fa-envelope position-absolute"
+                               style="left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;z-index:1;pointer-events:none;"></i>
+                            <input type="email" name="email" class="form-control"
+                                   style="padding-left:38px;"
+                                   placeholder="Enter your email" required>
+                        </div>
+                    </div>
+                    <button name="send_otp" class="btn btn-primary w-100 py-2 mt-2">
+                        <i class="fa fa-paper-plane me-2"></i> Send OTP
+                    </button>
+                </form>
+                {% endif %}
+
+                <!-- ── STEP 2: OTP ── -->
+                {% if step == 'verify' %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="neu-pressed rounded p-3 mb-3 text-center">
+                        <small class="text-muted">OTP sent to</small>
+                        <div class="fw-bold mt-1" style="color:var(--primary);">{{ email }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">Enter OTP</label>
+                        <div class="position-relative">
+                            <i class="fa fa-shield-alt position-absolute"
+                               style="left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;z-index:1;pointer-events:none;"></i>
+                            <input type="text" name="otp" class="form-control text-center"
+                                   style="padding-left:38px;letter-spacing:8px;font-size:18px;font-weight:700;"
+                                   placeholder="• • • • • •"
+                                   maxlength="6" required>
+                        </div>
+                    </div>
+                    <button name="verify_otp" class="btn btn-success w-100 py-2 mt-2">
+                        <i class="fa fa-check-circle me-2"></i> Verify OTP
+                    </button>
+                </form>
+                {% endif %}
+
+                <!-- ── STEP 3: New Password ── -->
+                {% if step == 'reset' %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">New Password</label>
+                        <div class="position-relative">
+                            <i class="fa fa-lock position-absolute"
+                               style="left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;z-index:1;pointer-events:none;"></i>
+                            <input type="password" name="password" id="newPassword"
+                                   class="form-control"
+                                   style="padding-left:38px;padding-right:42px;"
+                                   placeholder="New password" required>
+                            <span onclick="togglePwd('newPassword', this)"
+                                  class="position-absolute"
+                                  style="right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-muted);z-index:1;">
+                                <i class="fa fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">Confirm Password</label>
+                        <div class="position-relative">
+                            <i class="fa fa-lock position-absolute"
+                               style="left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;z-index:1;pointer-events:none;"></i>
+                            <input type="password" name="confirm_password" id="confirmPassword"
+                                   class="form-control"
+                                   style="padding-left:38px;padding-right:42px;"
+                                   placeholder="Confirm password" required>
+                            <span onclick="togglePwd('confirmPassword', this)"
+                                  class="position-absolute"
+                                  style="right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-muted);z-index:1;">
+                                <i class="fa fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- Password strength bar -->
+                    <div class="mb-3">
+                        <div class="progress" style="height:6px;">
+                            <div class="progress-bar" id="strengthBar" style="width:0%;"></div>
+                        </div>
+                        <small id="strengthText" class="text-muted" style="font-size:11px;"></small>
+                    </div>
+                    <button name="reset_password" class="btn btn-primary w-100 py-2 mt-1">
+                        <i class="fa fa-key me-2"></i> Reset Password
+                    </button>
+                </form>
+                {% endif %}
+
+                <!-- BACK TO LOGIN -->
+                <div class="text-center mt-4">
+                    <a href="{% url 'login' %}"
+                       class="text-decoration-none fw-semibold"
+                       style="font-size:13px;color:var(--text-muted);">
+                        <i class="fa fa-arrow-left me-1"></i> Back to Login
+                    </a>
+                </div>
+
+            </div>
+            <!-- END CARD -->
+
+        </div>
     </div>
 </div>
 {% endblock content %}
+
+{% block extra_js %}
+<script>
+    function togglePwd(id, el) {
+        const input = document.getElementById(id);
+        const isText = input.type === 'text';
+        input.type = isText ? 'password' : 'text';
+        el.querySelector('i').className = isText ? 'fa fa-eye' : 'fa fa-eye-slash';
+    }
+
+    const newPwd = document.getElementById('newPassword');
+    if (newPwd) {
+        newPwd.addEventListener('input', function () {
+            const val = this.value;
+            const bar  = document.getElementById('strengthBar');
+            const text = document.getElementById('strengthText');
+            let strength = 0;
+            if (val.length >= 8)              strength++;
+            if (/[A-Z]/.test(val))            strength++;
+            if (/[0-9]/.test(val))            strength++;
+            if (/[!@#$%^&*]/.test(val))       strength++;
+
+            const levels = [
+                { w: '0%',   color: '',          label: '' },
+                { w: '25%',  color: '#f43f5e',   label: 'Weak' },
+                { w: '50%',  color: '#f59e0b',   label: 'Fair' },
+                { w: '75%',  color: '#06BBCC',   label: 'Good' },
+                { w: '100%', color: '#10b981',   label: 'Strong' },
+            ];
+            bar.style.width            = levels[strength].w;
+            bar.style.background       = levels[strength].color;
+            text.textContent           = levels[strength].label;
+            text.style.color           = levels[strength].color;
+        });
+    }
+</script>
+{% endblock %}

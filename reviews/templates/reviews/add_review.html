@@ -2,60 +2,114 @@
 {% load static %}
 
 {% block content %}
-<body class="bg-light">
+<div class="container py-5">
+<div class="mx-auto" style="max-width:460px;">
 
-<div class="container mt-5">
-<div class="card p-4 mx-auto" style="max-width:400px">
+    <!-- MESSAGES -->
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
 
-<h3>Add Review</h3>
+    <div class="neu-raised rounded p-4">
 
-<form method="POST">
-{% csrf_token %}
+        <!-- HEADER -->
+        <h5 class="fw-bold mb-1" style="color:var(--text);">
+            <i class="fa fa-pen me-2" style="color:var(--primary);"></i>Write a Review
+        </h5>
+        <p class="text-muted mb-4" style="font-size:13px;">
+            Share your experience with this project
+        </p>
 
-<!-- COMMENT -->
-<textarea name="comment" class="form-control mb-3" placeholder="Write review"></textarea>
+        <form method="POST" action="{% url 'add_review' %}">
+            {% csrf_token %}
 
-<!-- HIDDEN RATING -->
-<input type="hidden" name="rating" id="rating">
+            <!-- PROJECT ID -->
+            {% if project %}
+            <input type="hidden" name="project_id" value="{{ project.id }}">
+            {% endif %}
 
-<!-- STARS -->
-<div id="stars" class="text-center mb-3">
-    <span data-value="1" class="fs-3 text-secondary">★</span>
-    <span data-value="2" class="fs-3 text-secondary">★</span>
-    <span data-value="3" class="fs-3 text-secondary">★</span>
-    <span data-value="4" class="fs-3 text-secondary">★</span>
-    <span data-value="5" class="fs-3 text-secondary">★</span>
+            <!-- STAR RATING -->
+            <div class="mb-4">
+                <label class="form-label">Rating *</label>
+                <div id="stars" class="d-flex gap-2 mt-1">
+                    {% for i in "12345" %}
+                    <span data-value="{{ forloop.counter }}"
+                          style="font-size:2rem;cursor:pointer;color:var(--text-muted);
+                                 transition:color 0.15s,transform 0.15s;">★</span>
+                    {% endfor %}
+                </div>
+                <input type="hidden" name="rating" id="rating-input">
+                <small class="text-muted" id="rating-label" style="font-size:12px;">
+                    Click a star to rate
+                </small>
+            </div>
+
+            <!-- COMMENT -->
+            <div class="mb-4">
+                <label class="form-label">Your Review *</label>
+                <textarea name="comment" class="form-control" rows="4"
+                          placeholder="Share your experience with this project..."></textarea>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="d-flex gap-3">
+                <button type="button"
+                        onclick="history.back()"
+                        class="btn btn-outline-secondary flex-grow-1"
+                        style="border-radius:10px;">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary flex-grow-1"
+                        style="border-radius:10px;">
+                    <i class="fa fa-paper-plane me-1"></i> Submit Review
+                </button>
+            </div>
+
+        </form>
+    </div>
+
 </div>
-
-<button class="btn btn-primary w-100">Submit</button>
-
-</form>
-
 </div>
-</div>
+{% endblock content %}
 
+{% block extra_js %}
 <script>
-let stars = document.querySelectorAll("#stars span");
-let ratingInput = document.getElementById("rating");
+const stars = document.querySelectorAll('#stars span');
+const ratingInput = document.getElementById('rating-input');
+const ratingLabel = document.getElementById('rating-label');
+const labels = ['', 'Terrible', 'Poor', 'Average', 'Good', 'Excellent'];
 
-stars.forEach((star) => {
-    star.addEventListener("click", function () {
-        let value = this.getAttribute("data-value");
+stars.forEach(star => {
+    star.addEventListener('click', function () {
+        const val = parseInt(this.dataset.value);
+        ratingInput.value = val;
+        ratingLabel.textContent = labels[val];
 
-        // set rating value
-        ratingInput.value = value;
-
-        // reset all stars
-        stars.forEach(s => s.classList.remove("text-warning"));
-
-        // highlight selected stars
         stars.forEach(s => {
-            if (s.getAttribute("data-value") <= value) {
-                s.classList.add("text-warning");
-            }
+            const sv = parseInt(s.dataset.value);
+            s.style.color = sv <= val ? '#f59e0b' : 'var(--text-muted)';
+            s.style.transform = sv <= val ? 'scale(1.15)' : 'scale(1)';
+        });
+    });
+
+    star.addEventListener('mouseover', function () {
+        const val = parseInt(this.dataset.value);
+        stars.forEach(s => {
+            s.style.color = parseInt(s.dataset.value) <= val ? '#f59e0b' : 'var(--text-muted)';
+        });
+    });
+
+    star.addEventListener('mouseout', function () {
+        const selected = parseInt(ratingInput.value) || 0;
+        stars.forEach(s => {
+            s.style.color = parseInt(s.dataset.value) <= selected ? '#f59e0b' : 'var(--text-muted)';
         });
     });
 });
 </script>
-
 {% endblock %}

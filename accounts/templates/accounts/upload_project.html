@@ -4,130 +4,243 @@
 {% block content %}
 <div class="container py-5">
 
+    <!-- HEADER -->
     <div class="d-flex align-items-center mb-4">
-        <a href="{% url 'seller_dashboard' %}" class="btn btn-outline-secondary btn-sm me-3">
-            <i class="fa fa-arrow-left"></i> Back
+        <a href="{% url 'seller_dashboard' %}"
+           class="btn btn-sm me-3"
+           style="background:var(--neu-bg);box-shadow:var(--neu-raised);
+                  border:none;border-radius:10px;color:var(--text-muted);
+                  padding:8px 14px;font-weight:600;transition:all 0.22s var(--ease);"
+           onmouseover="this.style.boxShadow='var(--neu-pressed)';this.style.color='var(--primary)'"
+           onmouseout="this.style.boxShadow='var(--neu-raised)';this.style.color='var(--text-muted)'">
+            <i class="fa fa-arrow-left me-1"></i> Back
         </a>
-        <h4 class="fw-bold mb-0">📤 Upload New Project</h4>
+        <div>
+            <h4 class="fw-bold mb-0" style="color:var(--text);">📤 Upload New Project</h4>
+            <p class="text-muted mb-0" style="font-size:13px;">Fill in the details below to list your project</p>
+        </div>
     </div>
 
-    <div class="card shadow-sm border-0 p-4 p-md-5">
+    <!-- MAIN CARD -->
+    <div class="neu-raised rounded p-4 p-md-5">
 
+        <!-- Messages -->
         {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} mb-4">{{ message }}</div>
+            {% endfor %}
         {% endif %}
 
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-
             <div class="row g-4">
+
+                <!-- ── SECTION: Basic Info ── -->
+                <div class="col-12">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <div class="stat-icon" style="width:34px;height:34px;border-radius:9px;flex-shrink:0;">
+                            <i class="fa fa-info-circle" style="font-size:14px;color:var(--primary);"></i>
+                        </div>
+                        <h6 class="fw-bold mb-0" style="color:var(--text);">Basic Information</h6>
+                    </div>
+                    <div style="height:1px;background:rgba(var(--primary-rgb),0.1);margin:10px 0 4px;"></div>
+                </div>
 
                 <!-- TITLE -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Project Title *</label>
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        Project Title <span style="color:#f43f5e;">*</span>
+                    </label>
                     {{ form.title }}
                     {% if form.title.errors %}
-                    <div class="text-danger small">{{ form.title.errors }}</div>
+                    <div class="text-danger small mt-1">{{ form.title.errors }}</div>
                     {% endif %}
                 </div>
 
                 <!-- CATEGORY -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Category *</label>
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        Category <span style="color:#f43f5e;">*</span>
+                    </label>
                     {{ form.category }}
                 </div>
 
                 <!-- DESCRIPTION -->
                 <div class="col-12">
-                    <label class="form-label fw-semibold">Description *</label>
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        Description <span style="color:#f43f5e;">*</span>
+                    </label>
                     {{ form.description }}
                 </div>
 
                 <!-- TECHNOLOGY -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Technology *</label>
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        Technology <span style="color:#f43f5e;">*</span>
+                    </label>
                     {{ form.technology }}
                 </div>
 
                 <!-- DIFFICULTY -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Difficulty Level *</label>
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        Difficulty Level <span style="color:#f43f5e;">*</span>
+                    </label>
                     {{ form.difficulty_level }}
                 </div>
 
                 <!-- VERSION -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Version *</label>
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        Version <span style="color:#f43f5e;">*</span>
+                    </label>
                     {{ form.version }}
                 </div>
 
                 <!-- PRICE -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Price (₹) *</label>
-                    {{ form.price }}
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        Price (₹) <span style="color:#f43f5e;">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text"
+                              style="background:var(--neu-bg);box-shadow:var(--neu-pressed);
+                                     border:none;color:var(--text-muted);font-weight:700;font-size:14px;">
+                            ₹
+                        </span>
+                        {{ form.price }}
+                    </div>
                 </div>
 
                 <!-- REQUIREMENTS -->
                 <div class="col-12">
-                    <label class="form-label fw-semibold">Requirements</label>
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        Requirements
+                    </label>
                     {{ form.requirements }}
                 </div>
 
-                <hr>
+                <!-- ── SECTION: Files ── -->
+                <div class="col-12 mt-2">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <div class="stat-icon" style="width:34px;height:34px;border-radius:9px;flex-shrink:0;">
+                            <i class="fa fa-folder-open" style="font-size:14px;color:var(--primary);"></i>
+                        </div>
+                        <h6 class="fw-bold mb-0" style="color:var(--text);">Files &amp; Media</h6>
+                    </div>
+                    <div style="height:1px;background:rgba(var(--primary-rgb),0.1);margin:10px 0 4px;"></div>
+                </div>
 
                 <!-- THUMBNAIL -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Thumbnail Image *</label>
-                    {{ form.thumbnail }}
-                    <small class="text-muted">JPG, PNG recommended</small>
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        Thumbnail Image <span style="color:#f43f5e;">*</span>
+                    </label>
+                    <div class="neu-pressed rounded p-3">
+                        {{ form.thumbnail }}
+                        <small class="text-muted d-block mt-1" style="font-size:11px;">
+                            <i class="fa fa-image me-1"></i> JPG, PNG recommended
+                        </small>
+                    </div>
+                    <!-- Thumbnail preview -->
+                    <div id="thumbPreviewWrap" class="mt-2" style="display:none;">
+                        <img id="thumbPreview"
+                             style="width:100%;max-height:140px;object-fit:cover;
+                                    border-radius:10px;box-shadow:var(--neu-raised);">
+                    </div>
                 </div>
 
                 <!-- ZIP FILE -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Project ZIP File *</label>
-                    {{ form.zip_file }}
-                    <small class="text-muted">Upload complete source code</small>
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        Project ZIP File <span style="color:#f43f5e;">*</span>
+                    </label>
+                    <div class="neu-pressed rounded p-3">
+                        {{ form.zip_file }}
+                        <small class="text-muted d-block mt-1" style="font-size:11px;">
+                            <i class="fa fa-file-archive me-1"></i> Upload complete source code (.zip)
+                        </small>
+                    </div>
                 </div>
 
                 <!-- DOCUMENTATION -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Documentation File</label>
-                    {{ form.documentation_file }}
-                    <small class="text-muted">PDF recommended</small>
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        Documentation File
+                    </label>
+                    <div class="neu-pressed rounded p-3">
+                        {{ form.documentation_file }}
+                        <small class="text-muted d-block mt-1" style="font-size:11px;">
+                            <i class="fa fa-file-pdf me-1"></i> PDF recommended
+                        </small>
+                    </div>
                 </div>
 
                 <!-- FILE SIZE -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">File Size</label>
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        File Size
+                    </label>
                     {{ form.file_size }}
                 </div>
 
-                <hr>
+                <!-- ── SECTION: Videos ── -->
+                <div class="col-12 mt-2">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <div class="stat-icon" style="width:34px;height:34px;border-radius:9px;flex-shrink:0;">
+                            <i class="fa fa-video" style="font-size:14px;color:var(--primary);"></i>
+                        </div>
+                        <h6 class="fw-bold mb-0" style="color:var(--text);">Video Links</h6>
+                    </div>
+                    <div style="height:1px;background:rgba(var(--primary-rgb),0.1);margin:10px 0 4px;"></div>
+                </div>
 
                 <!-- DEMO VIDEO -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Demo Video URL</label>
-                    {{ form.demo_video_url }}
-                    <small class="text-muted">YouTube embed URL</small>
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        Demo Video URL
+                    </label>
+                    <div class="position-relative">
+                        <i class="fa-brands fa-youtube position-absolute"
+                           style="left:14px;top:50%;transform:translateY(-50%);
+                                  color:#f43f5e;font-size:15px;z-index:1;pointer-events:none;"></i>
+                        <div style="padding-left:10px;">{{ form.demo_video_url }}</div>
+                    </div>
+                    <small class="text-muted" style="font-size:11px;">
+                        <i class="fa fa-info-circle me-1"></i> YouTube embed URL
+                    </small>
                 </div>
 
                 <!-- INSTALLATION VIDEO -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Installation Video URL</label>
-                    {{ form.installation_video_url }}
-                    <small class="text-muted">YouTube embed URL (private)</small>
+                    <label class="form-label fw-semibold" style="color:var(--text-muted);font-size:13px;">
+                        Installation Video URL
+                    </label>
+                    <div class="position-relative">
+                        <i class="fa-brands fa-youtube position-absolute"
+                           style="left:14px;top:50%;transform:translateY(-50%);
+                                  color:#f43f5e;font-size:15px;z-index:1;pointer-events:none;"></i>
+                        <div style="padding-left:10px;">{{ form.installation_video_url }}</div>
+                    </div>
+                    <small class="text-muted" style="font-size:11px;">
+                        <i class="fa fa-lock me-1"></i> YouTube embed URL (private)
+                    </small>
                 </div>
 
-                <!-- SUBMIT -->
-                <div class="col-12 text-end">
-                    <a href="{% url 'seller_dashboard' %}" class="btn btn-outline-secondary me-2">
-                        Cancel
-                    </a>
-                    <button type="submit" class="btn btn-primary px-5">
-                        <i class="fa fa-upload me-1"></i> Upload Project
-                    </button>
+                <!-- ── SUBMIT ROW ── -->
+                <div class="col-12">
+                    <div style="height:1px;background:rgba(var(--primary-rgb),0.1);margin-bottom:20px;"></div>
+                    <div class="d-flex justify-content-end gap-2 flex-wrap">
+                        <a href="{% url 'seller_dashboard' %}"
+                           class="btn btn-outline-secondary"
+                           style="border-radius:10px;">
+                            <i class="fa fa-times me-1"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary px-5"
+                                style="border-radius:10px;">
+                            <i class="fa fa-upload me-1"></i> Upload Project
+                        </button>
+                    </div>
                 </div>
 
             </div>
@@ -135,4 +248,40 @@
 
     </div>
 </div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    /* Thumbnail live preview */
+    const thumbInput = document.querySelector('input[name="thumbnail"]');
+    if (thumbInput) {
+        thumbInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('thumbPreview').src = e.target.result;
+                    document.getElementById('thumbPreviewWrap').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    /* ZIP file name display */
+    const zipInput = document.querySelector('input[name="zip_file"]');
+    if (zipInput) {
+        zipInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const label = this.closest('.neu-pressed').querySelector('small');
+                if (label) {
+                    label.innerHTML = `<i class="fa fa-check-circle me-1" style="color:#10b981;"></i>
+                        ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+                    label.style.color = '#10b981';
+                }
+            }
+        });
+    }
+</script>
 {% endblock content %}

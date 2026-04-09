@@ -4,135 +4,166 @@
 {% block content %}
 <div class="container py-5">
 
+    <!-- HEADER -->
     <div class="d-flex align-items-center mb-4">
-        <a href="{% url 'seller_dashboard' %}" class="btn btn-outline-secondary btn-sm me-3">
+        <a href="{% url 'seller_dashboard' %}" class="btn btn-outline-secondary btn-sm me-3"
+           style="border-radius:10px;">
             <i class="fa fa-arrow-left"></i> Back
         </a>
-        <h4 class="fw-bold mb-0">📤 Upload New Project</h4>
+        <div>
+            <h4 class="fw-bold mb-0" style="color:var(--text);">Upload New Project</h4>
+            <p class="text-muted mb-0" style="font-size:13px;">Fill in the details to list your project on CodeShelf</p>
+        </div>
     </div>
 
-    <div class="card shadow-sm border-0 p-4 p-md-5">
-
-        {% if messages %}
+    <!-- MESSAGES -->
+    {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
         {% endfor %}
-        {% endif %}
+    {% endif %}
 
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
 
+        <!-- ══ SECTION 1: Basic Info ══ -->
+        <div class="neu-raised rounded p-4 mb-4">
+            <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--primary);">
+                <i class="fa fa-info-circle"></i> Basic Information
+            </h6>
             <div class="row g-4">
 
                 <!-- TITLE -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Project Title *</label>
+                    <label class="form-label">Project Title *</label>
                     {{ form.title }}
                     {% if form.title.errors %}
-                    <div class="text-danger small">{{ form.title.errors }}</div>
+                    <div class="text-danger small mt-1">{{ form.title.errors }}</div>
                     {% endif %}
                 </div>
 
                 <!-- CATEGORY -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Category *</label>
+                    <label class="form-label">Category *</label>
                     {{ form.category }}
                 </div>
 
                 <!-- DESCRIPTION -->
                 <div class="col-12">
-                    <label class="form-label fw-semibold">Description *</label>
+                    <label class="form-label">Description *</label>
                     {{ form.description }}
                 </div>
 
                 <!-- TECHNOLOGY -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Technology *</label>
+                    <label class="form-label">Technology *</label>
                     {{ form.technology }}
                 </div>
 
                 <!-- DIFFICULTY -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Difficulty Level *</label>
+                    <label class="form-label">Difficulty Level *</label>
                     {{ form.difficulty_level }}
                 </div>
 
                 <!-- VERSION -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Version *</label>
+                    <label class="form-label">Version *</label>
                     {{ form.version }}
                 </div>
 
                 <!-- PRICE -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Price (₹) *</label>
+                    <label class="form-label">Price (₹) *</label>
                     {{ form.price }}
                 </div>
 
                 <!-- REQUIREMENTS -->
                 <div class="col-12">
-                    <label class="form-label fw-semibold">Requirements</label>
+                    <label class="form-label">Requirements</label>
                     {{ form.requirements }}
                 </div>
 
-                <hr>
+            </div>
+        </div>
+
+        <!-- ══ SECTION 2: Files ══ -->
+        <div class="neu-raised rounded p-4 mb-4">
+            <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--primary);">
+                <i class="fa fa-folder-open"></i> Project Files
+            </h6>
+            <div class="row g-4">
 
                 <!-- THUMBNAIL -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Thumbnail Image *</label>
+                    <label class="form-label">Thumbnail Image *</label>
                     {{ form.thumbnail }}
-                    <small class="text-muted">JPG, PNG recommended</small>
+                    <small class="text-muted d-block mt-1">JPG, PNG recommended</small>
                 </div>
 
                 <!-- ZIP FILE -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Project ZIP File *</label>
+                    <label class="form-label">Project ZIP File *</label>
                     {{ form.zip_file }}
-                    <small class="text-muted">Upload complete source code</small>
+                    <small class="text-muted d-block mt-1">Upload complete source code</small>
                 </div>
 
                 <!-- DOCUMENTATION -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Documentation File</label>
+                    <label class="form-label">Documentation File</label>
                     {{ form.documentation_file }}
-                    <small class="text-muted">PDF recommended</small>
+                    <small class="text-muted d-block mt-1">PDF recommended</small>
                 </div>
 
                 <!-- FILE SIZE -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">File Size</label>
+                    <label class="form-label">File Size</label>
                     {{ form.file_size }}
+                    <small class="text-muted d-block mt-1">e.g. 2.4 MB</small>
                 </div>
 
-                <hr>
+            </div>
+        </div>
+
+        <!-- ══ SECTION 3: Videos ══ -->
+        <div class="neu-raised rounded p-4 mb-4">
+            <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--primary);">
+                <i class="fa fa-play-circle"></i> Video Links
+            </h6>
+            <div class="row g-4">
 
                 <!-- DEMO VIDEO -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Demo Video URL</label>
+                    <label class="form-label">Demo Video URL</label>
                     {{ form.demo_video_url }}
-                    <small class="text-muted">YouTube embed URL</small>
+                    <small class="text-muted d-block mt-1">YouTube embed URL (visible to all)</small>
                 </div>
 
                 <!-- INSTALLATION VIDEO -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Installation Video URL</label>
+                    <label class="form-label">Installation Video URL</label>
                     {{ form.installation_video_url }}
-                    <small class="text-muted">YouTube embed URL (private)</small>
-                </div>
-
-                <!-- SUBMIT -->
-                <div class="col-12 text-end">
-                    <a href="{% url 'seller_dashboard' %}" class="btn btn-outline-secondary me-2">
-                        Cancel
-                    </a>
-                    <button type="submit" class="btn btn-primary px-5">
-                        <i class="fa fa-upload me-1"></i> Upload Project
-                    </button>
+                    <small class="text-muted d-block mt-1">YouTube embed URL (purchased users only)</small>
                 </div>
 
             </div>
-        </form>
+        </div>
 
-    </div>
+        <!-- ══ SUBMIT ══ -->
+        <div class="d-flex justify-content-end gap-3">
+            <a href="{% url 'seller_dashboard' %}"
+               class="btn btn-outline-secondary"
+               style="border-radius:10px;min-width:120px;">
+                Cancel
+            </a>
+            <button type="submit" class="btn btn-primary px-5" style="border-radius:10px;">
+                <i class="fa fa-upload me-2"></i> Upload Project
+            </button>
+        </div>
+
+    </form>
 </div>
 {% endblock content %}

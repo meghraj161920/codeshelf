@@ -1,246 +1,421 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block extra_css %}
-<link href="{% static 'accounts/css/style.css' %}" rel="stylesheet">
-{% endblock %}
-
 {% block content %}
 {% with role=user.profile.role %}
+
+<style>
+    /* ── Sidebar overlay ── */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        z-index: 200;
+        backdrop-filter: blur(4px);
+    }
+    .sidebar-overlay.active { display: block; }
+
+    /* ── Mobile sidebar slide-in ── */
+    @media (max-width: 767.98px) {
+        .profile-sidebar {
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            width: 280px;
+            z-index: 300;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+            overflow-y: auto;
+            padding: 24px 16px;
+        }
+        .profile-sidebar.active { transform: translateX(0); }
+    }
+
+    /* ── Sidebar nav items ── */
+    .sidebar-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 14px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-decoration: none;
+        margin-bottom: 4px;
+        transition: all 0.22s var(--ease);
+        background: transparent;
+        border: none;
+    }
+    .sidebar-nav-item i { width: 16px; font-size: 14px; color: var(--text-muted); transition: color 0.22s; }
+    .sidebar-nav-item:hover,
+    .sidebar-nav-item.active {
+        background: var(--neu-bg);
+        box-shadow: var(--neu-pressed);
+        color: var(--primary);
+    }
+    .sidebar-nav-item:hover i,
+    .sidebar-nav-item.active i { color: var(--primary); }
+
+    /* ── Profile avatar wrap ── */
+    .avatar-upload-wrap {
+        position: relative;
+        display: inline-block;
+    }
+    .avatar-upload-wrap img {
+        width: 110px; height: 110px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: var(--neu-raised-lg);
+        display: block;
+    }
+    .avatar-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        border-radius: 50%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: opacity 0.22s;
+    }
+    .avatar-upload-wrap:hover .avatar-overlay { display: flex; }
+
+    /* ── Read-only field look ── */
+    .form-control[readonly] {
+        opacity: 0.72;
+        cursor: not-allowed;
+    }
+    .form-control.is-editable {
+        opacity: 1 !important;
+        cursor: text !important;
+        box-shadow: var(--neu-pressed), var(--neu-primary-glow) !important;
+    }
+
+    /* ── Phone input group ── */
+    .input-group-text {
+        background: var(--neu-bg) !important;
+        box-shadow: var(--neu-pressed) !important;
+        border: none !important;
+        color: var(--text-muted) !important;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    /* ── Section divider ── */
+    .section-divider {
+        height: 1px;
+        background: rgba(var(--primary-rgb), 0.1);
+        margin: 4px 0 20px;
+    }
+
+    /* ── Edit button styles ── */
+    .edit-profile-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 18px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--primary);
+        background: var(--neu-bg);
+        box-shadow: var(--neu-raised);
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.22s var(--ease);
+    }
+    .edit-profile-btn:hover {
+        box-shadow: var(--neu-pressed);
+        color: var(--primary-dark);
+    }
+    .edit-profile-btn.saving {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: #fff;
+        box-shadow: var(--neu-pressed), 0 4px 14px rgba(var(--primary-rgb),0.3);
+    }
+
+    /* ── Gender radio custom ── */
+    .gender-option {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 18px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--text-muted);
+        background: var(--neu-bg);
+        box-shadow: var(--neu-raised);
+        cursor: pointer;
+        margin-right: 8px;
+        transition: all 0.22s var(--ease);
+        user-select: none;
+    }
+    .gender-option input { display: none; }
+    .gender-option.selected,
+    .gender-option:has(input:checked) {
+        box-shadow: var(--neu-pressed);
+        color: var(--primary);
+    }
+    .gender-option:has(input:disabled) { opacity: 0.65; cursor: not-allowed; }
+</style>
+
 <div class="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <div class="container py-4 py-md-5">
 
+    <!-- PAGE TITLE (mobile) -->
     <div class="d-flex align-items-center mb-4">
-        <button class="btn border-0 text-primary-custom fs-4 d-md-none me-2 p-0" onclick="toggleSidebar()">
+        <button class="btn border-0 d-md-none me-2 p-0"
+                style="color:var(--primary);font-size:20px;"
+                onclick="toggleSidebar()">
             <i class="fa-solid fa-bars"></i>
         </button>
-        <h4 class="mb-0 fw-bold text-dark-custom">Profile</h4>
+        <h4 class="mb-0 fw-bold" style="color:var(--text);">Profile</h4>
     </div>
 
     <div class="row g-4">
 
-        <!-- SIDEBAR -->
-        <div class="col-12 col-md-4 col-lg-3 sidebar">
+        <!-- ═══ SIDEBAR ═══ -->
+        <div class="col-12 col-md-4 col-lg-3">
+            <div class="profile-sidebar neu-raised rounded p-3" id="profileSidebar">
 
-            <div class="d-flex justify-content-end d-md-none mb-3">
-                <button class="btn border-0 text-dark fs-5 p-0" onclick="closeSidebar()">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <!-- USER CARD -->
-            <div class="d-flex align-items-center justify-content-between p-3 mb-3 rounded shadow-sm"
-                style="background-color: var(--bg-cards);">
-
-                <div class="d-flex align-items-center">
-                    <img src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ user.first_name|default:user.username }}+{{ user.last_name }}&background=ffc107&color=fff{% endif %}"
-                        alt="Profile" class="mini-avatar me-3">
-
-                    <div>
-                        <span class="text-muted d-block" style="font-size: 0.8rem;">Hello</span>
-                        <h6 class="mb-0 fw-bold text-dark-custom">
-                            {{ user.first_name|default:user.username }}
-                        </h6>
-                        <span class="badge bg-primary mt-1 text-capitalize rounded-pill">
-                            {{ role }}
-                        </span>
-                    </div>
+                <!-- Close (mobile) -->
+                <div class="d-flex justify-content-end d-md-none mb-3">
+                    <button class="btn border-0 p-0" style="font-size:18px;color:var(--text);"
+                            onclick="closeSidebar()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
 
-                <!-- LOGOUT -->
-                <form method="POST" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-danger btn-sm d-flex align-items-center">
-                        <i class="fa-solid fa-right-from-bracket me-1"></i>
-                    </button>
-                </form>
+                <!-- USER CARD -->
+                <div class="neu-pressed rounded p-3 mb-3 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ user.first_name|default:user.username }}+{{ user.last_name }}&background=06BBCC&color=fff{% endif %}"
+                             alt="Avatar"
+                             style="width:44px;height:44px;border-radius:50%;object-fit:cover;box-shadow:var(--neu-raised);">
+                        <div>
+                            <div class="fw-bold" style="font-size:14px;color:var(--text);">
+                                {{ user.first_name|default:user.username }}
+                            </div>
+                            <span class="badge bg-primary text-capitalize rounded-pill"
+                                  style="font-size:10px;">{{ role }}</span>
+                        </div>
+                    </div>
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="btn btn-sm btn-outline-danger"
+                                style="border-radius:8px;font-size:12px;">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                    </form>
+                </div>
 
-            </div>
+                <!-- NAV MENU -->
+                <nav class="d-flex flex-column">
+                    <a href="{% url 'profile' %}" class="sidebar-nav-item active">
+                        <i class="fa-regular fa-user"></i> My Account
+                    </a>
 
-            <!-- MENU (UNCHANGED) -->
-            <div class="list-group sidebar-menu shadow-sm">
-
-                <!-- COMMON -->
-                <a href="{% url 'profile' %}" class="list-group-item list-group-item-action active">
-                    <i class="fa-regular fa-user"></i> My Account
-                </a>
-
-                <!-- CUSTOMER MENU -->
-                {% if role == "customer" %}
-
-                    <a href="{% url 'order_history' %}" class="list-group-item list-group-item-action">
+                    {% if role == "customer" %}
+                    <a href="{% url 'order_history' %}" class="sidebar-nav-item">
                         <i class="fa-solid fa-basket-shopping"></i> My Orders
                     </a>
-
-                    <a href="{% url 'reviews' %}" class="list-group-item list-group-item-action">
+                    <a href="{% url 'reviews' %}" class="sidebar-nav-item">
                         <i class="fa-regular fa-star"></i> My Reviews
                     </a>
-
-                    <a href="{% url 'wishlist' %}" class="list-group-item list-group-item-action">
+                    <a href="{% url 'wishlist' %}" class="sidebar-nav-item">
                         <i class="fa-regular fa-heart"></i> Wishlist
                     </a>
+                    {% endif %}
 
-                {% endif %}
-
-                <!-- SELLER MENU -->
-                {% if role == "seller" %}
-
-                    <a href="{% url 'seller_dashboard' %}" class="list-group-item list-group-item-action">
+                    {% if role == "seller" %}
+                    <a href="{% url 'seller_dashboard' %}" class="sidebar-nav-item">
                         <i class="fa-solid fa-chart-line"></i> Dashboard
                     </a>
-
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="#" class="sidebar-nav-item">
                         <i class="fa-solid fa-box"></i> My Products
                     </a>
-
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="{% url 'upload_project' %}" class="sidebar-nav-item">
                         <i class="fa-solid fa-upload"></i> Upload Project
                     </a>
-
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="#" class="sidebar-nav-item">
                         <i class="fa-solid fa-indian-rupee-sign"></i> Earnings
                     </a>
+                    {% endif %}
 
-                {% endif %}
+                    <div class="section-divider"></div>
 
-                <!-- COMMON -->
-                <a href="{% url 'payments' %}" class="list-group-item list-group-item-action">
-                    <i class="fa-regular fa-credit-card"></i> Payments
-                </a>
-
-                <a href="{% url 'forgot' %}" class="list-group-item list-group-item-action">
-                    <i class="fa-solid fa-key"></i> Change Password
-                </a>
+                    <a href="{% url 'payments' %}" class="sidebar-nav-item">
+                        <i class="fa-regular fa-credit-card"></i> Payments
+                    </a>
+                    <a href="{% url 'forgot' %}" class="sidebar-nav-item">
+                        <i class="fa-solid fa-key"></i> Change Password
+                    </a>
+                </nav>
 
             </div>
         </div>
 
-        <!-- MAIN CONTENT -->
+        <!-- ═══ MAIN CONTENT ═══ -->
         <div class="col-12 col-md-8 col-lg-9">
-            <div class="bg-white p-4 p-md-5 rounded shadow-sm h-100" style="background-color: var(--white);">
+            <div class="neu-raised rounded p-4 p-md-5 h-100">
+
+                <!-- Messages -->
                 {% if messages %}
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                {% endfor %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endfor %}
                 {% endif %}
-                <div
-                class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center border-bottom pb-3 mb-4 gap-2">
-                <h5 class="mb-0 fw-bold text-dark-custom">Personal Information</h5>
-                <a href="#" id="editProfileBtn" class="text-decoration-none text-primary-custom fw-semibold">
-                    <i class="fa-regular fa-pen-to-square me-1"></i> Change Profile Information
-                </a>
-            </div>
-            
-            
-            <!-- FORM -->
-            <form id="profileForm" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <!-- PROFILE IMAGE -->
-                    <div class="mb-4 position-relative d-inline-block">
 
-                        <img src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ user.username }}{% endif %}"
-                        alt="Profile" class="mini-avatar me-3 rounded-circle" style="width:120px;height:120px;object-fit:cover;">
-                        <div id="imageEditBtn" class="position-absolute top-50 start-50 translate-middle d-none"
-                            style="background: rgba(0,0,0,0.6); border-radius:50%; width:120px;height:120px; display:flex; align-items:center; justify-content:center;">
+                <!-- HEADER ROW -->
+                <div class="d-flex flex-column flex-sm-row justify-content-between
+                            align-items-start align-items-sm-center gap-3 mb-4">
+                    <div>
+                        <h5 class="mb-0 fw-bold" style="color:var(--text);">Personal Information</h5>
+                        <p class="mb-0 text-muted" style="font-size:13px;">
+                            Manage your profile details
+                        </p>
+                    </div>
+                    <a href="#" id="editProfileBtn" class="edit-profile-btn">
+                        <i class="fa-regular fa-pen-to-square"></i> Edit Profile
+                    </a>
+                </div>
 
-                            <label for="profileImageInput" style="cursor:pointer;">
-                                <i class="fa-solid fa-camera text-white fs-4"></i>
-                            </label>
+                <div class="section-divider"></div>
+
+                <!-- FORM -->
+                <form id="profileForm" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- AVATAR -->
+                    <div class="mb-4 d-flex align-items-center gap-4">
+                        <div class="avatar-upload-wrap">
+                            <img id="profilePreview"
+                                 src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ user.username }}&background=06BBCC&color=fff&size=128{% endif %}"
+                                 alt="Profile">
+                            <div class="avatar-overlay" id="imageEditBtn"
+                                 style="display:none;">
+                                <label for="profileImageInput" style="cursor:pointer;">
+                                    <i class="fa-solid fa-camera text-white" style="font-size:20px;"></i>
+                                </label>
+                            </div>
+                            <input type="file" name="profile_image"
+                                   id="profileImageInput" accept="image/*" hidden>
                         </div>
-
-                        <input type="file" name="profile_image" id="profileImageInput" hidden>
+                        <div>
+                            <div class="fw-bold" style="color:var(--text);font-size:15px;">
+                                {{ user.first_name }} {{ user.last_name }}
+                            </div>
+                            <div class="text-muted" style="font-size:13px;">{{ user.email }}</div>
+                            <span class="badge bg-primary text-capitalize mt-1">{{ role }}</span>
+                        </div>
                     </div>
 
                     <!-- NAME -->
                     <div class="mb-4">
-                        <label class="form-label">Name</label>
-                        <input type="text" name="full_name" class="form-control custom-input w-50 editable-field"
-                        value="{{ user.first_name }} {{ user.last_name }}" readonly>
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="full_name"
+                               class="form-control editable-field"
+                               style="max-width:400px;"
+                               value="{{ user.first_name }} {{ user.last_name }}" readonly>
                     </div>
-                    
+
                     <!-- DOB -->
                     <div class="mb-4">
-                        <label class="form-label">Date Of Birth</label>
-                        <div class="position-relative w-50">
-                            <input type="date" name="dob" class="form-control custom-input pe-5 editable-field"
-                            value="{{ profile.dob|date:'Y-m-d' }}" readonly>
+                        <label class="form-label">Date of Birth</label>
+                        <div class="position-relative" style="max-width:400px;">
+                            <input type="date" name="dob"
+                                   class="form-control editable-field pe-5"
+                                   value="{{ profile.dob|date:'Y-m-d' }}" readonly>
                             <i class="fa-regular fa-calendar position-absolute"
-                            style="top: 50%; right: 16px; transform: translateY(-50%); color: #666;"></i>
+                               style="top:50%;right:14px;transform:translateY(-50%);
+                                      color:var(--text-muted);pointer-events:none;font-size:13px;"></i>
                         </div>
                     </div>
-                    
+
                     <!-- GENDER -->
                     <div class="mb-4">
                         <label class="form-label d-block">Gender</label>
-                        <div class="form-check form-check-inline mt-1">
-                            <input class="form-check-input gender-radio" type="radio" name="gender" value="male" 
-                            {% if profile.gender == 'male' %}checked {% endif %} disabled>
-                            <label class="form-check-label text-muted">Male</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input gender-radio" type="radio" name="gender" value="female" 
-                            {% if profile.gender == 'female' %}checked{% endif %} disabled>
-                            <label class="form-check-label text-muted">Female</label>
+                        <div class="d-flex gap-2">
+                            <label class="gender-option {% if profile.gender == 'male' %}selected{% endif %}">
+                                <input class="gender-radio" type="radio" name="gender"
+                                       value="male"
+                                       {% if profile.gender == 'male' %}checked{% endif %}
+                                       disabled>
+                                <i class="fa fa-mars" style="color:#3b82f6;"></i> Male
+                            </label>
+                            <label class="gender-option {% if profile.gender == 'female' %}selected{% endif %}">
+                                <input class="gender-radio" type="radio" name="gender"
+                                       value="female"
+                                       {% if profile.gender == 'female' %}checked{% endif %}
+                                       disabled>
+                                <i class="fa fa-venus" style="color:#f43f5e;"></i> Female
+                            </label>
                         </div>
                     </div>
-                    
+
                     <!-- PHONE -->
                     <div class="mb-4">
                         <label class="form-label">Phone Number</label>
-                        <div class="input-group phone-group w-50">
-                            <span class="input-group-text custom-input text-success fw-small rounded-start">
-                                IND <span class="text-muted fw-normal ms-2">+91</span>
+                        <div class="input-group" style="max-width:400px;">
+                            <span class="input-group-text">
+                                🇮🇳 +91
                             </span>
-                            <input type="text" name="phone" class="form-control custom-input rounded-end editable-field"
-                            value="{{ profile.phone_number }}" readonly>
+                            <input type="text" name="phone"
+                                   class="form-control editable-field"
+                                   value="{{ profile.phone_number }}" readonly>
                         </div>
                     </div>
-                    
+
                     <!-- EMAIL -->
                     <div class="mb-4">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control custom-input w-50 editable-field"
-                        value="{{ user.email }}" readonly>
+                        <label class="form-label">Email Address</label>
+                        <input type="email" name="email"
+                               class="form-control editable-field"
+                               style="max-width:400px;"
+                               value="{{ user.email }}" readonly>
                     </div>
-                    
 
                 </form>
-
             </div>
         </div>
 
     </div>
 </div>
+
 {% endwith %}
 {% endblock content %}
 
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const sidebarItems = document.querySelectorAll('.sidebar-menu .list-group-item');
-    sidebarItems.forEach(item => {
-        item.addEventListener('click', function () {
-            sidebarItems.forEach(nav => nav.classList.remove('active'));
-            this.classList.add('active');
 
+    /* ── Sidebar active state ── */
+    document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+        item.addEventListener('click', function () {
+            document.querySelectorAll('.sidebar-nav-item').forEach(n => n.classList.remove('active'));
+            this.classList.add('active');
             if (window.innerWidth < 768) closeSidebar();
         });
     });
 
-
-    const editProfileBtn = document.getElementById('editProfileBtn');
-    const editableFields = document.querySelectorAll('.editable-field');
+    /* ── Edit / Save toggle ── */
+    const editBtn      = document.getElementById('editProfileBtn');
+    const editables    = document.querySelectorAll('.editable-field');
     const genderRadios = document.querySelectorAll('.gender-radio');
-    const imageEditBtn = document.getElementById('imageEditBtn');
-    const profileForm = document.getElementById("profileForm");
-
+    const imageOverlay = document.getElementById('imageEditBtn');
+    const profileForm  = document.getElementById('profileForm');
     let isEditing = false;
 
-    editProfileBtn.addEventListener('click', function (e) {
+    editBtn.addEventListener('click', function (e) {
         e.preventDefault();
 
         if (isEditing) {
@@ -249,63 +424,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         isEditing = true;
+        this.innerHTML = '<i class="fa-solid fa-check"></i> Save Changes';
+        this.classList.add('saving');
 
-        this.innerHTML = '<i class="fa-solid fa-check me-1"></i> Save Profile Information';
-
-        editableFields.forEach(field => {
-            field.removeAttribute('readonly');
-            field.classList.add('is-editable');
+        editables.forEach(f => {
+            f.removeAttribute('readonly');
+            f.classList.add('is-editable');
         });
 
-        genderRadios.forEach(radio => radio.removeAttribute('disabled'));
+        genderRadios.forEach(r => {
+            r.removeAttribute('disabled');
+            r.closest('label').style.cursor = 'pointer';
+            r.closest('label').style.opacity = '1';
+        });
 
-        if (imageEditBtn) {
-            imageEditBtn.classList.remove("d-none");
-        }
+        if (imageOverlay) imageOverlay.style.display = 'flex';
     });
 
-
-    const imageInput = document.getElementById("profileImageInput");
-
+    /* ── Avatar preview ── */
+    const imageInput = document.getElementById('profileImageInput');
     if (imageInput) {
-        imageInput.addEventListener("change", function () {
+        imageInput.addEventListener('change', function () {
             const file = this.files[0];
-
             if (file) {
                 const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    const avatar = document.querySelector(".main-avatar");
-                    if (avatar) {
-                        avatar.src = e.target.result;
-                    }
+                reader.onload = e => {
+                    document.getElementById('profilePreview').src = e.target.result;
                 };
-
                 reader.readAsDataURL(file);
             }
         });
     }
 
+    /* ── Gender pill selection visual ── */
+    document.querySelectorAll('.gender-radio').forEach(radio => {
+        radio.addEventListener('change', function () {
+            document.querySelectorAll('.gender-option').forEach(l => l.classList.remove('selected'));
+            this.closest('label').classList.add('selected');
+        });
+    });
 
+    /* ── Auto-dismiss alerts ── */
     setTimeout(() => {
         document.querySelectorAll('.alert').forEach(el => el.remove());
-    }, 3000);
+    }, 3500);
 
 });
 
-
-
 function toggleSidebar() {
-    document.querySelector('.sidebar').classList.add('active');
+    document.getElementById('profileSidebar').classList.add('active');
     document.querySelector('.sidebar-overlay').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
 
 function closeSidebar() {
-    document.querySelector('.sidebar').classList.remove('active');
+    document.getElementById('profileSidebar').classList.remove('active');
     document.querySelector('.sidebar-overlay').classList.remove('active');
     document.body.style.overflow = '';
 }
 </script>
-
 {% endblock %}

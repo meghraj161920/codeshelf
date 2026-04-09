@@ -2,194 +2,200 @@
 {% load static %}
 
 {% block content %}
-<div class="container-xxl py-5">
-    <div class="container">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
 
-        <div class="text-center">
-            <h1 class="mb-5">Register</h1>
-        </div>
-
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="bg-light p-5 rounded shadow">
-
-                    {% if form.errors %}
-                    <div class="alert alert-danger">
-                        {{ form.errors }}
-                    </div>
-                    {% endif %}
-
-                    <form method="POST">
-                        {% csrf_token %}
-
-                        <div class="form-floating mb-3">
-                            {{ form.username }}
-                            <label>{{ form.username.label}}</label>
-                        </div>
-
-                        <div class="form-floating mb-3">
-                            {{ form.email }}
-                            <label>{{ form.email.label}}</label>
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form.role }}
-                        </div>
-
-                        <div class="form-floating mb-3 position-relative">
-                            {{ form.password }}
-                            <label>{{ form.password.label }}</label>
-
-                            <span onclick="togglePassword('id_password')"
-                                class="position-absolute top-50 end-0 translate-middle-y me-3"
-                                style="cursor:pointer; font-size: 1.2rem;">
-                                <i class="fa-solid fa-eye"></i>
-                            </span>
-                        </div>
-
-                        <div class="form-floating mb-3">
-                            {{ form.confirm_password }}
-                            <label>{{ form.confirm_password.label }}</label>
-                        </div>
-
-                        <small id="passwordHelp">
-                            Must be 8+ chars, include number & symbol
-                        </small>
-
-                        <div class="form-check mb-3 mt-3">
-                            {{ form.terms }}
-                            <label>
-                                I agree to
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">
-                                    Terms & Conditions
-                                </a>
-                            </label>
-                        </div>
-
-                        <!-- TERMS MODAL -->
-                        <div class="modal fade" id="termsModal" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                                <div class="modal-content">
-
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Terms & Conditions</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-
-                                    <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
-
-                                        <p><strong>Welcome to CodeShelf!</strong></p>
-
-                                        <p>
-                                            By using this platform, you agree to the following terms:
-                                        </p>
-
-                                        <ul>
-                                            <li>You will not redistribute purchased projects.</li>
-                                            <li>Projects are for educational use only.</li>
-                                            <li>Unauthorized sharing may lead to account suspension.</li>
-                                            <li>All payments are non-refundable.</li>
-                                        </ul>
-
-                                        <p>
-                                            We reserve the right to update these terms anytime.
-                                        </p>
-
-                                    </div>
-
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                            Close
-                                        </button>
-
-                                        <button type="button" class="btn btn-primary" onclick="acceptTerms()">
-                                            Accept
-                                        </button>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-success w-100 py-3" id="registerBtn">
-                            <span id="btnText">Register</span>
-                        </button>
-
-                        <div class="text-center mt-4">
-
-                            <div class="d-flex align-items-center mb-3">
-                                <hr class="flex-grow-1">
-                                <span class="px-2 text-muted">OR</span>
-                                <hr class="flex-grow-1">
-                            </div>
-
-                            <div class="d-flex justify-content-center gap-3">
-
-                                <a href="#"
-                                    class="btn btn-light border rounded-circle d-flex align-items-center justify-content-center"
-                                    style="width:45px; height:45px;">
-                                    <i class="fa-brands fa-google text-dark fs-4"></i>
-                                </a>
-
-                                <a href="#"
-                                    class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center"
-                                    style="width:45px; height:45px;">
-                                    <i class="fa-brands fa-github text-white fs-4"></i>
-                                </a>
-
-                                <a href="#"
-                                    class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center"
-                                    style="width:45px; height:45px;">
-                                    <i class="fa-brands fa-linkedin-in text-white fs-4"></i>
-                                </a>
-
-                            </div>
-
-                        </div>
-
-                        <p class="text-center mt-3">
-                            Already have an account?
-                            <a href="{% url 'login' %}">Login</a>
-                        </p>
-
-                    </form>
-
+            <!-- HEADER -->
+            <div class="text-center mb-4">
+                <div class="brand-icon mx-auto mb-3" style="width:52px;height:52px;font-size:22px;">
+                    <i class="fa fa-user-plus"></i>
                 </div>
+                <h3 class="fw-bold mb-1" style="color:var(--text);">Create Account</h3>
+                <p class="text-muted" style="font-size:14px;">Join CodeShelf and start building</p>
+            </div>
+
+            <div class="neu-raised rounded p-4 p-md-5">
+
+                <!-- ERRORS -->
+                {% if form.errors %}
+                <div class="alert alert-danger alert-dismissible fade show mb-4">
+                    {{ form.errors }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- USERNAME -->
+                    <div class="mb-3">
+                        <label class="form-label">Username *</label>
+                        {{ form.username }}
+                    </div>
+
+                    <!-- EMAIL -->
+                    <div class="mb-3">
+                        <label class="form-label">Email Address *</label>
+                        {{ form.email }}
+                    </div>
+
+                    <!-- ROLE -->
+                    <div class="mb-3">
+                        <label class="form-label">Register As *</label>
+                        {{ form.role }}
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="mb-1 position-relative">
+                        <label class="form-label">Password *</label>
+                        {{ form.password }}
+                        <span onclick="togglePassword('id_password')"
+                              class="position-absolute"
+                              style="right:14px;top:38px;cursor:pointer;
+                                     color:var(--text-muted);font-size:15px;">
+                            <i class="fa fa-eye" id="eye-password"></i>
+                        </span>
+                    </div>
+                    <small id="passwordHelp" class="d-block mb-3"
+                           style="font-size:12px;color:var(--text-muted);">
+                        Must be 8+ chars, include a number &amp; symbol
+                    </small>
+
+                    <!-- CONFIRM PASSWORD -->
+                    <div class="mb-4">
+                        <label class="form-label">Confirm Password *</label>
+                        {{ form.confirm_password }}
+                    </div>
+
+                    <!-- TERMS -->
+                    <div class="neu-pressed rounded px-3 py-2 mb-4 d-flex align-items-center gap-2">
+                        {{ form.terms }}
+                        <label class="mb-0" style="font-size:13px;cursor:pointer;">
+                            I agree to the
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal"
+                               style="color:var(--primary);font-weight:600;">
+                                Terms & Conditions
+                            </a>
+                        </label>
+                    </div>
+
+                    <!-- SUBMIT -->
+                    <button class="btn btn-primary w-100 py-2" id="registerBtn"
+                            style="border-radius:10px;font-size:15px;font-weight:700;">
+                        <i class="fa fa-user-plus me-2"></i>
+                        <span id="btnText">Create Account</span>
+                    </button>
+
+                    <!-- DIVIDER -->
+                    <div class="d-flex align-items-center my-4">
+                        <div style="flex:1;height:1px;background:var(--border);"></div>
+                        <span class="px-3 text-muted" style="font-size:13px;">OR</span>
+                        <div style="flex:1;height:1px;background:var(--border);"></div>
+                    </div>
+
+                    <!-- SOCIAL BUTTONS -->
+                    <div class="d-flex justify-content-center gap-3 mb-4">
+                        <a href="#" class="neu-raised d-flex align-items-center justify-content-center"
+                           style="width:46px;height:46px;border-radius:12px;"
+                           title="Google">
+                            <i class="fab fa-google" style="color:#ea4335;font-size:18px;"></i>
+                        </a>
+                        <a href="#" class="neu-raised d-flex align-items-center justify-content-center"
+                           style="width:46px;height:46px;border-radius:12px;"
+                           title="GitHub">
+                            <i class="fab fa-github" style="color:var(--text);font-size:18px;"></i>
+                        </a>
+                        <a href="#" class="neu-raised d-flex align-items-center justify-content-center"
+                           style="width:46px;height:46px;border-radius:12px;"
+                           title="LinkedIn">
+                            <i class="fab fa-linkedin-in" style="color:#0a66c2;font-size:18px;"></i>
+                        </a>
+                    </div>
+
+                    <p class="text-center mb-0" style="font-size:14px;color:var(--text-muted);">
+                        Already have an account?
+                        <a href="{% url 'login' %}" style="color:var(--primary);font-weight:700;">
+                            Login
+                        </a>
+                    </p>
+
+                </form>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
+
+<!-- TERMS MODAL -->
+<div class="modal fade" id="termsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">
+                    <i class="fa fa-file-contract me-2" style="color:var(--primary);"></i>
+                    Terms & Conditions
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Welcome to CodeShelf!</strong></p>
+                <p>By using this platform, you agree to the following terms:</p>
+                <ul style="line-height:2;">
+                    <li>You will not redistribute purchased projects.</li>
+                    <li>Projects are for educational use only.</li>
+                    <li>Unauthorized sharing may lead to account suspension.</li>
+                    <li>All payments are non-refundable.</li>
+                </ul>
+                <p class="text-muted" style="font-size:13px;">
+                    We reserve the right to update these terms at any time.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal" style="border-radius:10px;">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary"
+                        onclick="acceptTerms()" style="border-radius:10px;">
+                    <i class="fa fa-check me-1"></i> Accept & Continue
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
 
 {% block extra_js %}
 <script>
-    function togglePassword(id) {
-        let input = document.getElementById(id);
-        input.type = input.type === "password" ? "text" : "password";
+function togglePassword(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+    const icon = document.getElementById('eye-' + id.replace('id_', ''));
+    icon.className = input.type === 'password' ? 'fa fa-eye' : 'fa fa-eye-slash';
+}
+
+document.getElementById('id_password').addEventListener('input', function () {
+    const val = this.value;
+    const msg = document.getElementById('passwordHelp');
+    if (val.length === 0) {
+        msg.textContent = 'Must be 8+ chars, include a number & symbol';
+        msg.style.color = 'var(--text-muted)';
+    } else if (val.length < 8) {
+        msg.textContent = '⚠ Too short — need at least 8 characters';
+        msg.style.color = '#f43f5e';
+    } else if (!/[0-9]/.test(val) || !/[!@#$%^&*]/.test(val)) {
+        msg.textContent = '⚠ Add a number & special symbol (!@#$%^&*)';
+        msg.style.color = '#f59e0b';
+    } else {
+        msg.textContent = '✓ Strong password';
+        msg.style.color = '#10b981';
     }
+});
 
-    document.getElementById("id_password").addEventListener("input", function () {
-        let val = this.value;
-        let msg = document.getElementById("passwordHelp");
-
-        if (val.length < 8) {
-            msg.innerText = "Too short";
-            msg.style.color = "red";
-        } else if (!/[0-9]/.test(val) || !/[!@#$%^&*]/.test(val)) {
-            msg.innerText = "Add number & symbol";
-            msg.style.color = "orange";
-        } else {
-            msg.innerText = "Strong password";
-            msg.style.color = "green";
-        }
-    });
-</script>
-<script>
-    function acceptTerms() {
-        document.getElementById("id_terms").checked = true;
-
-        let modal = bootstrap.Modal.getInstance(document.getElementById('termsModal'));
-        modal.hide();
-    }
+function acceptTerms() {
+    document.getElementById('id_terms').checked = true;
+    bootstrap.Modal.getInstance(document.getElementById('termsModal')).hide();
+}
 </script>
 {% endblock %}

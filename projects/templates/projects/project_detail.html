@@ -2,158 +2,251 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container py-5">
 
+    <!-- MESSAGES -->
     {% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    {% endfor %}
-    {% endif %}
-
-    <!-- PAGE TITLE -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h2 class="fw-bold">{{ project.title }}</h2>
-            <p class="text-muted">Complete information about this project</p>
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-    </div>
-
-    <div class="row">
-
-        <!-- PROJECT IMAGE -->
-        <div class="col-md-6">
-            <img src="{{ project.thumbnail.url }}" class="img-fluid rounded shadow">
-        </div>
-
-        <!-- PROJECT INFO -->
-        <div class="col-md-6">
-            <h3 class="fw-bold">{{ project.title }}</h3>
-            <p class="text-muted mt-3">{{ project.description }}</p>
-
-            <div class="mb-3">
-                <span class="badge bg-info">{{ project.technology }}</span>
-                <span class="badge bg-warning text-dark">{{ project.difficulty_level }}</span>
-                <span class="badge bg-success">Source Code Included</span>
-            </div>
-
-            <h4 class="text-success fw-bold mb-3">₹{{ project.price }}</h4>
-
-            <div class="d-flex gap-2 flex-wrap">
-                {% if user.is_authenticated and user.profile.is_customer %}
-
-                    {% if has_purchased %}
-                        <!-- ✅ Already purchased -->
-                        <a href="{% url 'download_project' project.id %}" class="btn btn-success">
-                            <i class="fa fa-download me-1"></i> Download Project
-                        </a>
-                        <span class="badge bg-success d-flex align-items-center px-3">
-                            <i class="fa fa-check-circle me-1"></i> Purchased
-                        </span>
-
-                    {% else %}
-                        <!-- ❌ Not purchased -->
-                        <a href="{% url 'add_to_cart' project.id %}" class="btn btn-primary">
-                            <i class="fa fa-shopping-cart me-1"></i> Add to Cart
-                        </a>
-                        <button class="btn btn-outline-danger wishlist-btn" data-id="{{ project.id }}">
-                            <i class="fa {% if project.id in wishlist_ids %}fa-heart text-danger{% else %}fa-heart-o{% endif %} me-1"></i>
-                            {% if project.id in wishlist_ids %}Wishlisted{% else %}Add to Wishlist{% endif %}
-                        </button>
-
-                    {% endif %}
-
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-primary">
-                        Login to Purchase
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-
-    </div>
-
-    <!-- DEMO VIDEO -->
-    {% if project.demo_video_url %}
-    <div class="row mt-5">
-        <div class="col-md-12">
-            <h4 class="fw-bold mb-3">Demo Video</h4>
-            <div class="ratio ratio-16x9">
-                <iframe src="{{ project.demo_video_url }}" allowfullscreen></iframe>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- INSTALLATION VIDEO — Only for purchased users -->
-    {% if has_purchased and project.installation_video_url %}
-    <div class="row mt-5">
-        <div class="col-md-12">
-            <h4 class="fw-bold mb-3">
-                <i class="fa fa-lock-open text-success me-2"></i>
-                Installation Guide (Purchased Only)
-            </h4>
-            <div class="ratio ratio-16x9">
-                <iframe src="{{ project.installation_video_url }}" allowfullscreen></iframe>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- PROJECT DETAILS -->
-    <div class="row mt-5">
-        <div class="col-md-6">
-            <h5 class="fw-bold">Project Details</h5>
-            <ul class="list-group">
-                <li class="list-group-item"><strong>Version:</strong> {{ project.version }}</li>
-                <li class="list-group-item"><strong>Requirements:</strong> {{ project.requirements }}</li>
-                <li class="list-group-item"><strong>File Size:</strong> {{ project.file_size }}</li>
-                <li class="list-group-item"><strong>Category:</strong> {{ project.category.name }}</li>
-            </ul>
-        </div>
-        <div class="col-md-6">
-            <h5 class="fw-bold">Features</h5>
-            <ul class="list-group">
-                <li class="list-group-item"><i class="fa fa-check text-success me-2"></i>Complete Source Code</li>
-                <li class="list-group-item"><i class="fa fa-check text-success me-2"></i>Documentation Included</li>
-                <li class="list-group-item"><i class="fa fa-check text-success me-2"></i>Beginner Friendly</li>
-                <li class="list-group-item"><i class="fa fa-check text-success me-2"></i>Easy to Customize</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- PROJECT SCREENSHOTS -->
-    <div class="row mt-5">
-        <div class="col-md-12">
-            <h4 class="fw-bold mb-3">Project Screenshots</h4>
-        </div>
-        {% for img in project.images.all %}
-        <div class="col-md-3 mb-3">
-            <img src="{{ img.image.url }}" class="img-fluid rounded shadow-sm">
-        </div>
-        {% empty %}
-        <p class="text-muted">No screenshots available.</p>
         {% endfor %}
-    </div>
+    {% endif %}
 
-    <!-- REVIEWS SECTION -->
-    <div class="row mt-5">
-        <div class="col-md-12">
-            <h4 class="fw-bold mb-4">Reviews</h4>
+    <!-- ══ HERO ROW ══ -->
+    <div class="row g-4 mb-5">
+
+        <!-- THUMBNAIL -->
+        <div class="col-md-6">
+            <div class="neu-raised rounded overflow-hidden">
+                <img src="{{ project.thumbnail.url }}"
+                     class="img-fluid w-100"
+                     style="max-height:380px;object-fit:cover;display:block;">
+            </div>
         </div>
 
-        <!-- REVIEW FORM — Only for purchased customers -->
+        <!-- INFO -->
+        <div class="col-md-6">
+            <div class="neu-raised rounded p-4 h-100 d-flex flex-column">
+
+                <!-- TITLE -->
+                <h3 class="fw-bold mb-1" style="color:var(--text);letter-spacing:-0.03em;">
+                    {{ project.title }}
+                </h3>
+                <p class="text-muted mb-3" style="font-size:14px;line-height:1.7;">
+                    {{ project.description }}
+                </p>
+
+                <!-- TECH BADGES -->
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="neu-pressed rounded px-3 py-1"
+                          style="font-size:12px;font-weight:700;color:var(--primary);">
+                        <i class="fa fa-code me-1"></i>{{ project.technology }}
+                    </span>
+                    <span class="neu-pressed rounded px-3 py-1"
+                          style="font-size:12px;font-weight:700;color:#f59e0b;">
+                        <i class="fa fa-signal me-1"></i>{{ project.difficulty_level|capfirst }}
+                    </span>
+                    <span class="neu-pressed rounded px-3 py-1"
+                          style="font-size:12px;font-weight:700;color:#10b981;">
+                        <i class="fa fa-check-circle me-1"></i>Source Code Included
+                    </span>
+                </div>
+
+                <!-- PRICE -->
+                <div class="neu-pressed rounded px-4 py-3 mb-4 d-flex align-items-center gap-3">
+                    <div>
+                        <div style="font-size:11px;color:var(--text-muted);font-weight:600;
+                                    text-transform:uppercase;letter-spacing:0.08em;">Price</div>
+                        <div style="font-size:1.75rem;font-weight:900;color:#10b981;line-height:1;">
+                            ₹{{ project.price }}
+                        </div>
+                    </div>
+                    <div style="flex:1;height:1px;background:rgba(var(--primary-rgb),0.1);"></div>
+                    <div style="font-size:11px;color:var(--text-muted);text-align:right;">
+                        One-time payment<br>Instant download
+                    </div>
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="d-flex gap-2 flex-wrap mt-auto">
+                    {% if user.is_authenticated and user.profile.is_customer %}
+                        {% if has_purchased %}
+                            <a href="{% url 'download_project' project.id %}"
+                               class="btn btn-success flex-grow-1"
+                               style="border-radius:10px;">
+                                <i class="fa fa-download me-1"></i> Download Project
+                            </a>
+                            <span class="neu-pressed rounded px-3 d-flex align-items-center gap-1"
+                                  style="font-size:13px;font-weight:700;color:#10b981;">
+                                <i class="fa fa-check-circle"></i> Purchased
+                            </span>
+                        {% else %}
+                            <a href="{% url 'add_to_cart' project.id %}"
+                               class="btn btn-primary flex-grow-1"
+                               style="border-radius:10px;">
+                                <i class="fa fa-shopping-cart me-1"></i> Add to Cart
+                            </a>
+                            <button class="btn btn-outline-danger wishlist-btn"
+                                    data-id="{{ project.id }}"
+                                    style="border-radius:10px;">
+                                <i class="fa {% if project.id in wishlist_ids %}fa-heart text-danger{% else %}fa-heart-o{% endif %} me-1"></i>
+                                {% if project.id in wishlist_ids %}Wishlisted{% else %}Wishlist{% endif %}
+                            </button>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-primary w-100"
+                           style="border-radius:10px;">
+                            <i class="fa fa-lock me-1"></i> Login to Purchase
+                        </a>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ DEMO VIDEO ══ -->
+    {% if project.demo_video_url %}
+    <div class="neu-raised rounded p-4 mb-4">
+        <h5 class="fw-bold mb-3" style="color:var(--text);">
+            <i class="fa fa-play-circle me-2" style="color:var(--primary);"></i>Demo Video
+        </h5>
+        <div class="ratio ratio-16x9 neu-pressed rounded overflow-hidden">
+            <iframe src="{{ project.demo_video_url }}" allowfullscreen></iframe>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ══ INSTALLATION VIDEO (purchased only) ══ -->
+    {% if has_purchased and project.installation_video_url %}
+    <div class="neu-raised rounded p-4 mb-4"
+         style="border-left:3px solid #10b981;">
+        <h5 class="fw-bold mb-3" style="color:var(--text);">
+            <i class="fa fa-lock-open me-2" style="color:#10b981;"></i>
+            Installation Guide
+            <span class="neu-pressed rounded px-2 py-1 ms-2"
+                  style="font-size:11px;font-weight:700;color:#10b981;">Purchased Only</span>
+        </h5>
+        <div class="ratio ratio-16x9 neu-pressed rounded overflow-hidden">
+            <iframe src="{{ project.installation_video_url }}" allowfullscreen></iframe>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ══ PROJECT DETAILS + FEATURES ══ -->
+    <div class="row g-4 mb-5">
+
+        <!-- PROJECT DETAILS -->
+        <div class="col-md-6">
+            <div class="neu-raised rounded p-4 h-100">
+                <h5 class="fw-bold mb-3" style="color:var(--text);">
+                    <i class="fa fa-info-circle me-2" style="color:var(--primary);"></i>
+                    Project Details
+                </h5>
+                <div class="d-flex flex-column gap-2">
+                    {% if detail_rows %}
+                        {% for label, value in detail_rows %}
+                        <div class="neu-pressed rounded px-3 py-2 d-flex justify-content-between align-items-center">
+                            <span style="font-size:13px;color:var(--text-muted);font-weight:600;">{{ label }}</span>
+                            <span style="font-size:13px;color:var(--text);font-weight:700;">{{ value }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="neu-pressed rounded px-3 py-2 d-flex justify-content-between">
+                            <span class="text-muted" style="font-size:13px;">Version</span>
+                            <span style="font-size:13px;color:var(--text);font-weight:700;">{{ project.version }}</span>
+                        </div>
+                        <div class="neu-pressed rounded px-3 py-2 d-flex justify-content-between">
+                            <span class="text-muted" style="font-size:13px;">Requirements</span>
+                            <span style="font-size:13px;color:var(--text);font-weight:700;">{{ project.requirements }}</span>
+                        </div>
+                        <div class="neu-pressed rounded px-3 py-2 d-flex justify-content-between">
+                            <span class="text-muted" style="font-size:13px;">File Size</span>
+                            <span style="font-size:13px;color:var(--text);font-weight:700;">{{ project.file_size }}</span>
+                        </div>
+                        <div class="neu-pressed rounded px-3 py-2 d-flex justify-content-between">
+                            <span class="text-muted" style="font-size:13px;">Category</span>
+                            <span style="font-size:13px;color:var(--text);font-weight:700;">{{ project.category.name }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- WHAT'S INCLUDED -->
+        <div class="col-md-6">
+            <div class="neu-raised rounded p-4 h-100">
+                <h5 class="fw-bold mb-3" style="color:var(--text);">
+                    <i class="fa fa-star me-2" style="color:#f59e0b;"></i>
+                    What's Included
+                </h5>
+                <div class="d-flex flex-column gap-2">
+                    {% if feature_list %}
+                        {% for feature in feature_list %}
+                        <div class="neu-pressed rounded px-3 py-2 d-flex align-items-center gap-2">
+                            <i class="fa fa-check-circle" style="color:#10b981;font-size:14px;flex-shrink:0;"></i>
+                            <span style="font-size:13px;color:var(--text);font-weight:600;">{{ feature }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        {% for feature in default_features %}
+                        <div class="neu-pressed rounded px-3 py-2 d-flex align-items-center gap-2">
+                            <i class="fa fa-check-circle" style="color:#10b981;font-size:14px;flex-shrink:0;"></i>
+                            <span style="font-size:13px;color:var(--text);font-weight:600;">{{ feature }}</span>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══ SCREENSHOTS ══ -->
+    {% if project.images.all %}
+    <div class="neu-raised rounded p-4 mb-5">
+        <h5 class="fw-bold mb-3" style="color:var(--text);">
+            <i class="fa fa-images me-2" style="color:var(--primary);"></i>Screenshots
+        </h5>
+        <div class="row g-3">
+            {% for img in project.images.all %}
+            <div class="col-md-3 col-sm-6">
+                <div class="neu-raised rounded overflow-hidden">
+                    <img src="{{ img.image.url }}" class="img-fluid w-100"
+                         style="height:140px;object-fit:cover;display:block;
+                                transition:transform 0.4s var(--ease);"
+                         onmouseover="this.style.transform='scale(1.06)'"
+                         onmouseout="this.style.transform='scale(1)'">
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ══ REVIEWS ══ -->
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <h5 class="fw-bold mb-0" style="color:var(--text);">
+                <i class="fa fa-comments me-2" style="color:var(--primary);"></i>Reviews
+            </h5>
+        </div>
+
+        <!-- REVIEW FORM -->
         {% if user.is_authenticated and user.profile.is_customer and has_purchased %}
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm p-4">
-                <h5 class="fw-bold mb-3">Write a Review</h5>
+        <div class="col-md-5">
+            <div class="neu-raised rounded p-4">
+                <h6 class="fw-bold mb-3" style="color:var(--text);">
+                    <i class="fa fa-pen me-2" style="color:var(--primary);"></i>Write a Review
+                </h6>
                 <form method="POST" action="{% url 'add_review' %}">
                     {% csrf_token %}
                     <input type="hidden" name="project_id" value="{{ project.id }}">
+
                     <div class="mb-3">
-                        <label class="form-label">Rating</label>
+                        <label class="form-label" style="font-size:13px;color:var(--text-muted);">Rating</label>
                         <select name="rating" class="form-select">
                             <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
                             <option value="4">⭐⭐⭐⭐ Good</option>
@@ -162,107 +255,147 @@
                             <option value="1">⭐ Terrible</option>
                         </select>
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label">Your Review</label>
-                        <textarea name="comment" class="form-control" rows="3"
-                            placeholder="Share your experience..."></textarea>
+                        <label class="form-label" style="font-size:13px;color:var(--text-muted);">Your Review</label>
+                        <textarea name="comment" class="form-control" rows="4"
+                                  placeholder="Share your experience..."></textarea>
                     </div>
-                    <button class="btn btn-primary w-100">Submit Review</button>
+
+                    <button class="btn btn-primary w-100" style="border-radius:10px;">
+                        <i class="fa fa-paper-plane me-1"></i> Submit Review
+                    </button>
                 </form>
             </div>
         </div>
         {% endif %}
 
         <!-- EXISTING REVIEWS -->
-        <div class="col-md-{% if user.is_authenticated and user.profile.is_customer and has_purchased %}6{% else %}12{% endif %}">
+        <div class="col-md-{% if user.is_authenticated and user.profile.is_customer and has_purchased %}7{% else %}12{% endif %}">
             {% for review in project.reviews.all %}
-            <div class="card shadow-sm p-3 mb-3">
-                <div class="d-flex justify-content-between">
-                    <strong>{{ review.user.username }}</strong>
-                    <span class="text-warning">
+            <div class="neu-raised rounded p-3 mb-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width:34px;height:34px;border-radius:50%;
+                                    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+                                    display:flex;align-items:center;justify-content:center;
+                                    font-size:12px;font-weight:800;color:#fff;
+                                    box-shadow:var(--neu-raised);flex-shrink:0;">
+                            {{ review.user.username|first|upper }}
+                        </div>
+                        <div>
+                            <div class="fw-bold" style="font-size:14px;color:var(--text);">
+                                {{ review.user.username }}
+                            </div>
+                            <small class="text-muted">{{ review.created_at|date:"d M Y" }}</small>
+                        </div>
+                    </div>
+                    <div class="neu-pressed rounded px-2 py-1"
+                         style="font-size:13px;font-weight:700;color:#f59e0b;letter-spacing:1px;">
                         {% for i in "12345" %}
                             {% if forloop.counter <= review.rating %}⭐{% endif %}
                         {% endfor %}
-                    </span>
+                    </div>
                 </div>
-                <p class="text-muted mb-1 mt-2">{{ review.review_text }}</p>
-                <small class="text-muted">{{ review.created_at|date:"d M Y" }}</small>
+                <p class="mb-0" style="font-size:13px;color:var(--text-muted);line-height:1.7;">
+                    {{ review.review_text }}
+                </p>
             </div>
             {% empty %}
-            <p class="text-muted">No reviews yet. Be the first to review!</p>
+            <div class="neu-pressed rounded p-4 text-center">
+                <i class="fa fa-comment-slash fa-2x mb-2" style="color:var(--text-muted);opacity:0.4;"></i>
+                <p class="text-muted mb-0" style="font-size:14px;">
+                    No reviews yet. Be the first to review!
+                </p>
+            </div>
             {% endfor %}
         </div>
-
     </div>
 
-    <!-- RELATED PROJECTS -->
-    <div class="row mt-5">
-        <div class="col-md-12">
-            <h4 class="fw-bold mb-4">Related Projects</h4>
-        </div>
-        {% for p in related_projects %}
-        <div class="col-md-3 mb-3">
-            <div class="card shadow-sm h-100">
-                <img src="{{ p.thumbnail.url }}"
-                    class="card-img-top"
-                    style="height:180px; object-fit:cover;">
-                <div class="card-body">
-                    <h6 class="fw-bold">{{ p.title }}</h6>
-                    <p class="text-muted small">{{ p.description|truncatewords:10 }}</p>
-                    <h6 class="text-success">₹{{ p.price }}</h6>
-                </div>
-                <div class="card-footer bg-white border-0">
-                    <a href="{% url 'project_detail' p.slug %}"
-                        class="btn btn-sm btn-outline-primary w-100">
-                        View Details
-                    </a>
+    <!-- ══ RELATED PROJECTS ══ -->
+    {% if related_projects %}
+    <div class="mb-2">
+        <h5 class="fw-bold mb-4" style="color:var(--text);">
+            <i class="fa fa-layer-group me-2" style="color:var(--primary);"></i>Related Projects
+        </h5>
+        <div class="row g-4">
+            {% for p in related_projects %}
+            <div class="col-md-3 col-sm-6">
+                <div class="neu-raised rounded overflow-hidden h-100 d-flex flex-column">
+                    <img src="{{ p.thumbnail.url }}"
+                         style="height:160px;object-fit:cover;width:100%;display:block;
+                                transition:transform 0.4s var(--ease);"
+                         onmouseover="this.style.transform='scale(1.06)'"
+                         onmouseout="this.style.transform='scale(1)'"
+                         alt="{{ p.title }}">
+                    <div class="p-3 flex-grow-1 d-flex flex-column">
+                        <h6 class="fw-bold mb-1" style="color:var(--text);">{{ p.title }}</h6>
+                        <p class="text-muted mb-2 flex-grow-1"
+                           style="font-size:12px;line-height:1.6;">
+                            {{ p.description|truncatewords:10 }}
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold" style="color:#10b981;">₹{{ p.price }}</span>
+                            <a href="{% url 'project_detail' p.slug %}"
+                               class="btn btn-sm btn-outline-primary"
+                               style="border-radius:8px;font-size:12px;">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% empty %}
-        <p class="text-muted">No related projects found.</p>
-        {% endfor %}
     </div>
+    {% endif %}
 
 </div>
 {% endblock content %}
 
-
 {% block extra_js %}
 <script>
 document.querySelectorAll('.wishlist-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const projectId = this.dataset.id
+    btn.addEventListener('click', function () {
+        const projectId = this.dataset.id;
+        const self = this;
+
+        self.disabled = true;
+        self.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
 
         fetch("{% url 'toggle_wishlist' %}", {
-            method: "POST",
+            method: 'POST',
             headers: {
-                "X-CSRFToken": "{{ csrf_token }}",
-                "Content-Type": "application/x-www-form-urlencoded",
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: `project_id=${projectId}`
         })
         .then(res => res.json())
         .then(data => {
-            // ✅ Navbar wishlist count update
-            const countEl = document.getElementById('wishlist-count')
+            self.disabled = false;
+
+            const countEl = document.getElementById('wishlist-count');
             if (countEl) {
                 if (data.wishlist_count > 0) {
-                    countEl.textContent = data.wishlist_count
-                    countEl.style.display = 'inline'
+                    countEl.textContent = data.wishlist_count;
+                    countEl.style.display = 'inline';
                 } else {
-                    countEl.style.display = 'none'
+                    countEl.style.display = 'none';
                 }
             }
 
-            // ✅ Button text update
             if (data.status === 'added') {
-                this.innerHTML = '<i class="fa fa-heart text-danger me-1"></i> Wishlisted'
+                self.innerHTML = '<i class="fa fa-heart text-danger me-1"></i> Wishlisted';
             } else {
-                this.innerHTML = '<i class="fa fa-heart-o me-1"></i> Add to Wishlist'
+                self.innerHTML = '<i class="fa fa-heart-o me-1"></i> Wishlist';
             }
         })
-    })
-})
+        .catch(() => {
+            self.disabled = false;
+            self.innerHTML = '<i class="fa fa-heart-o me-1"></i> Wishlist';
+        });
+    });
+});
 </script>
 {% endblock %}

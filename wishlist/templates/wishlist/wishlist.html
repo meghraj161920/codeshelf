@@ -4,53 +4,98 @@
 {% block content %}
 <div class="container py-5">
 
-    <h4 class="fw-bold mb-4">❤️ My Wishlist</h4>
+    <!-- HEADER -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h4 class="fw-bold mb-1" style="color:var(--text);">
+                <i class="fa fa-heart me-2" style="color:#f43f5e;"></i>My Wishlist
+            </h4>
+            <p class="text-muted mb-0" style="font-size:13px;">
+                Projects you've saved for later
+            </p>
+        </div>
+        {% if items %}
+        <span class="neu-pressed rounded px-3 py-1"
+              style="font-size:13px;font-weight:700;color:var(--primary);">
+            {{ items|length }} item{{ items|length|pluralize }}
+        </span>
+        {% endif %}
+    </div>
 
+    <!-- MESSAGES -->
     {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
         {% endfor %}
     {% endif %}
 
     {% if items %}
-
     <div class="row g-4">
         {% for item in items %}
         <div class="col-sm-6 col-lg-4" id="wishlist-item-{{ item.project.id }}">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="neu-raised rounded overflow-hidden h-100 d-flex flex-column">
 
                 <!-- THUMBNAIL -->
-                <img src="{{ item.project.thumbnail.url }}"
-                    class="card-img-top"
-                    style="height: 180px; object-fit: cover;"
-                    alt="{{ item.project.title }}">
+                <div class="overflow-hidden" style="height:180px;">
+                    <img src="{{ item.project.thumbnail.url }}"
+                         style="width:100%;height:180px;object-fit:cover;
+                                transition:transform 0.4s var(--ease);"
+                         onmouseover="this.style.transform='scale(1.06)'"
+                         onmouseout="this.style.transform='scale(1)'"
+                         alt="{{ item.project.title }}">
+                </div>
 
-                <div class="card-body d-flex flex-column">
+                <!-- BODY -->
+                <div class="p-3 d-flex flex-column flex-grow-1">
 
-                    <!-- TITLE + CATEGORY -->
-                    <span class="badge bg-primary mb-2 w-fit">{{ item.project.category }}</span>
-                    <h6 class="fw-bold mb-1">{{ item.project.title }}</h6>
-                    <p class="text-muted mb-2" style="font-size: 0.85rem;">
-                        {{ item.project.technology }}
+                    <!-- CATEGORY + TECH -->
+                    <div class="d-flex gap-2 mb-2 flex-wrap">
+                        <span class="neu-pressed rounded px-2 py-1"
+                              style="font-size:11px;font-weight:700;color:var(--primary);">
+                            {{ item.project.category }}
+                        </span>
+                        <span class="neu-pressed rounded px-2 py-1"
+                              style="font-size:11px;font-weight:700;color:var(--text-muted);">
+                            <i class="fa fa-code me-1"></i>{{ item.project.technology }}
+                        </span>
+                    </div>
+
+                    <!-- TITLE -->
+                    <h6 class="fw-bold mb-1" style="color:var(--text);">
+                        {{ item.project.title }}
+                    </h6>
+                    <p class="text-muted mb-2 flex-grow-1"
+                       style="font-size:12px;line-height:1.6;">
+                        {{ item.project.description|truncatewords:10 }}
                     </p>
 
                     <!-- PRICE -->
-                    <p class="fw-bold text-success mb-3">₹{{ item.project.price }}</p>
+                    <div class="fw-bold mb-3" style="font-size:1.1rem;color:#10b981;">
+                        ₹{{ item.project.price }}
+                    </div>
 
-                    <div class="mt-auto d-flex gap-2">
-
-                        <!-- ADD TO CART -->
+                    <!-- ACTIONS -->
+                    <div class="d-flex gap-2">
                         <a href="{% url 'add_to_cart' item.project.id %}"
-                            class="btn btn-primary btn-sm flex-grow-1">
-                            <i class="fa-solid fa-cart-shopping me-1"></i> Add to Cart
+                           class="btn btn-primary btn-sm flex-grow-1"
+                           style="border-radius:9px;">
+                            <i class="fa fa-shopping-cart me-1"></i> Add to Cart
                         </a>
-
-                        <!-- REMOVE FROM WISHLIST -->
-                        <button class="btn btn-outline-danger btn-sm"
-                            onclick="removeFromWishlist({{ item.project.id }}, this)">
-                            <i class="fa-solid fa-trash-can"></i>
+                        <a href="{% url 'project_detail' item.project.slug %}"
+                           class="btn btn-outline-primary btn-sm"
+                           style="border-radius:9px;" title="View Details">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                        <button class="btn btn-sm"
+                                style="border-radius:9px;background:rgba(244,63,94,0.1);
+                                       color:#f43f5e;border:none;"
+                                onclick="removeFromWishlist({{ item.project.id }}, this)"
+                                title="Remove">
+                            <i class="fa fa-trash"></i>
                         </button>
-
                     </div>
 
                 </div>
@@ -61,13 +106,15 @@
 
     {% else %}
 
-    <!-- EMPTY WISHLIST -->
-    <div class="text-center py-5">
-        <i class="fa-regular fa-heart fa-4x text-muted mb-4"></i>
-        <h5 class="text-muted">Your wishlist is empty!</h5>
-        <p class="text-muted">Browse projects and save your favourites.</p>
-        <a href="{% url 'project_list' %}" class="btn btn-primary mt-2">
-            Browse Projects
+    <!-- EMPTY STATE -->
+    <div class="neu-pressed rounded p-5 text-center" style="max-width:460px;margin:0 auto;">
+        <i class="fa fa-heart fa-3x mb-3 d-block" style="color:var(--text-muted);opacity:0.3;"></i>
+        <h5 class="fw-bold mb-2" style="color:var(--text);">Your wishlist is empty</h5>
+        <p class="text-muted mb-4" style="font-size:14px;">
+            Browse projects and save your favourites here.
+        </p>
+        <a href="{% url 'project_list' %}" class="btn btn-primary" style="border-radius:10px;">
+            <i class="fa fa-search me-1"></i> Browse Projects
         </a>
     </div>
 
@@ -76,10 +123,12 @@
 </div>
 {% endblock content %}
 
-
 {% block extra_js %}
 <script>
 function removeFromWishlist(projectId, btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+
     fetch("{% url 'toggle_wishlist' %}", {
         method: "POST",
         headers: {
@@ -92,19 +141,30 @@ function removeFromWishlist(projectId, btn) {
     .then(res => res.json())
     .then(data => {
         if (data.status === 'removed') {
-            // Card remove karo smoothly
-            const card = document.getElementById(`wishlist-item-${projectId}`)
-            card.style.transition = 'opacity 0.3s'
-            card.style.opacity = '0'
+            const card = document.getElementById(`wishlist-item-${projectId}`);
+            card.style.transition = 'opacity 0.3s, transform 0.3s';
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.95)';
             setTimeout(() => {
-                card.remove()
-                // Agar wishlist empty ho gayi
+                card.remove();
                 if (document.querySelectorAll('[id^="wishlist-item-"]').length === 0) {
-                    location.reload()
+                    location.reload();
                 }
-            }, 300)
+            }, 300);
+
+            /* Update navbar badge */
+            const countEl = document.getElementById('wishlist-count');
+            if (countEl) {
+                const current = parseInt(countEl.textContent) - 1;
+                if (current <= 0) countEl.style.display = 'none';
+                else countEl.textContent = current;
+            }
         }
     })
+    .catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa fa-trash"></i>';
+    });
 }
 </script>
 {% endblock %}
