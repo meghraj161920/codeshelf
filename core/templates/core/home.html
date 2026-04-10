@@ -3,54 +3,117 @@
 
 {% block extra_css %}
 <style>
+    /* ===== HERO ===== */
     .hero-slider-section {
-        position: relative; width: 100%; height: 75vh; min-height: 500px;
-        background-color: #111; overflow: hidden; margin-bottom: 3rem;
+        position: relative; width: 100%; height: 70vh; min-height: 460px;
+        background-color: #111; margin-bottom: 0;
+        /* NO overflow:hidden here — moved to .slider */
     }
-    .hero-slider-section .slider { list-style-type: none; margin: 0; padding: 0; width: 100%; height: 100%; }
+    .hero-slider-section .slider {
+        list-style-type: none; margin: 0; padding: 0;
+        width: 100%; height: 100%; overflow: hidden;
+    }
     .hero-slider-section .slider-item {
         width: 200px; height: 300px; position: absolute; top: 50%; transform: translateY(-50%);
         z-index: 1; background-position: center; background-size: cover; border-radius: 20px;
-        box-shadow: 0 20px 30px rgba(0,0,0,0.5); transition: transform 0.1s, left 0.75s, top 0.75s, width 0.75s, height 0.75s;
+        box-shadow: 0 20px 30px rgba(0,0,0,0.5);
+        transition: transform 0.1s, left 0.75s, top 0.75s, width 0.75s, height 0.75s;
     }
     .hero-slider-section .slider-item::before {
         content: ''; position: absolute; inset: 0; background: rgba(12, 16, 34, 0.8);
         border-radius: inherit; opacity: 0; transition: opacity 0.75s; z-index: 1;
     }
-    .hero-slider-section .slider-item:nth-child(1), .hero-slider-section .slider-item:nth-child(2) {
-        left: 0; top: 0; width: 100%; height: 100%; transform: none; border-radius: 0; box-shadow: none; opacity: 1;
+    .hero-slider-section .slider-item:nth-child(1),
+    .hero-slider-section .slider-item:nth-child(2) {
+        left: 0; top: 0; width: 100%; height: 100%;
+        transform: none; border-radius: 0; box-shadow: none; opacity: 1;
     }
-    .hero-slider-section .slider-item:nth-child(1)::before, .hero-slider-section .slider-item:nth-child(2)::before { opacity: 1; }
+    .hero-slider-section .slider-item:nth-child(1)::before,
+    .hero-slider-section .slider-item:nth-child(2)::before { opacity: 1; }
     .hero-slider-section .slider-item:nth-child(3) { left: 50%; }
     .hero-slider-section .slider-item:nth-child(4) { left: calc(50% + 220px); }
     .hero-slider-section .slider-item:nth-child(5) { left: calc(50% + 440px); }
     .hero-slider-section .slider-item:nth-child(6) { left: calc(50% + 660px); opacity: 0; }
+
     .hero-slider-section .content {
-        width: min(40vw, 500px); position: absolute; top: 50%; left: 5rem; transform: translateY(-50%);
-        color: white; text-shadow: 0 3px 8px rgba(0,0,0,0.5); opacity: 0; display: none; z-index: 2;
+        width: min(40vw, 500px); position: absolute; top: 44%; left: 5rem;
+        transform: translateY(-50%); color: white;
+        text-shadow: 0 3px 8px rgba(0,0,0,0.5); opacity: 0; display: none; z-index: 2;
     }
     .hero-slider-section .content .title {
-        font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 3.5rem; text-transform: uppercase;
-        margin-bottom: 10px; line-height: 1.1; color: white; text-shadow: 0 4px 20px rgba(0,0,0,0.9), 0 2px 5px rgba(0,0,0,0.8);
+        font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 3.5rem;
+        text-transform: uppercase; margin-bottom: 10px; line-height: 1.1; color: white;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.9), 0 2px 5px rgba(0,0,0,0.8);
     }
-    .hero-slider-section .content .description { line-height: 1.7; margin: 1rem 0 2rem; font-size: 1.1rem; opacity: 0.9; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }
+    .hero-slider-section .content .description {
+        line-height: 1.7; margin: 1rem 0 2rem; font-size: 1.1rem; opacity: 0.9;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    }
     .hero-slider-section .content button {
         background-color: var(--primary); color: white; border: none; border-radius: 50px;
         padding: 0.8rem 2rem; font-weight: 600; cursor: pointer; transition: 0.3s;
     }
     .hero-slider-section .content button:hover { background-color: #05a0af; transform: translateY(-3px); }
-    .hero-slider-section .slider-item:nth-of-type(2) .content { display: block; animation: showContent 0.75s ease-in-out 0.3s forwards; }
+    .hero-slider-section .slider-item:nth-of-type(2) .content {
+        display: block; animation: showContent 0.75s ease-in-out 0.3s forwards;
+    }
     @keyframes showContent {
         0% { filter: blur(5px); transform: translateY(calc(-50% + 75px)); opacity: 0; }
         100% { opacity: 1; filter: blur(0); transform: translateY(-50%); }
     }
-    .hero-slider-section .nav-controls { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 5; user-select: none; display: flex; gap: 15px; }
-    .hero-slider-section .nav-controls .btn-slide {
-        background-color: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; border: 2px solid rgba(255,255,255,0.5);
-        width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.5rem; transition: 0.3s;
+
+    /* Nav controls */
+    .hero-slider-section .nav-controls {
+        position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+        z-index: 5; user-select: none; display: flex; gap: 15px;
     }
-    .hero-slider-section .nav-controls .btn-slide:hover { background-color: var(--primary); border-color: var(--primary); }
+    .hero-slider-section .nav-controls .btn-slide {
+        background-color: rgba(255,255,255,0.2); backdrop-filter: blur(10px);
+        color: white; border: 2px solid rgba(255,255,255,0.5);
+        width: 50px; height: 50px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; font-size: 1.5rem; transition: 0.3s;
+    }
+    .hero-slider-section .nav-controls .btn-slide:hover {
+        background-color: var(--primary); border-color: var(--primary);
+    }
+
+    /* ===== STATS BAR — outside hero, flush below it ===== */
+    .hero-stats-bar {
+        width: 100%; background: #0a1628;
+        border-top: 2px solid rgba(6, 187, 204, 0.3);
+        border-bottom: 1px solid rgba(6, 187, 204, 0.1);
+        padding: 24px 0; margin-bottom: 3rem;
+    }
+    .hero-stats-bar .stat-item {
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: center; gap: 4px; position: relative;
+    }
+    .hero-stats-bar .stat-item:not(:last-child)::after {
+        content: ''; position: absolute; right: 0; top: 10%; height: 80%;
+        width: 1px; background: rgba(6, 187, 204, 0.2);
+    }
+    .hero-stats-bar .stat-icon {
+        width: 44px; height: 44px; border-radius: 50%;
+        background: rgba(6, 187, 204, 0.1);
+        border: 1px solid rgba(6, 187, 204, 0.3);
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 8px;
+    }
+    .hero-stats-bar .stat-icon i { color: var(--primary); font-size: 1.1rem; }
+    .hero-stats-bar .stat-number {
+        font-size: 1.7rem; font-weight: 900; color: #fff;
+        line-height: 1; display: flex; align-items: center; gap: 2px;
+    }
+    .hero-stats-bar .stat-number .suffix { color: var(--primary); font-size: 1.3rem; }
+    .hero-stats-bar .stat-label {
+        font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 1.5px; color: rgba(255,255,255,0.5);
+    }
+
+    /* ===== Responsive ===== */
     @media (max-width: 900px) {
+        .hero-slider-section { height: 60vh; min-height: 400px; }
         .hero-slider-section .slider-item { width: 160px; height: 270px; }
         .hero-slider-section .slider-item:nth-child(3) { left: 50%; }
         .hero-slider-section .slider-item:nth-child(4) { left: calc(50% + 170px); }
@@ -59,34 +122,33 @@
         .hero-slider-section .content { left: 2rem; width: 70vw; }
         .hero-slider-section .content .title { font-size: 2.5rem; }
     }
-    @media (max-width: 650px) {
-        .hero-slider-section .slider-item { width: 130px; height: 220px; }
-        .hero-slider-section .slider-item:nth-child(3) { left: 50%; }
-        .hero-slider-section .slider-item:nth-child(4) { left: calc(50% + 140px); }
-        .hero-slider-section .slider-item:nth-child(5) { left: calc(50% + 280px); }
-        .hero-slider-section .slider-item:nth-child(6) { left: calc(50% + 420px); opacity: 0; }
-        .hero-slider-section .content .title { font-size: 1.8rem; }
-        .hero-slider-section .content .description { font-size: 0.9rem; }
-    }
+  @media (max-width: 650px) {
+    .hero-slider-section { height: 58vh; min-height: 360px; overflow: hidden; max-width: 100vw; }
+    .hero-slider-section .slider-item { width: 110px; height: 180px; }
+    .hero-slider-section .slider-item:nth-child(3) { left: 62%; }
+    .hero-slider-section .slider-item:nth-child(4) { left: calc(62% + 120px); }
+    .hero-slider-section .slider-item:nth-child(5) { left: calc(62% + 240px); }
+    .hero-slider-section .slider-item:nth-child(6) { left: calc(62% + 360px); opacity: 0; }
+    .hero-slider-section .content { left: 1.2rem; width: 58vw; top: 38%; }
+    .hero-slider-section .content .title { font-size: 1.5rem; }
+    .hero-slider-section .content .description { font-size: 0.82rem; margin: 0.6rem 0 1.2rem; }
+    .hero-slider-section .content button { padding: 0.6rem 1.4rem; font-size: 0.85rem; }
+    .hero-slider-section .nav-controls { bottom: 15px; }
 
-    .stats-section {
-        background: var(--neu-bg); position: relative; z-index: 10;
-        border-top: 1px solid rgba(var(--primary-rgb), 0.08);
-        border-bottom: 1px solid rgba(var(--primary-rgb), 0.08);
-    }
-    .counter-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .counter-circle {
-        width: 120px; height: 120px; border-radius: 50%;
-        background: var(--neu-bg); box-shadow: var(--neu-raised);
-        border: 2px solid rgba(6, 187, 204, 0.15);
-        display: flex; flex-direction: column; justify-content: center; align-items: center;
-        transition: box-shadow 0.4s ease, border-color 0.4s ease; margin-bottom: 20px;
-    }
-    .counter-circle:hover { box-shadow: var(--neu-pressed); border-color: var(--primary); }
-    .counter-circle i { color: var(--primary); font-size: 2rem; margin-bottom: 10px; }
-    .counter-number { font-size: 1.5rem; font-weight: 800; color: var(--text); line-height: 1; display: flex; align-items: center; }
-    .counter-label { color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem; }
+    /* Stats 2x2 grid on mobile */
+    .hero-stats-bar { padding: 14px 0; margin-bottom: 2rem; }
+    .hero-stats-bar .stat-item { padding: 10px 0; }
+    .hero-stats-bar .stat-number { font-size: 1.25rem; }
+    .hero-stats-bar .stat-icon { width: 36px; height: 36px; margin-bottom: 5px; }
+    .hero-stats-bar .stat-icon i { font-size: 0.9rem; }
+    .hero-stats-bar .stat-label { font-size: 0.6rem; letter-spacing: 0.8px; }
+    /* Fix dividers for 2x2 */
+    .hero-stats-bar .stat-item:nth-child(2)::after { display: none; }
+    .hero-stats-bar .stat-item:nth-child(3) { border-top: 1px solid rgba(6,187,204,0.15); }
+    .hero-stats-bar .stat-item:nth-child(4) { border-top: 1px solid rgba(6,187,204,0.15); }
+}
 
+    /* ===== PROJECT CARDS ===== */
     .project-card {
         background-color: var(--bg-card); overflow: hidden; box-shadow: var(--shadow-md);
         padding: 0; text-align: center; border-radius: 16px;
@@ -150,6 +212,7 @@
     .box-footer .stars { color: #ffbd2e; font-size: 0.8rem; }
     .box-footer .downloads { font-size: 0.85rem; color: var(--text-muted); font-weight: bold; }
 
+    /* ===== TESTIMONIALS ===== */
     .testimonial-card {
         background: var(--neu-bg); box-shadow: var(--neu-raised); border: none;
         border-radius: 16px; padding: 30px; position: relative;
@@ -162,12 +225,14 @@
         color: rgba(6, 187, 204, 0.1);
     }
 
+    /* ===== TRENDING ===== */
     .trending-section {
         background: var(--neu-bg);
         border-top: 1px solid rgba(var(--primary-rgb), 0.08);
         border-bottom: 1px solid rgba(var(--primary-rgb), 0.08);
     }
 
+    /* ===== CTA ===== */
     .cta-card {
         background: linear-gradient(135deg, #0c1022 0%, #091e3a 100%);
         border-radius: 20px; border: 1px solid rgba(6,187,204,0.15);
@@ -178,7 +243,7 @@
 
 {% block content %}
 
-<!-- HERO SLIDER -->
+<!-- ===== HERO SLIDER ===== -->
 <div class="hero-slider-section">
     <ul class='slider'>
         <li class='slider-item' style="background-image: url('{% static 'img/carousel-1.jpg' %}');">
@@ -229,45 +294,52 @@
         <div class='btn-slide next'><ion-icon name="arrow-forward-outline"></ion-icon></div>
     </nav>
 </div>
+<!-- END HERO -->
 
-<!-- STATS -->
-<div class="container-fluid stats-section py-5">
+<!-- ===== STATS BAR — OUTSIDE hero div, flush below it ===== -->
+<div class="hero-stats-bar">
     <div class="container">
-        <div class="row g-4 justify-content-center">
-            <div class="col-md-3 counter-wrapper">
-                <div class="counter-circle">
-                    <i class="fa-solid fa-layer-group"></i>
-                    <div class="counter-number"><span class="counter" data-count="150">0</span><span class="text-primary ms-1">+</span></div>
+        <div class="row g-0">
+            <div class="col-6 col-md-3 stat-item">
+                <div class="stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="stat-number">
+                    <span class="counter" data-count="150">0</span>
+                    <span class="suffix">+</span>
                 </div>
-                <div class="counter-label">Ready Projects</div>
+                <div class="stat-label">Ready Projects</div>
             </div>
-            <div class="col-md-3 counter-wrapper">
-                <div class="counter-circle">
-                    <i class="fa-solid fa-users"></i>
-                    <div class="counter-number"><span class="counter" data-count="98">0</span><span class="text-primary ms-1">%</span></div>
+            <div class="col-6 col-md-3 stat-item">
+                <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                <div class="stat-number">
+                    <span class="counter" data-count="98">0</span>
+                    <span class="suffix">%</span>
                 </div>
-                <div class="counter-label">Satisfaction Rate</div>
+                <div class="stat-label">Satisfaction Rate</div>
             </div>
-            <div class="col-md-3 counter-wrapper">
-                <div class="counter-circle">
-                    <i class="fa-solid fa-download"></i>
-                    <div class="counter-number"><span class="counter" data-count="5000">0</span><span class="text-primary ms-1">+</span></div>
+            <div class="col-6 col-md-3 stat-item">
+                <div class="stat-icon"><i class="fa-solid fa-download"></i></div>
+                <div class="stat-number">
+                    <span class="counter" data-count="5000">0</span>
+                    <span class="suffix">+</span>
                 </div>
-                <div class="counter-label">Total Downloads</div>
+                <div class="stat-label">Total Downloads</div>
             </div>
-            <div class="col-md-3 counter-wrapper">
-                <div class="counter-circle">
-                    <i class="fa-solid fa-user"></i>
-                    <div class="counter-number"><span class="counter" data-count="1000">0</span><span class="text-primary ms-1">+</span></div>
+            <div class="col-6 col-md-3 stat-item">
+                <div class="stat-icon"><i class="fa-solid fa-user"></i></div>
+                <div class="stat-number">
+                    <span class="counter" data-count="1000">0</span>
+                    <span class="suffix">+</span>
                 </div>
-                <div class="counter-label">Active Users</div>
+                <div class="stat-label">Active Users</div>
             </div>
         </div>
     </div>
 </div>
+<!-- END STATS BAR -->
+
 
 <!-- LATEST PROJECTS -->
-<div class="container py-5 mt-4">
+<div class="container py-5 mt-2">
     <div class="d-flex justify-content-between align-items-end mb-4">
         <div>
             <h6 class="text-primary text-uppercase fw-bold mb-1" style="letter-spacing:1px;">Fresh Arrivals</h6>
@@ -277,7 +349,6 @@
             View All Collection
         </a>
     </div>
-
     <div class="row g-4 pt-3">
         {% for project in projects|slice:":4" %}
         <div class="col-md-4 col-lg-3 d-flex">
@@ -293,11 +364,8 @@
                 </div>
                 <div class="box-content">
                     <div class="action-buttons">
-                        <!-- ✅ FIXED: data-id added, proper button tag -->
                         {% if user.is_authenticated and user.profile.is_customer %}
-                        <button class="action-btn wishlist-btn"
-                                data-id="{{ project.id }}"
-                                title="Add to Wishlist">
+                        <button class="action-btn wishlist-btn" data-id="{{ project.id }}" title="Add to Wishlist">
                             {% if project.id in wishlist_ids %}
                                 <i class="fa-solid fa-heart" style="color:#fff;"></i>
                             {% else %}
@@ -309,7 +377,6 @@
                             <i class="fa-regular fa-heart" style="color:#fff;"></i>
                         </a>
                         {% endif %}
-
                         <a href="{% if user.is_authenticated %}{% url 'add_to_cart' project.id %}{% else %}{% url 'login' %}{% endif %}"
                            class="action-btn buy-btn buy-trigger" title="Add to Cart">
                             <i class="fa-solid fa-cart-plus"></i><span class="expansion"></span>
@@ -340,6 +407,7 @@
     </div>
 </div>
 
+
 <!-- TRENDING PROJECTS -->
 {% if trending_projects %}
 <div class="container-fluid trending-section py-5">
@@ -366,9 +434,7 @@
                     <div class="box-content">
                         <div class="action-buttons">
                             {% if user.is_authenticated and user.profile.is_customer %}
-                            <button class="action-btn wishlist-btn"
-                                    data-id="{{ project.id }}"
-                                    title="Add to Wishlist">
+                            <button class="action-btn wishlist-btn" data-id="{{ project.id }}" title="Add to Wishlist">
                                 {% if project.id in wishlist_ids %}
                                     <i class="fa-solid fa-heart" style="color:#fff;"></i>
                                 {% else %}
@@ -380,7 +446,6 @@
                                 <i class="fa-regular fa-heart" style="color:#fff;"></i>
                             </a>
                             {% endif %}
-
                             <a href="{% if user.is_authenticated %}{% url 'add_to_cart' project.id %}{% else %}{% url 'login' %}{% endif %}"
                                class="action-btn buy-btn buy-trigger" title="Add to Cart">
                                 <i class="fa-solid fa-cart-plus"></i><span class="expansion"></span>
@@ -405,6 +470,7 @@
     </div>
 </div>
 {% endif %}
+
 
 <!-- TESTIMONIALS -->
 <div class="container py-5 my-5">
@@ -461,6 +527,7 @@
     </div>
 </div>
 
+
 <!-- CTA -->
 {% if not user.is_authenticated %}
 <div class="container py-5 mb-5">
@@ -484,6 +551,7 @@
 {% endif %}
 
 {% endblock %}
+
 
 {% block extra_js %}
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
@@ -514,8 +582,10 @@
                     });
                 });
             }
-        }, { threshold: 0.5 });
-        if (document.querySelector('.stats-section')) observer.observe(document.querySelector('.stats-section'));
+        }, { threshold: 0.3 });
+        if (document.querySelector('.hero-stats-bar')) {
+            observer.observe(document.querySelector('.hero-stats-bar'));
+        }
 
         // Buy trigger animation
         $('.buy-trigger').on('click', function(e) {
@@ -527,12 +597,11 @@
         });
     });
 
-    // ✅ Wishlist AJAX for homepage cards
+    // Wishlist AJAX
     document.querySelectorAll('.wishlist-btn[data-id]').forEach(btn => {
         btn.addEventListener('click', function() {
             const projectId = this.dataset.id;
             const icon = this.querySelector('i');
-
             fetch("{% url 'toggle_wishlist' %}", {
                 method: 'POST',
                 headers: {
@@ -550,7 +619,6 @@
                     icon.className = 'fa-regular fa-heart';
                     icon.style.color = '#fff';
                 }
-                // Update navbar badge
                 const countEl = document.getElementById('wishlist-count');
                 if (countEl) {
                     if (data.wishlist_count > 0) {
