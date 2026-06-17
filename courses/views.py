@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator
 from .models import Course, CourseCategory, CourseVideo
+from orders.models import OrderItem
 
 
 def course_list(request):
@@ -9,22 +11,37 @@ def course_list(request):
     Supports search by course title.
     Auto-submit filters on change (handled in template).
     """
-    courses = Course.objects.filter(is_active=True)
+    if request.user.is_authenticated and hasattr(request.user, 'profile') and request.user.profile.role == 'seller':
+        courses = Course.objects.filter(seller=request.user)
+    else:
+        courses = Course.objects.filter(is_active=True)
     categories = CourseCategory.objects.all()
 
     category = request.GET.get('category')
     difficulty = request.GET.get('difficulty')
+    pricing = request.GET.get('pricing')
     search = request.GET.get('q')
 
     if category:
         courses = courses.filter(category__slug=category)
     if difficulty:
         courses = courses.filter(difficulty_level=difficulty)
+    if pricing:
+        if pricing == 'free':
+            courses = courses.filter(is_free=True)
+        elif pricing == 'paid':
+            courses = courses.filter(is_free=False)
     if search:
         courses = courses.filter(title__icontains=search)
 
+    paginator = Paginator(courses, 12)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    page_range = paginator.get_elided_page_range(page_obj.number, on_each_side=2, on_ends=1)
+
     return render(request, 'courses/course_list.html', {
-        'courses': courses,
+        'courses': page_obj,
+        'page_range': page_range,
         'categories': categories,
     })
 
@@ -45,8 +62,29 @@ def course_detail(request, slug):
     else:
         current_video = videos.first()
 
+    has_purchased = False
+    is_expired = False
+    if request.user.is_authenticated:
+        order_item = OrderItem.objects.filter(
+            order__user=request.user,
+            order__is_completed=True,
+            course=course
+        ).order_by('-order__order_date').first()
+
+        if order_item:
+            has_purchased = True
+            if course.access_duration_months > 0:
+                from datetime import timedelta
+                from django.utils.timezone import now
+                expiration_date = order_item.order.order_date + timedelta(days=30 * course.access_duration_months)
+                if now() > expiration_date:
+                    is_expired = True
+                    has_purchased = False
+
     return render(request, 'courses/course_detail.html', {
         'course': course,
         'videos': videos,
         'current_video': current_video,
+        'has_purchased': has_purchased,
+        'is_expired': is_expired,
     })

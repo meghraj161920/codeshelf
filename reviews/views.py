@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Review
 from projects.models import Project
+from courses.models import Course
 from orders.models import OrderItem
 from coupons.models import Coupon, UserCoupon
 import random
@@ -22,51 +23,54 @@ def review_list(request):
 def add_review(request):
     if request.method == "POST":
         project_id = request.POST.get("project_id")
+        course_id = request.POST.get("course_id")
         rating = request.POST.get("rating")
         review_text = request.POST.get("comment")
 
-        project = get_object_or_404(Project, id=project_id)
-
-        # ✅ Check — user ne project purchase kiya hai?
-        has_purchased = OrderItem.objects.filter(
-            order__user=request.user,
-            order__is_completed=True,
-            project=project
-        ).exists()
+        if project_id:
+            item = get_object_or_404(Project, id=project_id)
+            has_purchased = OrderItem.objects.filter(
+                order__user=request.user,
+                order__is_completed=True,
+                project=item
+            ).exists()
+            already_reviewed = Review.objects.filter(user=request.user, project=item).exists()
+            redirect_url = redirect('project_detail', slug=item.slug)
+        elif course_id:
+            item = get_object_or_404(Course, id=course_id)
+            has_purchased = OrderItem.objects.filter(
+                order__user=request.user,
+                order__is_completed=True,
+                course=item
+            ).exists()
+            already_reviewed = Review.objects.filter(user=request.user, course=item).exists()
+            redirect_url = redirect('course_detail', slug=item.slug)
+        else:
+            return redirect('home')
 
         if not has_purchased:
-            messages.error(
-                request, "You can only review projects you have purchased.")
-            return redirect('project_detail', slug=project.slug)
-
-        # ✅ Check — user ne pehle se review diya hai?
-        already_reviewed = Review.objects.filter(
-            user=request.user,
-            project=project
-        ).exists()
+            messages.error(request, "You can only review items you have purchased.")
+            return redirect_url
 
         if already_reviewed:
-            messages.error(request, "You have already reviewed this project.")
-            return redirect('project_detail', slug=project.slug)
+            messages.error(request, "You have already reviewed this item.")
+            return redirect_url
 
         # ✅ Review save karo
-        review_obj = Review.objects.create(
-            user=request.user,
-            project=project,
-            rating=int(rating),
-            review_text=review_text
-        )
+        if project_id:
+            review_obj = Review.objects.create(user=request.user, project=item, rating=int(rating), review_text=review_text)
+        else:
+            review_obj = Review.objects.create(user=request.user, course=item, rating=int(rating), review_text=review_text)
 
         # ✅ Coupon generate karo
         coupon = generate_coupon_for_user(request.user)
 
         send_review_thank_you_email(request.user, review_obj, coupon)
-        messages.success(
-            request, "Review submitted! Check your email for your discount coupon.")
+        messages.success(request, "Review submitted! Check your email for your discount coupon.")
 
-        return redirect('project_detail', slug=project.slug)
+        return redirect_url
 
-    return redirect('project_list')
+    return redirect('home')
 
 
 # ================= COUPON GENERATOR =================

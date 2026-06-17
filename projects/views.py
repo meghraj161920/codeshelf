@@ -5,6 +5,8 @@ from django.http import FileResponse
 from django.utils import timezone
 import os
 from django.http import JsonResponse
+from django.db.models import F
+from django.core.paginator import Paginator
 
 from .models import Project, Category, ProjectDownload
 from .forms import ProjectUploadForm
@@ -15,7 +17,11 @@ from core.decorators import seller_required
 
 # ================= PROJECT LIST =================
 def project_list(request):
-    projects = Project.objects.filter(is_active=True)
+    if request.user.is_authenticated and hasattr(request.user, 'profile') and request.user.profile.role == 'seller':
+        projects = Project.objects.filter(seller=request.user)
+    else:
+        projects = Project.objects.filter(is_active=True)
+
     categories = Category.objects.all()
 
     wishlist_ids = []
@@ -39,8 +45,14 @@ def project_list(request):
     if search:
         projects = projects.filter(title__icontains=search)
 
+    paginator = Paginator(projects, 12)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    page_range = paginator.get_elided_page_range(page_obj.number, on_each_side=2, on_ends=1)
+
     return render(request, 'projects/project_list.html', {
-        'projects': projects,
+        'projects': page_obj,
+        'page_range': page_range,
         'categories': categories,
         'wishlist_ids': wishlist_ids,
         'wishlist_count': wishlist_count,
@@ -97,6 +109,25 @@ def upload_project(request):
     return render(request, 'projects/upload_project.html', {'form': form})
 
 
+# ================= EDIT PROJECT =================
+@seller_required
+def edit_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id, seller=request.user)
+
+    if request.method == "POST":
+        form = ProjectUploadForm(request.POST, request.FILES, instance=project)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Project updated successfully!")
+            return redirect('seller_dashboard')
+        else:
+            messages.error(request, "Please fix the errors below.")
+    else:
+        form = ProjectUploadForm(instance=project)
+
+    return render(request, 'projects/edit_project.html', {'form': form, 'project': project})
+
+
 # ================= DELETE PROJECT =================
 @seller_required
 def delete_project(request, project_id):
@@ -132,7 +163,8 @@ def download_project(request, project_id):
         user=request.user,
         project=project
     )
-    download_record.download_count += 1
+    # BUG FIX: Database-level atomic increment
+    download_record.download_count = F('download_count') + 1
     download_record.last_downloaded = timezone.now()
     download_record.save()
 

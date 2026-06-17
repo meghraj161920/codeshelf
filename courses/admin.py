@@ -8,7 +8,6 @@ class CourseCategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ('name',)
 
-
 class CourseVideoInline(admin.TabularInline):
     """
     Shows videos inside the Course admin page.

@@ -24,14 +24,14 @@
 }
 
 [data-theme="dark"] {
-  /* Dark neumorphism — depth on deep slate */
-  --neu-bg: #141b2d;
-  --neu-shadow-a: #1e2844;
-  --neu-shadow-b: #0c1220;
-  --neu-raised: 6px 6px 14px var(--neu-shadow-b), -6px -6px 14px var(--neu-shadow-a);
-  --neu-raised-lg: 10px 10px 24px var(--neu-shadow-b), -10px -10px 24px var(--neu-shadow-a);
-  --neu-pressed: inset 4px 4px 10px var(--neu-shadow-b), inset -4px -4px 10px var(--neu-shadow-a);
-  --neu-flat: 3px 3px 8px var(--neu-shadow-b), -3px -3px 8px var(--neu-shadow-a);
+  /* Dark theme — glass/elevated slate instead of flat neumorphism */
+  --neu-bg: #1e293b; /* Slate 800 - cards are lighter than body */
+  --neu-shadow-a: rgba(255, 255, 255, 0.04); /* Soft top highlight */
+  --neu-shadow-b: rgba(0, 0, 0, 0.4); /* Deep bottom shadow */
+  --neu-raised: 4px 4px 10px var(--neu-shadow-b), -2px -2px 6px var(--neu-shadow-a);
+  --neu-raised-lg: 8px 8px 20px var(--neu-shadow-b), -2px -2px 8px var(--neu-shadow-a);
+  --neu-pressed: inset 3px 3px 8px var(--neu-shadow-b), inset -2px -2px 6px var(--neu-shadow-a);
+  --neu-flat: 2px 2px 6px var(--neu-shadow-b);
   --neu-primary-glow: 0 0 0 3px rgba(6, 187, 204, 0.20);
 }
 
@@ -310,7 +310,7 @@ label {
   background: var(--neu-bg) !important;
   box-shadow: var(--neu-raised-lg) !important;
   border: none !important;
-  border-radius: 18px !important;
+  border-radius: var(--radius) !important;
   padding: 28px 24px;
   position: relative;
   overflow: hidden;
@@ -430,7 +430,7 @@ label {
    ═══════════════════════════════════════════════════════════ */
 .table-neu {
   background: var(--neu-bg);
-  border-radius: 16px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   box-shadow: var(--neu-raised);
   border: none;
@@ -506,7 +506,7 @@ label {
   box-shadow: var(--neu-raised) !important;
   border: none !important;
   border-left: 3px solid var(--primary) !important;
-  border-radius: 14px !important;
+  border-radius: var(--radius-sm) !important;
 }
 
 .alert-success {
@@ -533,12 +533,12 @@ label {
   background: var(--neu-bg) !important;
   box-shadow: var(--neu-raised-lg) !important;
   border: none !important;
-  border-radius: 20px !important;
+  border-radius: var(--radius) !important;
 }
 
 .modal-header {
   border-bottom: 1px solid rgba(var(--primary-rgb), 0.1) !important;
-  border-radius: 20px 20px 0 0 !important;
+  border-radius: var(--radius) var(--radius) 0 0 !important;
 }
 
 .modal-footer {
@@ -591,14 +591,14 @@ label {
    ═══════════════════════════════════════════════════════════ */
 .back-to-top {
   background: var(--neu-bg) !important;
-  box-shadow: var(--neu-raised-lg) !important;
+  box-shadow: var(--neu-raised) !important;
   color: var(--primary) !important;
   border: none !important;
-  border-radius: 14px !important;
+  border-radius: var(--radius-sm) !important;
 }
 
 .back-to-top:hover {
-  box-shadow: var(--neu-pressed), 0 4px 14px rgba(6, 187, 204, 0.25) !important;
+  box-shadow: var(--neu-pressed), 0 2px 8px rgba(6, 187, 204, 0.15) !important;
   transform: translateY(-2px) !important;
   color: var(--primary-dark) !important;
   background: var(--neu-bg) !important;
@@ -927,3 +927,4 @@ label {
 #spinner {
   background: var(--neu-bg) !important;
 }
+

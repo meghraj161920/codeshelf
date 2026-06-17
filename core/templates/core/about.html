@@ -150,6 +150,26 @@
 
 {% block content %}
 
+{% if user.is_authenticated and user.profile.role == 'seller' %}
+<!-- HERO BANNER FOR SELLERS -->
+<div class="container-fluid py-5 mb-5"
+     style="background: linear-gradient(rgba(12,16,34,0.85), rgba(12,16,34,0.85)),
+            url('{% static "img/carousel-1.jpg" %}') center/cover;
+            min-height:40vh; display:flex; align-items:center;">
+    <div class="container text-center text-white pt-5">
+        <span class="badge badge-soft-primary px-3 py-2 rounded-pill mb-3 fs-6">
+            Grow Your Business
+        </span>
+        <h1 class="display-3 fw-bold mb-3 animate__animated animate__fadeInDown text-white">
+            Sell on <span style="color:var(--primary);">CodeShelf</span>
+        </h1>
+        <p class="fs-5 text-light opacity-75 mx-auto animate__animated animate__fadeInUp"
+           style="max-width:600px;">
+            The premier marketplace for software developers to monetize their projects, templates, and tech courses.
+        </p>
+    </div>
+</div>
+{% else %}
 <!-- HERO BANNER -->
 <div class="container-fluid py-5 mb-5"
      style="background: linear-gradient(rgba(12,16,34,0.85), rgba(12,16,34,0.85)),
@@ -168,7 +188,52 @@
         </p>
     </div>
 </div>
+{% endif %}
 
+{% if user.is_authenticated and user.profile.role == 'seller' %}
+<!-- WHO WE ARE FOR SELLERS -->
+<div class="container py-5">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-6 mb-4 mb-lg-0 text-center">
+            <img src="{% static 'img/about.jpg' %}"
+                 class="img-fluid floating-about-img w-100"
+                 style="max-height:500px;object-fit:cover;"
+                 alt="Sell on CodeShelf">
+        </div>
+        <div class="col-lg-6">
+            <h6 class="text-primary text-uppercase fw-bold mb-2" style="letter-spacing:2px;">Seller Platform</h6>
+            <h2 class="display-5 fw-bold mb-4" style="color:var(--text);">
+                Empowering the world's <span style="color:var(--primary);">Creators</span>.
+            </h2>
+            <p class="text-muted mb-5" style="font-size:1.05rem;line-height:1.8;">
+                CodeShelf provides developers a massive global audience to sell their pre-built projects, UI templates, and educational courses. We handle the heavy lifting—hosting, secure payments, and content delivery—so you can focus entirely on writing great code and increasing your revenue.
+            </p>
+
+            <!-- MISSION & VISION -->
+            <div class="row g-4">
+                <div class="col-sm-6">
+                    <div class="mission-card p-4 h-100">
+                        <i class="fas fa-coins fa-2x text-primary mb-3 d-block"></i>
+                        <h5 class="fw-bold mb-2" style="color:var(--text);">Passive Income</h5>
+                        <p class="text-muted mb-0 small">
+                            Turn your past projects into an automated revenue stream that earns money while you sleep.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="mission-card p-4 h-100">
+                        <i class="fas fa-globe fa-2x text-primary mb-3 d-block"></i>
+                        <h5 class="fw-bold mb-2" style="color:var(--text);">Global Reach</h5>
+                        <p class="text-muted mb-0 small">
+                            Get your work in front of thousands of eager learners and professional developers worldwide.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
 <!-- WHO WE ARE -->
 <div class="container py-5">
     <div class="row align-items-center g-5">
@@ -211,7 +276,41 @@
         </div>
     </div>
 </div>
+{% endif %}
 
+{% if user.is_authenticated and user.profile.role == 'seller' %}
+<!-- WHY CHOOSE US FOR SELLERS -->
+<div class="container py-5 my-5">
+    <div class="text-center mb-5 pb-3">
+        <h6 class="text-primary text-uppercase fw-bold mb-2" style="letter-spacing:2px;">The Advantage</h6>
+        <h2 class="display-6 fw-bold" style="color:var(--text);">Why Sell on CodeShelf?</h2>
+        <p class="text-muted">Everything you need to run a successful digital storefront.</p>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon-box"><i class="fas fa-chart-line"></i></div>
+                <h4 class="fw-bold mb-3" style="color:var(--text);">Detailed Analytics</h4>
+                <p class="text-muted mb-0">Track your sales, profile views, and revenue growth in real-time through your intuitive seller dashboard.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon-box"><i class="fas fa-wallet"></i></div>
+                <h4 class="fw-bold mb-3" style="color:var(--text);">Fast Payouts</h4>
+                <p class="text-muted mb-0">Get paid quickly and reliably. We support automated monthly deposits directly to your connected bank account.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon-box"><i class="fas fa-shield-alt"></i></div>
+                <h4 class="fw-bold mb-3" style="color:var(--text);">Secure Delivery</h4>
+                <p class="text-muted mb-0">Your source code is protected. Only buyers who have completed a verified transaction can download your files.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
 <!-- WHY CHOOSE US -->
 <div class="container py-5 my-5">
     <div class="text-center mb-5 pb-3">
@@ -243,6 +342,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <!-- TEAM -->
 <div class="container team-section">

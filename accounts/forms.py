@@ -6,8 +6,10 @@ class RegisterForm(forms.ModelForm):
     ROLE_CHOICES = [
         ('', 'Select Role'),
         ('customer', 'Customer'),
-        ('seller', 'Seller')
+        ('seller', 'Seller'),
+        ('both', 'Both (Customer & Seller)')
     ]
+    
     
     role = forms.ChoiceField(
         choices=ROLE_CHOICES,

@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container mt-5">
 
-    <h2 class="fw-bold mb-4">🛒 Checkout</h2>
+    <h2 class="fw-bold mb-4"><i class="fa-solid fa-shopping-cart me-2" style="color:var(--primary);"></i>Checkout</h2>
 
     <div class="row g-4">
 
@@ -65,50 +65,127 @@
 
                 {% if coupon_code %}
                 <div class="alert alert-success py-2">
-                    ✅ Coupon <strong>{{ coupon_code }}</strong> applied!
+                    <i class="fa-solid fa-circle-check me-1"></i> Coupon <strong>{{ coupon_code }}</strong> applied!
                 </div>
                 {% else %}
                 <form method="POST" action="{% url 'apply_coupon' %}">
                     {% csrf_token %}
-                    <input type="text" name="coupon_code" class="form-control mb-2"
+                    <input type="text" name="coupon_code" id="couponCodeInput" class="form-control mb-2"
                         placeholder="Enter coupon code">
-                    <button class="btn btn-outline-primary w-100">Apply</button>
+                    <button class="btn btn-outline-primary w-100" id="applyCouponBtn">Apply</button>
                 </form>
+                {% endif %}
+                {% if not coupon_code and available_coupons %}
+                <div class="mt-3">
+                    <h6 class="fw-bold text-muted mb-2" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Available Coupons
+                    </h6>
+                    <div class="card card-body p-2 border-0 shadow-none" style="background: var(--bg-subtle); border-radius: 12px; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05), inset -2px -2px 5px rgba(255,255,255,0.5) !important;">
+                        <div class="coupons-list-container pe-1" id="couponScrollContainer">
+                            {% for coupon in available_coupons %}
+                            <div class="coupon-item mb-2 {% if forloop.counter > 5 %}d-none extra-coupon{% endif %}"
+                                style="background-color: #ffffff; border-radius: 8px; cursor: pointer; transition: all 0.2s; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.05);"
+                                onclick="applySelectedCoupon('{{ coupon.code }}')">
+                                <div style="line-height: 1.2;">
+                                    <span class="fw-bold text-dark d-block" style="font-size: 13px;">{{ coupon.code }}</span>
+                                    <span class="text-success fw-bold" style="font-size: 11px;">{{ coupon.discount_percent }}% OFF</span>
+                                </div>
+                                <span class="badge rounded-pill" style="background-color: #0dcaf0; color: white; padding: 4px 10px; font-size: 10px;">Apply</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if available_coupons|length > 5 %}
+                        <div class="text-center mt-1">
+                            <button type="button" id="viewAllCouponsBtn" onclick="toggleCoupons()" class="btn btn-sm text-info fw-bold p-0 border-0" style="font-size: 12px; background: transparent;">
+                                View More
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
                 {% endif %}
             </div>
 
             <!-- PAYMENT METHOD + PLACE ORDER -->
-            <div class="card shadow-sm p-4">
-                <h5 class="fw-bold mb-3">Payment Method</h5>
-
-                <form method="POST" action="{% url 'place_order' %}">
-                    {% csrf_token %}
-
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="radio"
-                            name="payment_method" value="upi" checked>
-                        <label class="form-check-label">UPI</label>
-                    </div>
-
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="radio"
-                            name="payment_method" value="card">
-                        <label class="form-check-label">Card</label>
-                    </div>
-
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="radio"
-                            name="payment_method" value="cod">
-                        <label class="form-check-label">Cash on Delivery</label>
-                    </div>
-
-                    <button class="btn btn-success w-100 btn-lg">
-                        ✅ Place Order
-                    </button>
-                </form>
+            <div class="card">
+                <a href="{% url 'payment_selection' %}" class="btn btn-success w-100 btn-lg">
+                    Proceed to Payment <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
             </div>
 
         </div>
     </div>
 </div>
+
+{% block extra_js %}
+<style>
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.3);
+    }
+</style>
+<script>
+    function applySelectedCoupon(code) {
+        // Set the input value
+        const couponInput = document.getElementById('couponCodeInput');
+        if (couponInput) {
+            couponInput.value = code;
+            // Optionally auto-submit
+            const applyBtn = document.getElementById('applyCouponBtn');
+            if (applyBtn) {
+                applyBtn.click();
+            }
+        }
+    }
+
+    function toggleCoupons() {
+        const viewAllBtn = document.getElementById('viewAllCouponsBtn');
+        const extraCoupons = document.querySelectorAll('.extra-coupon');
+        const isExpanded = viewAllBtn.classList.contains('expanded');
+        const container = document.getElementById('couponScrollContainer');
+
+        if (isExpanded) {
+            // Collapse
+            extraCoupons.forEach(el => el.classList.add('d-none'));
+            viewAllBtn.innerHTML = 'View More';
+            viewAllBtn.classList.remove('expanded');
+
+            // Remove scroll container styling
+            if (container) {
+                container.style.maxHeight = 'none';
+                container.style.overflowY = 'visible';
+                container.classList.remove('custom-scrollbar');
+            }
+        } else {
+            // Expand
+            extraCoupons.forEach(el => el.classList.remove('d-none'));
+            viewAllBtn.innerHTML = 'Show Less';
+            viewAllBtn.classList.add('expanded');
+
+            // Add scroll container styling
+            if (container) {
+                // Calculate height dynamically based on the first 5 coupons
+                const firstCoupon = document.querySelector('.coupon-item');
+                const itemHeight = firstCoupon ? firstCoupon.offsetHeight + 8 : 45; // including bottom margin
+                container.style.maxHeight = (itemHeight * 5) + 'px';
+                container.style.overflowY = 'auto';
+                container.classList.add('custom-scrollbar');
+            }
+        }
+    }
+</script>
+{% endblock %}
+
 {% endblock %}

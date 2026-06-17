@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block navbar %}{% endblock navbar %}
+{% block footer %}{% endblock footer %}
+
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
@@ -20,7 +23,14 @@
                 <!-- ERRORS -->
                 {% if form.errors %}
                 <div class="alert alert-danger alert-dismissible fade show mb-4">
-                    {{ form.errors }}
+                    {% if "Email already exists" in form.errors.email.0 or "Email already exists" in form.errors.values|stringformat:"s" %}
+                        <strong>Email already registered!</strong><br>
+                        Would you like to use this single account for both Customer and Seller purposes? <br>
+                        <a href="{% url 'login' %}" class="fw-bold" style="color: inherit; text-decoration: underline;">Log in and Switch Roles</a> instead.<br>
+                        If you want a completely separate account, please use a different email address.
+                    {% else %}
+                        {{ form.errors }}
+                    {% endif %}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
                 {% endif %}
@@ -194,8 +204,30 @@ document.getElementById('id_password').addEventListener('input', function () {
 });
 
 function acceptTerms() {
-    document.getElementById('id_terms').checked = true;
+    const termsCheckbox = document.getElementById('id_terms');
+    termsCheckbox.checked = true;
+    termsCheckbox.dispatchEvent(new Event('change'));
     bootstrap.Modal.getInstance(document.getElementById('termsModal')).hide();
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const termsCheckbox = document.getElementById('id_terms');
+    const registerBtn = document.getElementById('registerBtn');
+
+    function checkTerms() {
+        if (termsCheckbox.checked) {
+            registerBtn.removeAttribute('disabled');
+            registerBtn.style.opacity = '1';
+        } else {
+            registerBtn.setAttribute('disabled', 'disabled');
+            registerBtn.style.opacity = '0.6';
+        }
+    }
+
+    if (termsCheckbox && registerBtn) {
+        termsCheckbox.addEventListener('change', checkTerms);
+        checkTerms();
+    }
+});
 </script>
 {% endblock %}

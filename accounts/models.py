@@ -10,7 +10,12 @@ class Profile(models.Model):
         ('seller', 'Seller')
     ]
 
+
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='customer')
+
+    # Accounts roles (can be both)
+    is_seller_account = models.BooleanField(default=False)
+    is_customer_account = models.BooleanField(default=False)
 
     dob = models.DateField(null=True, blank=True)
 
@@ -31,6 +36,8 @@ class Profile(models.Model):
         blank=True,
         null=True
     )
+
+    about = models.TextField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

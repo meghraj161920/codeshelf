@@ -16,8 +16,8 @@ def role_required(allowed_roles):
 
             profile = getattr(request.user, 'profile', None)
 
-            # ❌ Superuser ko website access mat do
-            if request.user.is_superuser:
+            # ❌ Superuser/staff ko website access mat do
+            if request.user.is_superuser or request.user.is_staff:
                 from django.contrib.auth import logout
                 logout(request)
                 return redirect('login')
@@ -52,8 +52,8 @@ def unauthenticated_only(view_func):
 
         if request.user.is_authenticated:
 
-            # ✅ Superuser ka session ignore karo — unhe website pe allow mat karo
-            if request.user.is_superuser:
+            # ✅ Superuser/staff ka session ignore karo — unhe website pe allow mat karo
+            if request.user.is_superuser or request.user.is_staff:
                 from django.contrib.auth import logout
                 logout(request)
                 return view_func(request, *args, **kwargs)

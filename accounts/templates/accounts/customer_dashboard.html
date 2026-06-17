@@ -4,20 +4,33 @@
 {% block content %}
 <div class="container py-5">
 
+    <!-- MESSAGES -->
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
     <!-- WELCOME -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h4 class="fw-bold mb-0">
-                👋 Hello, {{ user.first_name|default:user.username }}!
-            </h4>
+            <h4 class="fw-bold mb-1" style="color:var(--text);"><i class="fa-solid fa-hand-wave me-2" style="color:#f59e0b;"></i> Hello, {{ user.first_name|default:user.username }}!</h4>
             <p class="text-muted mb-0">Welcome to your dashboard</p>
         </div>
-        <form method="POST" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button class="btn btn-outline-danger btn-sm">
-                <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#testimonialModal">
+                <i class="fa-solid fa-star me-1"></i> Share Success Story
             </button>
-        </form>
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="btn btn-outline-danger btn-sm">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                </button>
+            </form>
+        </div>
     </div>
 
     <!-- STATS CARDS -->
@@ -117,7 +130,7 @@
     <!-- RECENT ORDERS -->
     <div class="neu-raised rounded p-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold mb-0" style="color:var(--text);">📦 Recent Orders</h5>
+            <h5 class="fw-bold mb-0" style="color:var(--text);"><i class="fa-solid fa-box me-2" style="color:var(--primary);"></i>Recent Orders</h5>
             <a href="{% url 'order_history' %}"
                class="text-decoration-none small fw-semibold"
                style="color:var(--primary);">
@@ -165,6 +178,40 @@
         </div>
         {% endif %}
 
+    </div>
+
+    <!-- TESTIMONIAL MODAL -->
+    <div class="modal fade" id="testimonialModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:15px; border:none; box-shadow:var(--neu-raised); background:var(--neu-bg);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" style="color:var(--text);"><i class="fa-solid fa-star text-warning me-2"></i>Share Your Success Story</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'submit_testimonial' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size:13px;color:var(--text-muted);">Rating</label>
+                            <select name="rating" class="form-select" required>
+                                <option value="5">★★★★★ Excellent</option>
+                                <option value="4">★★★★ Good</option>
+                                <option value="3">★★★ Average</option>
+                                <option value="2">★★ Poor</option>
+                                <option value="1">★ Terrible</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label" style="font-size:13px;color:var(--text-muted);">Your Feedback</label>
+                            <textarea name="content" class="form-control" rows="4" placeholder="How has CodeShelf helped you?" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100" style="border-radius:10px;">
+                            <i class="fa fa-paper-plane me-1"></i> Submit Feedback
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from embed_video.fields import EmbedVideoField
 
 
 class Category(models.Model):
@@ -54,8 +55,8 @@ class Project(models.Model):
 
     thumbnail = models.ImageField(upload_to='project_images/')
 
-    demo_video_url = models.URLField(blank=True, null=True)
-    installation_video_url = models.URLField(blank=True, null=True)
+    demo_video_url = EmbedVideoField(blank=True, null=True)
+    installation_video_url = EmbedVideoField(blank=True, null=True)
 
     zip_file = models.FileField(upload_to='project_files/')
     documentation_file = models.FileField(upload_to='project_docs/', blank=True, null=True)
@@ -69,6 +70,45 @@ class Project(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+    @property
+    def average_rating(self):
+        reviews = self.reviews.all()
+        if reviews:
+            return round(sum(r.rating for r in reviews) / len(reviews), 1)
+        return 0
+
+    @property
+    def review_count(self):
+        return self.reviews.count()
+
+    @property
+    def render_stars(self):
+        from django.utils.safestring import mark_safe
+        avg = self.average_rating
+        full_stars = int(avg)
+        half_star = 1 if avg - full_stars >= 0.5 else 0
+        empty_stars = 5 - full_stars - half_star
+        
+        html = '<i class="fa-solid fa-star"></i>' * full_stars
+        if half_star:
+            html += '<i class="fa-solid fa-star-half-stroke"></i>'
+        html += '<i class="fa-regular fa-star"></i>' * empty_stars
+        
+        return mark_safe(html)
+
+    @property
+    def total_downloads(self):
+        # Support for view annotations to avoid N+1 queries
+        if hasattr(self, '_total_downloads_annotated'):
+            return self._total_downloads_annotated
+        from django.db.models import Sum
+        total = self.downloads.aggregate(total=Sum('download_count'))['total']
+        return total if total else 0
+
+    @total_downloads.setter
+    def total_downloads(self, value):
+        self._total_downloads_annotated = value
 
     def save(self, *args, **kwargs):
         if not self.slug:

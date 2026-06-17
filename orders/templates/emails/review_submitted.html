@@ -148,8 +148,9 @@
             <div class="review-box">
                 <div class="review-project">{{ review.project.title }}</div>
                 <div class="review-rating">
-                    {% for i in "12345" %}
-                    {% if forloop.counter <= review.rating %}⭐{% endif %} {% endfor %} </div>
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}★{% endif %}
+                        {% endfor %} </div>
                         <div class="review-text">"{{ review.review_text|truncatewords:20 }}"</div>
                 </div>
 

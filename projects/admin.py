@@ -11,7 +11,6 @@ class ProjectAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     inlines = [ProjectImageInline]
 
-
 admin.site.register(Category)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(ProjectDownload)

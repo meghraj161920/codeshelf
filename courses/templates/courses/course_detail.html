@@ -1,7 +1,44 @@
 {% extends "base.html" %}
 {% load static %}
+{% load embed_video_tags %}
 
 {% block content %}
+<style>
+    .video-item {
+        border-bottom: 1px solid rgba(var(--primary-rgb),0.07);
+        transition: all 0.2s var(--ease);
+        background: transparent;
+    }
+    .video-item.active {
+        background: rgba(var(--primary-rgb),0.08);
+    }
+    .video-badge {
+        width: 30px; height: 30px; border-radius: 50%;
+        box-shadow: var(--neu-raised);
+        background: var(--neu-bg);
+        font-size: 12px; font-weight: 800;
+        color: var(--text-muted);
+    }
+    .video-badge.active {
+        box-shadow: var(--neu-pressed);
+        background: linear-gradient(135deg,var(--primary),var(--primary-dark));
+        color: #fff;
+    }
+    .video-title {
+        font-size: 13px;
+        color: var(--text);
+    }
+    .video-title.active {
+        color: var(--primary);
+    }
+    .video-icon {
+        font-size: 16px;
+        color: var(--text-muted);
+    }
+    .video-icon.active {
+        color: var(--primary);
+    }
+</style>
 <div class="container-fluid py-4">
     <div class="container">
 
@@ -17,7 +54,19 @@
                 <i class="fa fa-arrow-left me-1"></i> Back to Courses
             </a>
 
-            <h3 class="fw-bold mb-2" style="color:var(--text);">{{ course.title }}</h3>
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-2">
+                <h3 class="fw-bold mb-0" style="color:var(--text);">{{ course.title }}</h3>
+                {% if not course.is_free and not has_purchased %}
+                <div class="d-flex gap-2">
+                    <a href="{% url 'add_to_cart' 'course' course.id %}" class="btn btn-primary btn-sm ajax-add-to-cart d-flex align-items-center justify-content-center" style="border-radius:10px; padding: 10px 20px;">
+                        <i class="fa-solid fa-cart-plus me-2"></i> Buy (₹{{ course.price }})
+                    </a>
+                    <a href="#" data-id="{{ course.id }}" data-type="course" class="btn btn-danger text-white btn-sm wishlist-btn d-flex align-items-center justify-content-center" style="border-radius:10px; padding: 10px 16px; margin-top: 0;">
+                        <i class="fa-regular fa-heart"></i>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
 
             <div class="d-flex gap-2 align-items-center flex-wrap">
                 <span class="badge bg-info">{{ course.category.name }}</span>
@@ -31,6 +80,11 @@
                       style="font-size:12px;font-weight:600;color:var(--text-muted);">
                     <i class="fa fa-play-circle me-1" style="color:var(--primary);"></i>
                     {{ course.total_videos }} Videos
+                </span>
+                <span class="neu-pressed rounded px-2 py-1"
+                      style="font-size:12px;font-weight:600;color:var(--text-muted);">
+                    <i class="fa fa-calendar-alt me-1" style="color:var(--primary);"></i>
+                    {% if course.access_duration_months == 0 %}Lifetime Access{% else %}Access: {{ course.access_duration_months }} Months{% endif %}
                 </span>
             </div>
         </div>
@@ -62,26 +116,16 @@
                     <div class="overflow-auto" style="max-height:calc(100vh - 220px);">
                         {% for video in videos %}
                         <a href="?video={{ video.id }}"
-                           class="d-flex align-items-center gap-3 px-3 py-3 text-decoration-none"
-                           style="border-bottom:1px solid rgba(var(--primary-rgb),0.07);
-                                  transition:all 0.2s var(--ease);
-                                  background:{% if current_video.id == video.id %}rgba(var(--primary-rgb),0.08){% else %}transparent{% endif %};">
+                           class="video-item d-flex align-items-center gap-3 px-3 py-3 text-decoration-none {% if current_video.id == video.id %}active{% endif %}">
 
                             <!-- Order badge -->
-                            <div class="d-flex align-items-center justify-content-center flex-shrink-0"
-                                 style="width:30px;height:30px;border-radius:50%;
-                                        box-shadow:{% if current_video.id == video.id %}var(--neu-pressed){% else %}var(--neu-raised){% endif %};
-                                        background:{% if current_video.id == video.id %}linear-gradient(135deg,var(--primary),var(--primary-dark)){% else %}var(--neu-bg){% endif %};
-                                        font-size:12px;font-weight:800;
-                                        color:{% if current_video.id == video.id %}#fff{% else %}var(--text-muted){% endif %};">
+                            <div class="video-badge d-flex align-items-center justify-content-center flex-shrink-0 {% if current_video.id == video.id %}active{% endif %}">
                                 {{ video.order }}
                             </div>
 
                             <!-- Title + duration -->
                             <div class="flex-grow-1 overflow-hidden">
-                                <p class="mb-0 fw-semibold text-truncate"
-                                   style="font-size:13px;
-                                          color:{% if current_video.id == video.id %}var(--primary){% else %}var(--text){% endif %};">
+                                <p class="video-title mb-0 fw-semibold text-truncate {% if current_video.id == video.id %}active{% endif %}">
                                     {{ video.title }}
                                 </p>
                                 {% if video.duration %}
@@ -91,10 +135,13 @@
                                 {% endif %}
                             </div>
 
-                            <!-- Play icon -->
-                            <i class="fa fa-play-circle flex-shrink-0"
-                               style="font-size:16px;
-                                      color:{% if current_video.id == video.id %}var(--primary){% else %}var(--text-muted){% endif %};"></i>
+                            <!-- Play / Lock icon -->
+                            {% if video.order > 1 and not course.is_free and not has_purchased %}
+                            <i class="fa fa-lock flex-shrink-0"
+                               style="font-size:14px; color:var(--text-muted); opacity: 0.6;"></i>
+                            {% else %}
+                            <i class="video-icon fa fa-play-circle flex-shrink-0 {% if current_video.id == video.id %}active{% endif %}"></i>
+                            {% endif %}
                         </a>
                         {% endfor %}
                     </div>
@@ -109,15 +156,46 @@
 
                 <!-- VIDEO PLAYER -->
                 <div class="neu-raised rounded mb-3 overflow-hidden"
-                     style="aspect-ratio:16/9;">
-                    <iframe src="{{ current_video.youtube_url }}?autoplay=1"
-                            title="{{ current_video.title }}"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write;
-                                   encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen
-                            style="width:100%;height:100%;border-radius:16px;">
-                    </iframe>
+                     style="aspect-ratio:16/9; position:relative;">
+                    {% if current_video.order > 1 and not course.is_free and not has_purchased and not is_expired %}
+                        <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center p-4" style="background:var(--neu-bg); color:var(--text);">
+                            <div class="neu-pressed rounded-circle d-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px;">
+                                <i class="fa-solid fa-lock text-muted" style="font-size: 32px;"></i>
+                            </div>
+                            <h4 class="fw-bold mb-2">Video Locked</h4>
+                            <p class="text-muted mb-4">Purchase this course to unlock all videos and resources.</p>
+                            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                                <a href="{% url 'add_to_cart' 'course' course.id %}" class="btn btn-primary ajax-add-to-cart d-flex align-items-center justify-content-center" style="border-radius:20px; padding:10px 24px; font-weight:700;">
+                                    <i class="fa-solid fa-cart-plus me-2"></i>Buy Now for ₹{{ course.price }}
+                                </a>
+                            </div>
+                        </div>
+                    {% elif is_expired %}
+                        <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center p-4" style="background:var(--neu-bg); color:var(--text);">
+                            <div class="neu-pressed rounded-circle d-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px;">
+                                <i class="fa-solid fa-clock text-danger" style="font-size: 32px;"></i>
+                            </div>
+                            <h4 class="fw-bold text-danger mb-2">Access Expired</h4>
+                            <p class="text-muted mb-4">Your {{ course.access_duration_months }} month access to this course has expired.</p>
+                            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                                <a href="{% url 'add_to_cart' 'course' course.id %}" class="btn btn-primary ajax-add-to-cart d-flex align-items-center justify-content-center" style="border-radius:20px; padding:10px 24px; font-weight:700;">
+                                    <i class="fa-solid fa-cart-plus me-2"></i>Repurchase for ₹{{ course.price }}
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        {% video current_video.youtube_url as my_video %}
+                            <iframe src="{{ my_video.url }}"
+                                    title="{{ current_video.title }}"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write;
+                                           encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    style="width:100%;height:100%;border-radius:16px;">
+                            </iframe>
+                        {% endvideo %}
+                    {% endif %}
                 </div>
 
                 <!-- CURRENT VIDEO INFO -->
@@ -147,8 +225,8 @@
                     <!-- Progress bar -->
                     <div class="mt-3">
                         <div class="progress" style="height:5px;">
-                            <div class="progress-bar"
-                                 style="width:{% widthratio current_video.order course.total_videos 100 %}%;">
+                            <div class="progress-bar dynamic-progress-bar"
+                                 data-progress="{% widthratio current_video.order course.total_videos 100 %}">
                             </div>
                         </div>
                     </div>
@@ -197,7 +275,7 @@
                         <div class="d-flex align-items-center gap-2">
                             <i class="fa fa-file-alt text-white" style="font-size:15px;"></i>
                             <span class="fw-bold text-white" style="font-size:14px;">
-                                📝 Notes — {{ current_video.title }}
+                                <i class="fa-solid fa-sticky-note me-1"></i> Notes — {{ current_video.title }}
                             </span>
                         </div>
                         <button class="btn btn-sm fw-semibold"
@@ -251,9 +329,102 @@
             </div>
         </div>
     </div>
+
+    <!-- ══ REVIEWS ══ -->
+    <div class="row g-4 mb-5 mt-3">
+        <div class="col-12">
+            <h5 class="fw-bold mb-0" style="color:var(--text);">
+                <i class="fa fa-comments me-2" style="color:var(--primary);"></i>Reviews
+            </h5>
+        </div>
+
+        <!-- REVIEW FORM -->
+        {% if user.is_authenticated and user.profile.is_customer and has_purchased or user.is_authenticated and user.profile.is_customer and course.is_free %}
+        <div class="col-md-5">
+            <div class="neu-raised rounded p-4">
+                <h6 class="fw-bold mb-3" style="color:var(--text);">
+                    <i class="fa fa-pen me-2" style="color:var(--primary);"></i>Write a Review
+                </h6>
+                <form method="POST" action="{% url 'add_review' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="course_id" value="{{ course.id }}">
+
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:13px;color:var(--text-muted);">Rating</label>
+                        <select name="rating" class="form-select">
+                            <option value="5">★★★★★ Excellent</option>
+                            <option value="4">★★★★ Good</option>
+                            <option value="3">★★★ Average</option>
+                            <option value="2">★★ Poor</option>
+                            <option value="1">★ Terrible</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:13px;color:var(--text-muted);">Your Review</label>
+                        <textarea name="comment" class="form-control" rows="4"
+                                  placeholder="Share your experience..."></textarea>
+                    </div>
+
+                    <button class="btn btn-primary w-100" style="border-radius:10px;">
+                        <i class="fa fa-paper-plane me-1"></i> Submit Review
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- EXISTING REVIEWS -->
+        <div class="col-md-{% if user.is_authenticated and user.profile.is_customer and has_purchased or user.is_authenticated and user.profile.is_customer and course.is_free %}7{% else %}12{% endif %}">
+            {% for review in course.reviews.all %}
+            <div class="neu-raised rounded p-3 mb-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width:34px;height:34px;border-radius:50%;
+                                    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+                                    display:flex;align-items:center;justify-content:center;
+                                    font-size:12px;font-weight:800;color:#fff;
+                                    box-shadow:var(--neu-raised);flex-shrink:0;">
+                            {{ review.user.username|first|upper }}
+                        </div>
+                        <div>
+                            <div class="fw-bold" style="font-size:14px;color:var(--text);">
+                                {{ review.user.username }}
+                            </div>
+                            <small class="text-muted">{{ review.created_at|date:"d M Y" }}</small>
+                        </div>
+                    </div>
+                    <div class="neu-pressed rounded px-2 py-1"
+                         style="font-size:13px;font-weight:700;color:#f59e0b;letter-spacing:1px;">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}<i class="fa-solid fa-star"></i>{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <p class="mb-0" style="font-size:13px;color:var(--text-muted);line-height:1.7;">
+                    {{ review.review_text }}
+                </p>
+            </div>
+            {% empty %}
+            <div class="neu-pressed rounded p-4 text-center">
+                <i class="fa fa-comment-slash fa-2x mb-2" style="color:var(--text-muted);opacity:0.4;"></i>
+                <p class="text-muted mb-0" style="font-size:14px;">
+                    No reviews yet. Be the first to review!
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const progressBar = document.querySelector(".dynamic-progress-bar");
+        if (progressBar && progressBar.dataset.progress) {
+            progressBar.style.width = progressBar.dataset.progress + "%";
+        }
+    });
+
     const notesCollapse = document.getElementById('notesCollapse');
     const notesChevron  = document.getElementById('notesChevron');
     if (notesCollapse && notesChevron) {

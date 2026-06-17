@@ -1,7 +1,6 @@
 from django import forms
 from .models import Project, Category
 
-
 class ProjectUploadForm(forms.ModelForm):
 
     class Meta:
@@ -11,7 +10,7 @@ class ProjectUploadForm(forms.ModelForm):
             'difficulty_level', 'version', 'requirements',
             'price', 'thumbnail', 'demo_video_url',
             'installation_video_url', 'zip_file',
-            'documentation_file', 'file_size'
+            'documentation_file', 'file_size', 'is_active'
         ]
         widgets = {
             'title': forms.TextInput(attrs={
@@ -57,5 +56,11 @@ class ProjectUploadForm(forms.ModelForm):
             }),
             'file_size': forms.TextInput(attrs={
                 'class': 'form-control', 'placeholder': 'e.g. 2.5 MB'
+            }),
+            'is_active': forms.Select(choices=[
+                (True, 'Publish (Live)'),
+                (False, 'Save as Draft (Hidden)')
+            ], attrs={
+                'class': 'form-select'
             }),
         }

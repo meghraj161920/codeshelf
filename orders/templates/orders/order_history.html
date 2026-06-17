@@ -2,46 +2,144 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
 
-    <h2 class="fw-bold mb-4">📦 My Orders</h2>
+    <h2 class="fw-bold mb-4"><i class="fa-solid fa-layer-group me-2" style="color:var(--primary);"></i>My Library & Orders</h2>
 
-    {% for order in orders %}
-    <div class="card shadow-sm p-4 mb-4">
+    <ul class="nav nav-tabs mb-4" id="orderTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold" id="library-tab" data-bs-toggle="tab" data-bs-target="#library" type="button" role="tab">
+                <i class="fa fa-cubes me-2"></i>My Purchased Items
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold text-muted" id="receipts-tab" data-bs-toggle="tab" data-bs-target="#receipts" type="button" role="tab">
+                <i class="fa fa-receipt me-2"></i>Order Receipts
+            </button>
+        </li>
+    </ul>
 
-        <div class="d-flex justify-content-between align-items-center">
-            <strong>Order #{{ order.id }}</strong>
-            <div>
-                <span class="badge bg-success me-2">{{ order.payment_status }}</span>
-                <span class="text-muted">{{ order.order_date|date:"d M Y" }}</span>
+    <div class="tab-content" id="orderTabsContent">
+        
+        <div class="tab-pane fade show active" id="library" role="tabpanel">
+            <div class="row g-4">
+                {% for project in purchased_projects %}
+                <div class="col-md-4 col-sm-6">
+                    <div class="card shadow-sm h-100 border-0" style="border-radius: 12px; overflow: hidden; box-shadow: var(--neu-raised);">
+                        {% if project.thumbnail %}
+                        <img src="{{ project.thumbnail.url }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column" style="background: var(--neu-bg);">
+                            <span class="badge bg-primary mb-2 align-self-start">Project</span>
+                            <h5 class="card-title fw-bold mb-1" style="color:var(--text);">{{ project.title }}</h5>
+                            <p class="text-muted small mb-3">{{ project.category.name }}</p>
+                            
+                            <div class="mt-auto d-flex gap-2">
+                                <a href="{% url 'project_detail' project.slug %}" class="btn btn-outline-primary btn-sm flex-grow-1" style="border-radius: 8px;">
+                                    <i class="fa fa-eye"></i> View
+                                </a>
+                                {% if project.zip_file %}
+                                <a href="{% url 'download_project' project.id %}" class="btn btn-success btn-sm flex-grow-1" style="border-radius: 8px;">
+                                    <i class="fa fa-download"></i> Download
+                                </a>
+                                {% else %}
+                                <button class="btn btn-secondary btn-sm flex-grow-1 disabled" style="border-radius: 8px;">
+                                    <i class="fa fa-times"></i> No File
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% for course in purchased_courses %}
+                <div class="col-md-4 col-sm-6">
+                    <div class="card shadow-sm h-100 border-0" style="border-radius: 12px; overflow: hidden; box-shadow: var(--neu-raised);">
+                        {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column" style="background: var(--neu-bg);">
+                            <span class="badge bg-info mb-2 align-self-start">Course</span>
+                            <h5 class="card-title fw-bold mb-1" style="color:var(--text);">{{ course.title }}</h5>
+                            <p class="text-muted small mb-3">{{ course.category.name }}</p>
+                            
+                            <div class="mt-auto d-flex gap-2">
+                                <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary btn-sm flex-grow-1" style="border-radius: 8px;">
+                                    <i class="fa fa-eye"></i> View
+                                </a>
+                                <a href="{% url 'course_detail' course.slug %}" class="btn btn-success btn-sm flex-grow-1" style="border-radius: 8px;">
+                                    <i class="fa fa-play"></i> Watch
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% if not purchased_projects and not purchased_courses %}
+                <div class="col-12 text-center py-5">
+                    <i class="fa-solid fa-folder-open fa-4x text-muted mb-4" style="opacity: 0.5;"></i>
+                    <h5 class="text-muted">You haven't purchased any items yet.</h5>
+                    <div class="mt-3">
+                        <a href="{% url 'project_list' %}" class="btn btn-primary me-2">Browse Projects</a>
+                        <a href="{% url 'course_list' %}" class="btn btn-outline-primary">Browse Courses</a>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
 
-        <hr>
-
-        {% for item in order.items.all %}
-        <div class="d-flex justify-content-between mb-2">
-            <span>{{ item.project.title }}</span>
-            <span>₹{{ item.price }}</span>
-        </div>
-        {% endfor %}
-
-        <hr>
-
-        <div class="d-flex justify-content-between align-items-center">
-            <strong>Total: ₹{{ order.total_amount }}</strong>
-            <span class="text-muted small">{{ order.payment_method|upper }}</span>
+        <div class="tab-pane fade" id="receipts" role="tabpanel">
+            {% for order in orders %}
+            <div class="card shadow-sm p-4 mb-4 border-0" style="border-radius: 12px; background: var(--neu-bg); box-shadow: var(--neu-raised);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <strong style="color:var(--text);">Order #{{ order.id }}</strong>
+                    <div>
+                        <span class="badge bg-success me-2">{{ order.payment_status }}</span>
+                        <span class="text-muted">{{ order.order_date|date:"d M Y" }}</span>
+                    </div>
+                </div>
+                <hr style="border-color: rgba(var(--primary-rgb), 0.1);">
+                {% for item in order.items.all %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="color:var(--text);">
+                        {% if item.project %}{{ item.project.title }} <span class="badge bg-primary ms-1" style="font-size:0.6rem;">Project</span>{% endif %}
+                        {% if item.course %}{{ item.course.title }} <span class="badge bg-info ms-1" style="font-size:0.6rem;">Course</span>{% endif %}
+                    </span>
+                    <span style="color:var(--text);">₹{{ item.price }}</span>
+                </div>
+                {% endfor %}
+                <hr style="border-color: rgba(var(--primary-rgb), 0.1);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <strong style="color:var(--primary);">Total: ₹{{ order.total_amount }}</strong>
+                    <span class="text-muted small">{{ order.payment_method|upper }}</span>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-5">
+                <i class="fa-solid fa-file-invoice fa-4x text-muted mb-4" style="opacity: 0.5;"></i>
+                <h5 class="text-muted">No order history found.</h5>
+            </div>
+            {% endfor %}
         </div>
 
     </div>
-
-    {% empty %}
-    <div class="text-center py-5">
-        <i class="fa-solid fa-box-open fa-4x text-muted mb-4"></i>
-        <h5 class="text-muted">No orders yet!</h5>
-        <a href="{% url 'project_list' %}" class="btn btn-primary mt-2">Browse Projects</a>
-    </div>
-    {% endfor %}
-
 </div>
+
+<script>
+    // Required to make bootstrap tabs work if there's no native bootstrap JS handling it
+    document.querySelectorAll('#orderTabs button').forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelectorAll('#orderTabs button').forEach(btn => btn.classList.remove('active', 'text-muted'));
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('show', 'active'));
+            
+            button.classList.add('active');
+            button.classList.remove('text-muted');
+            
+            const targetPane = document.querySelector(button.dataset.bsTarget);
+            targetPane.classList.add('show', 'active');
+        });
+    });
+</script>
 {% endblock %}

@@ -10,7 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,10 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'projects', 'orders', 'coupons', 'reviews', 'wishlist', 'accounts', 'core', 'cart', 'courses',
+    'embed_video',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'core.middleware.AdminSeparateSessionMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -62,6 +68,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'cart.views.cart_context',
+                'core.context_processors.footer_stats',
             ],
         },
     },
@@ -123,14 +130,15 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-# ✅ Admin aur website ke liye alag session cookies
-SESSION_COOKIE_NAME = 'codeshelf_session'  # Default 'sessionid' ki jagah
+
+# Admin and website use separate sessions. This is just the default fallback name.
+SESSION_COOKIE_NAME = 'codeshelf_session'
 
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'uvharode5@gmail.com'      # Your Gmail address
-EMAIL_HOST_PASSWORD = 'ulwm amju yzxz cwxm'
-DEFAULT_FROM_EMAIL = 'CodeShelf <uvharode5@gmail.com>'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = f'CodeShelf <{EMAIL_HOST_USER}>'

@@ -1,0 +1,51 @@
+{% load static %}
+
+{% if projects or courses or pages %}
+
+    {% if projects %}
+    <div class="px-3 pt-2 pb-1 text-uppercase text-muted" style="font-size:11px;font-weight:700;letter-spacing:1px;">Projects</div>
+    {% for p in projects %}
+    <a class="dropdown-item cs-item py-2" href="{% url 'project_detail' p.slug %}">
+        <i class="fa-solid fa-code text-primary"></i>
+        <div style="flex-grow:1;white-space:normal;line-height:1.2;">
+            <div class="fw-bold text-truncate" style="color:var(--text);font-size:13.5px;max-width:200px;">{{ p.title }}</div>
+            <div class="text-muted" style="font-size:11px;">Project</div>
+        </div>
+    </a>
+    {% endfor %}
+    {% endif %}
+
+    {% if courses %}
+    {% if projects %}<div class="dropdown-divider my-1"></div>{% endif %}
+    <div class="px-3 pt-2 pb-1 text-uppercase text-muted" style="font-size:11px;font-weight:700;letter-spacing:1px;">Courses</div>
+    {% for c in courses %}
+    <a class="dropdown-item cs-item py-2" href="{% url 'course_detail' c.slug %}">
+        <i class="fa-solid fa-graduation-cap" style="color:#f59e0b;"></i>
+        <div style="flex-grow:1;white-space:normal;line-height:1.2;">
+            <div class="fw-bold text-truncate" style="color:var(--text);font-size:13.5px;max-width:200px;">{{ c.title }}</div>
+            <div class="text-muted" style="font-size:11px;">Course</div>
+        </div>
+    </a>
+    {% endfor %}
+    {% endif %}
+
+    {% if pages %}
+    {% if projects or courses %}<div class="dropdown-divider my-1"></div>{% endif %}
+    <div class="px-3 pt-2 pb-1 text-uppercase text-muted" style="font-size:11px;font-weight:700;letter-spacing:1px;">Pages & Settings</div>
+    {% for page in pages %}
+    <a class="dropdown-item cs-item py-2" href="{{ page.url }}">
+        <i class="fa-solid {{ page.icon }}" style="color:#10b981;"></i>
+        <div style="flex-grow:1;white-space:normal;line-height:1.2;">
+            <div class="fw-bold text-truncate" style="color:var(--text);font-size:13.5px;max-width:200px;">{{ page.title }}</div>
+            <div class="text-muted" style="font-size:11px;">Platform Page</div>
+        </div>
+    </a>
+    {% endfor %}
+    {% endif %}
+
+{% else %}
+    <div class="px-3 py-3 text-center text-muted">
+        <i class="fa-solid fa-ghost fa-2x mb-2" style="opacity:0.5;"></i>
+        <div style="font-size:13px;font-weight:600;">No results found for "{{ query }}"</div>
+    </div>
+{% endif %}

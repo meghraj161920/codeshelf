@@ -161,6 +161,243 @@
         color: var(--primary);
     }
     .gender-option:has(input:disabled) { opacity: 0.65; cursor: not-allowed; }
+
+    /* ── Custom Phone Input Styles ── */
+    :root {
+      --pn-border-radius: 0.75em;
+      --pn-border-color: rgba(0,0,0,0.1);
+      --pn-border-color-active: var(--primary);
+      --pn-dropdown-border-color: #eaeaec;
+      --pn-dropdown-trigger-background-color: transparent;
+      --pn-dropdown-trigger-hover-background-color: rgba(0,0,0,0.05);
+      --pn-input-error-color: #ff0000;
+      --pn-input-label-color: #85898f;
+      --pn-input-prefix-color: #656b73;
+      --pn-input-phonenumber-color: var(--text);
+      --pn-list-item-hover-background: #f3f5f9;
+    }
+    
+    .pn-select {
+      position: relative;
+      border-width: 1px;
+      border-style: solid;
+      border-color: var(--pn-border-color);
+      display: grid;
+      grid-template-columns: 4.5em 1fr;
+      border-radius: var(--pn-border-radius);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease-out;
+      max-width: 400px;
+      width: 100%;
+      z-index: 10;
+      background: var(--neu-bg);
+    }
+    .pn-select:focus,
+    .pn-select:focus-within {
+      border-color: var(--pn-border-color-active);
+      box-shadow: 0 0 2px 0 var(--pn-border-color-active);
+    }
+    .pn-dropdown {
+      background: #ffffff;
+      border-radius: var(--pn-border-radius);
+      border-width: 1px;
+      border-style: solid;
+      border-color: var(--pn-dropdown-border-color);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.135);
+      opacity: 0;
+      padding: 0 0.5em 0.5em;
+      pointer-events: none;
+      position: absolute;
+      top: 140%;
+      transform-origin: left top;
+      transition: all 0.15s ease-out;
+      width: 100%;
+      visibility: hidden;
+      z-index: 20;
+    }
+    .pn-select--open .pn-dropdown {
+      pointer-events: all;
+      transform: none;
+      opacity: 1;
+      top: 120%;
+      visibility: visible;
+    }
+    .pn-search {
+      position: relative;
+      display: flex;
+      border-bottom-width: 1px;
+      border-style: solid;
+      border-color: var(--pn-dropdown-border-color);
+      margin-bottom: 0.5em;
+    }
+    .pn-search svg {
+      display: block;
+      height: 1.25rem;
+      left: 0.5em;
+      pointer-events: none;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.25rem;
+    }
+    .pn-search input[type="search"] {
+      padding-left: 2.5rem;
+      height: 3rem;
+      width: 100%;
+      border: 0;
+      outline: none;
+      font-size: 1rem;
+    }
+    .pn-search input[type="search"]::-webkit-search-decoration,
+    .pn-search input[type="search"]::-webkit-search-cancel-button,
+    .pn-search input[type="search"]::-webkit-search-results-button,
+    .pn-search input[type="search"]::-webkit-search-results-decoration {
+      display: none;
+    }
+    .pn-list {
+      margin-right: -0.5em;
+      max-height: 10.5em;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #ffffff #ffffff;
+      position: relative;
+    }
+    .pn-list::-webkit-scrollbar {
+      width: 10px;
+    }
+    .pn-list:hover {
+      --scrollbar-background: #ffffff;
+      --thumb-background: #c0c4ca;
+      scrollbar-color: var(--thumb-background) var(--scrollbar-background);
+    }
+    .pn-list:hover::-webkit-scrollbar-track {
+      background: var(--scrollbar-background);
+    }
+    .pn-list:hover::-webkit-scrollbar-thumb {
+      background-color: var(--thumb-background);
+      border-radius: 6px;
+      border: 3px solid var(--scrollbar-background);
+    }
+    .pn-list--no-scroll {
+      margin-right: 0;
+    }
+    .pn-selected-prefix {
+      align-items: center;
+      appearance: none;
+      background: var(--pn-dropdown-trigger-background-color);
+      border-radius: var(--pn-border-radius) 0 0 var(--pn-border-radius);
+      border: 0;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      margin: 0;
+      outline: none;
+      padding: 0;
+      transition: background 0.2s ease-out;
+      border-right: 1px solid var(--pn-border-color);
+    }
+    .pn-selected-prefix:hover:not(:disabled),
+    .pn-selected-prefix:focus:not(:disabled) {
+      background: var(--pn-dropdown-trigger-hover-background-color);
+    }
+    .pn-selected-prefix:disabled {
+      opacity: 0.72;
+      cursor: not-allowed;
+    }
+    .pn-selected-prefix__flag {
+      height: auto;
+      width: 1.25rem;
+      border-radius: 2px;
+    }
+    .pn-selected-prefix__icon {
+      display: block;
+      height: 1.25rem;
+      margin-left: 0.3em;
+      margin-right: -0.25em;
+      transition: all 0.15s ease-out;
+      width: 1.25rem;
+    }
+    .pn-select--open .pn-selected-prefix__icon {
+      transform: rotate(180deg);
+    }
+    .pn-input {
+      background: transparent;
+      border-radius: 0 var(--pn-border-radius) var(--pn-border-radius) 0;
+      line-height: 1;
+      overflow: hidden;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+    .pn-input__container {
+      display: flex;
+      flex-direction: row;
+      position: relative;
+      width: 100%;
+    }
+    .pn-input input[type="text"].pn-input__prefix {
+      background: transparent;
+      position: absolute;
+      color: var(--pn-input-prefix-color);
+      max-width: 3rem;
+      pointer-events: none;
+      border: none;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0.5em;
+      font-weight: 500;
+    }
+    .pn-input input[type="tel"] {
+      color: var(--pn-input-phonenumber-color);
+      padding-left: calc(calc(var(--prefix-length) * 1ch) + 2ch) !important;
+      font-weight: 500;
+      border: none;
+      background: transparent;
+      width: 100%;
+      height: 100%;
+      min-height: 40px;
+    }
+    .pn-input input[type="tel"]:focus {
+      outline: none;
+      box-shadow: none !important;
+      background: transparent;
+    }
+    .pn-list-item {
+      align-items: center;
+      border-radius: 0.5em;
+      display: flex;
+      font-weight: 400;
+      padding: 0.6em 0.75em;
+      transition: background-color 0.2s ease-out;
+      cursor: pointer;
+      outline: none;
+      margin-bottom: 2px;
+    }
+    .pn-list-item__flag {
+      width: 1.25em;
+      height: auto;
+      margin-right: 1em;
+      display: block;
+      border-radius: 2px;
+    }
+    .pn-list-item__country {
+      margin-right: 0.25em;
+    }
+    .pn-list-item:hover,
+    .pn-list-item:focus {
+      background-color: var(--pn-list-item-hover-background);
+    }
+    .pn-list-item--selected {
+      pointer-events: none;
+      font-weight: 500;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23103155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-check'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+      background-position: right 0.75em top 50%;
+      background-repeat: no-repeat;
+      background-size: 1.25rem;
+    }
+    .pn-list-item--no-results {
+      pointer-events: none;
+    }
 </style>
 
 <div class="sidebar-overlay" onclick="closeSidebar()"></div>
@@ -215,8 +452,40 @@
                     </form>
                 </div>
 
+                <!-- ACCOUNT SWITCH -->
+                {% if profile.is_seller_account and profile.is_customer_account %}
+                <form method="POST" action="{% url 'switch_role' %}" class="mb-3">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm w-100 fw-bold" 
+                            style="border-radius:10px; background:var(--neu-bg); box-shadow:var(--neu-raised); color:var(--primary); transition:all 0.22s var(--ease);"
+                            onmouseover="this.style.boxShadow='var(--neu-pressed)'"
+                            onmouseout="this.style.boxShadow='var(--neu-raised)'">
+                        <i class="fa-solid fa-rotate me-1"></i> Switch to {% if role == 'customer' %}Seller{% else %}Customer{% endif %}
+                    </button>
+                </form>
+                {% endif %}
+
                 <!-- NAV MENU -->
                 <nav class="d-flex flex-column">
+                    <!-- UPGRADE ROLE BUTTON -->
+                    {% if not profile.is_seller_account %}
+                    <form method="POST" action="{% url 'upgrade_role' %}" onsubmit="return confirm('Are you sure you want to become a Seller too?');" class="w-100">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="become_seller">
+                        <button type="submit" class="sidebar-nav-item w-100 text-start" style="color:#10b981; background:rgba(16,185,129,0.1);">
+                            <i class="fa-solid fa-arrow-up text-success"></i> Become a Seller
+                        </button>
+                    </form>
+                    {% elif not profile.is_customer_account %}
+                    <form method="POST" action="{% url 'upgrade_role' %}" onsubmit="return confirm('Are you sure you want to become a Customer too?');" class="w-100">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="become_customer">
+                        <button type="submit" class="sidebar-nav-item w-100 text-start" style="color:#10b981; background:rgba(16,185,129,0.1);">
+                            <i class="fa-solid fa-arrow-up text-success"></i> Become a Customer
+                        </button>
+                    </form>
+                    {% endif %}
+
                     <a href="{% url 'profile' %}" class="sidebar-nav-item active">
                         <i class="fa-regular fa-user"></i> My Account
                     </a>
@@ -237,13 +506,19 @@
                     <a href="{% url 'seller_dashboard' %}" class="sidebar-nav-item">
                         <i class="fa-solid fa-chart-line"></i> Dashboard
                     </a>
-                    <a href="#" class="sidebar-nav-item">
-                        <i class="fa-solid fa-box"></i> My Products
+                    <a href="{% url 'project_list' %}" class="sidebar-nav-item">
+                        <i class="fa-solid fa-box"></i> My Projects
                     </a>
                     <a href="{% url 'upload_project' %}" class="sidebar-nav-item">
                         <i class="fa-solid fa-upload"></i> Upload Project
                     </a>
-                    <a href="#" class="sidebar-nav-item">
+                    <a href="{% url 'course_list' %}" class="sidebar-nav-item">
+                        <i class="fa-solid fa-video"></i> My Courses
+                    </a>
+                    <a href="#" class="sidebar-nav-item" onclick="alert('Course upload coming soon!')">
+                        <i class="fa-solid fa-upload"></i> Upload Course
+                    </a>
+                    <a href="{% url 'earnings' %}" class="sidebar-nav-item">
                         <i class="fa-solid fa-indian-rupee-sign"></i> Earnings
                     </a>
                     {% endif %}
@@ -331,14 +606,10 @@
                     <!-- DOB -->
                     <div class="mb-4">
                         <label class="form-label">Date of Birth</label>
-                        <div class="position-relative" style="max-width:400px;">
-                            <input type="date" name="dob"
-                                   class="form-control editable-field pe-5"
-                                   value="{{ profile.dob|date:'Y-m-d' }}" readonly>
-                            <i class="fa-regular fa-calendar position-absolute"
-                               style="top:50%;right:14px;transform:translateY(-50%);
-                                      color:var(--text-muted);pointer-events:none;font-size:13px;"></i>
-                        </div>
+                        <input type="date" name="dob"
+                               class="form-control editable-field"
+                               style="max-width:400px;"
+                               value="{{ profile.dob|date:'Y-m-d' }}" readonly>
                     </div>
 
                     <!-- GENDER -->
@@ -365,13 +636,36 @@
                     <!-- PHONE -->
                     <div class="mb-4">
                         <label class="form-label">Phone Number</label>
-                        <div class="input-group" style="max-width:400px;">
-                            <span class="input-group-text">
-                                🇮🇳 +91
-                            </span>
-                            <input type="text" name="phone"
-                                   class="form-control editable-field"
-                                   value="{{ profile.phone_number }}" readonly>
+                        <div class="pn-select" id="js_pn-select" style="--prefix-length: 2">
+                          <!-- Selected prefix -->
+                          <button class="pn-selected-prefix editable-field" aria-label="Select phonenumber prefix" id="js_trigger-dropdown" tabindex="1" type="button" disabled>
+                            <img class="pn-selected-prefix__flag" id="js_selected-flag" src="https://flagpedia.net/data/flags/icon/36x27/in.png" />
+                            <svg class="pn-selected-prefix__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#081626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                          </button>
+                          <!-- Phone number input -->
+                          <div class="pn-input">
+                            <div class="pn-input__container">
+                              <input class="pn-input__prefix" value="{{ phone_code|default:'+91' }}" type="text" name="country_code" id="js_number-prefix" tabindex="-1" readonly />
+                              <input class="pn-input__phonenumber editable-field form-control" id="js_input-phonenumber" type="tel" name="phone" value="{{ phone_number_only }}" placeholder=" " autocomplete="nope" required tabindex="0" readonly />
+                            </div>
+                          </div>
+                          <!-- Dropdown -->
+                          <div class="pn-dropdown" id="js_dropdown">
+                            <div class="pn-search">
+                              <svg class="pn-search__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#103155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                              </svg>
+                              <input placeholder="Search for countries" class="pn-search__input search" type="search" id="js_search-input" autocomplete="nope" />
+                            </div>
+                            <!-- Country list -->
+                            <ul class="pn-list list" id="js_list" style="padding-left:0; margin-bottom:0; list-style:none;"></ul>
+                            <div class="pn-list-item pn-list-item--no-results" style="display: none" id="js_no-results-found">
+                              No results found
+                            </div>
+                          </div>
                         </div>
                     </div>
 
@@ -384,6 +678,18 @@
                                value="{{ user.email }}" readonly>
                     </div>
 
+                    <!-- ABOUT (FOR SELLERS) -->
+                    {% if role == 'seller' %}
+                    <div class="mb-4">
+                        <label class="form-label">About (Bio)</label>
+                        <textarea name="about"
+                                  class="form-control editable-field"
+                                  style="max-width:400px; min-height:100px;"
+                                  placeholder="Tell your customers about yourself, your experience, and your expertise..."
+                                  readonly>{{ profile.about|default_if_none:'' }}</textarea>
+                    </div>
+                    {% endif %}
+
                 </form>
             </div>
         </div>
@@ -391,10 +697,30 @@
     </div>
 </div>
 
+<!-- Unsaved Changes Modal -->
+<div class="modal fade" id="unsavedChangesModal" tabindex="-1" aria-labelledby="unsavedChangesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; background: var(--neu-bg); color: var(--text);">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="unsavedChangesModalLabel">Unsaved Changes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-muted">
+        You have unsaved changes in your profile. Do you want to save them before leaving this page?
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-light" id="btnDiscardChanges" style="border-radius: 10px; font-weight: 600; box-shadow: var(--neu-raised); border: none;">Discard & Leave</button>
+        <button type="button" class="btn btn-primary" id="btnSaveChanges" style="border-radius: 10px; font-weight: 600; box-shadow: var(--neu-raised);">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endwith %}
 {% endblock content %}
 
 {% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -414,11 +740,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const imageOverlay = document.getElementById('imageEditBtn');
     const profileForm  = document.getElementById('profileForm');
     let isEditing = false;
+    let hasChanges = false;
+
+    // Track if any changes have been made
+    profileForm.addEventListener('input', () => { if (isEditing) hasChanges = true; });
+    profileForm.addEventListener('change', () => { if (isEditing) hasChanges = true; });
+
+    // Prompt before leaving if there are unsaved changes
+    window.addEventListener('beforeunload', (e) => {
+        if (isEditing && hasChanges) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    /* ── Unsaved Changes Link Interceptor ── */
+    let pendingLocation = null;
+    let unsavedModalObj = null;
+
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const target = this.getAttribute('href');
+            if (!target || target === '#' || target.startsWith('javascript:') || this.id === 'editProfileBtn' || this.hasAttribute('data-bs-toggle') || this.hasAttribute('data-bs-dismiss')) return;
+
+            if (isEditing && hasChanges) {
+                e.preventDefault();
+                pendingLocation = this.href;
+                if (!unsavedModalObj) {
+                    unsavedModalObj = new bootstrap.Modal(document.getElementById('unsavedChangesModal'));
+                }
+                unsavedModalObj.show();
+            }
+        });
+    });
+
+    document.getElementById('btnDiscardChanges').addEventListener('click', function() {
+        hasChanges = false;
+        isEditing = false;
+        if (pendingLocation) {
+            window.location.href = pendingLocation;
+        }
+    });
+
+    document.getElementById('btnSaveChanges').addEventListener('click', function() {
+        hasChanges = false;
+        isEditing = false;
+        
+        // Add a hidden input to tell the backend where to redirect after save, if possible.
+        // Otherwise it just submits normally to the current page.
+        if (pendingLocation) {
+            const nextInput = document.createElement('input');
+            nextInput.type = 'hidden';
+            nextInput.name = 'next';
+            nextInput.value = pendingLocation;
+            profileForm.appendChild(nextInput);
+        }
+        profileForm.submit();
+    });
 
     editBtn.addEventListener('click', function (e) {
         e.preventDefault();
 
         if (isEditing) {
+            hasChanges = false; // Allow form submission without prompt
             profileForm.submit();
             return;
         }
@@ -429,6 +813,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         editables.forEach(f => {
             f.removeAttribute('readonly');
+            f.removeAttribute('disabled');
             f.classList.add('is-editable');
         });
 
@@ -482,5 +867,199 @@ function closeSidebar() {
     document.querySelector('.sidebar-overlay').classList.remove('active');
     document.body.style.overflow = '';
 }
+
+/* ── Phone select Logic ── */
+const selectContainer = document.getElementById("js_pn-select");
+const countrySearchInput = document.getElementById("js_search-input");
+const noResultListItem = document.getElementById("js_no-results-found");
+const dropdownTrigger = document.getElementById("js_trigger-dropdown");
+const phoneNumberInput = document.getElementById("js_input-phonenumber");
+const dropdownContainer = document.getElementById("js_dropdown");
+const selectedPrefix = document.getElementById("js_number-prefix");
+const selectedFlag = document.getElementById("js_selected-flag");
+const listContainer = document.getElementById("js_list");
+
+let countryList;
+
+const initPhoneSelect = async (countries) => {
+  const selectCountry = (e) => {
+    const li = e.target.closest("li");
+    if(!li) return;
+    const { flag, prefix } = li.dataset;
+    setNewSelected(prefix, flag);
+    closeDropdown();
+    addSelectedModifier(flag);
+  };
+
+  const setNewSelected = (prefix, flag) => {
+    selectedFlag.src = `https://flagpedia.net/data/flags/icon/36x27/${flag}.png`;
+    selectedPrefix.value = `+${prefix}`;
+    selectContainer.style.setProperty("--prefix-length", prefix.length);
+  };
+
+  const addSelectedModifier = (flag) => {
+    const previousSelected = document.querySelector(".pn-list-item--selected");
+    if(previousSelected) previousSelected.classList.remove("pn-list-item--selected");
+    const newSelected = document.querySelector(`.pn-list-item[data-flag=${flag}]`);
+    if(newSelected) newSelected.classList.add("pn-list-item--selected");
+  };
+
+  const closeDropdown = () => {
+    selectContainer.classList.remove("pn-select--open");
+    listContainer.scrollTop = 0;
+    countrySearchInput.value = "";
+    if(countryList) countryList.search();
+    phoneNumberInput.focus();
+    removeDropdownEvents();
+  };
+
+  const openDropdown = () => {
+    if(dropdownTrigger.hasAttribute('disabled')) return;
+    selectContainer.classList.add("pn-select--open");
+    attatchDropdownEvents();
+  };
+
+  let countdown;
+
+  const closeOnMouseLeave = () => {
+    countdown = setTimeout(() => closeDropdown(), 2000);
+  };
+
+  const clearTimeOut = () => clearTimeout(countdown);
+
+  const attatchDropdownEvents = () => {
+    dropdownContainer.addEventListener("mouseleave", closeOnMouseLeave);
+    dropdownContainer.addEventListener("mouseenter", clearTimeOut);
+  };
+
+  const removeDropdownEvents = () => {
+    clearTimeout(countdown);
+    dropdownContainer.removeEventListener("mouseleave", closeOnMouseLeave);
+    dropdownContainer.removeEventListener("mouseenter", clearTimeOut);
+  };
+
+  document.addEventListener("click", (e) => {
+    if (
+      e.target !== selectContainer &&
+      !selectContainer.contains(e.target) &&
+      selectContainer.classList.contains("pn-select--open")
+    ) {
+      closeDropdown();
+    }
+  });
+
+  const createList = () =>
+    new Promise((resolve) => {
+      let initialPrefix = selectedPrefix.value.replace('+', '');
+      let initialCountry = countries.find(c => c.prefix == initialPrefix) || countries.find(c => c.prefix == 91);
+      let initialFlag = initialCountry ? initialCountry.flag : "in";
+      setNewSelected(initialPrefix, initialFlag);
+      
+      countries.forEach((country, index) => {
+        const { name, prefix, flag } = country;
+
+        const element = `<li class="pn-list-item ${
+          flag === initialFlag ? "pn-list-item--selected" : ""
+        } js_pn-list-item" data-flag="${flag}" data-prefix="${prefix}" tabindex="0" role="button" aria-pressed="false">
+          <img class="pn-list-item__flag" src="https://flagpedia.net/data/flags/icon/36x27/${flag}.png" />
+          <span class="pn-list-item__country js_country-name">${name}</span>
+          <span class="pn-list-item__prefix js_country-prefix">(+${prefix})</span>
+        </li>`;
+
+        listContainer.innerHTML += element;
+
+        if (index === countries.length - 1) resolve();
+      });
+    });
+
+  const attatchListItemEventListeners = () =>
+    new Promise((resolve) => {
+      const listItems = [...document.getElementsByClassName("js_pn-list-item")];
+
+      listItems.forEach((item, index) => {
+        item.addEventListener("click", selectCountry);
+        item.addEventListener("keydown", function (e) {
+          const keyD = e.key !== undefined ? e.key : e.keyCode;
+          if (
+            keyD === "Enter" ||
+            keyD === 13 ||
+            ["Spacebar", " "].indexOf(keyD) >= 0 ||
+            keyD === 32
+          ) {
+            e.preventDefault();
+            this.click();
+          }
+        });
+
+        if (index === listItems.length - 1) resolve();
+      });
+    });
+
+  const initiateList = () => {
+    countryList = new List("js_pn-select", {
+      valueNames: ["js_country-name", "js_country-prefix"],
+    });
+
+    countryList.on("updated", (list) => {
+      if (list.matchingItems.length < 5)
+        listContainer.classList.toggle("pn-list--no-scroll");
+
+      noResultListItem.style.display =
+        list.matchingItems.length > 0 ? "none" : "block";
+    });
+  };
+
+  await createList();
+  await attatchListItemEventListeners();
+  initiateList();
+
+  dropdownTrigger.addEventListener("click", (e) => {
+    e.preventDefault();
+    if(dropdownTrigger.hasAttribute('disabled')) return;
+    const isOpen = selectContainer.classList.contains("pn-select--open");
+    isOpen ? closeDropdown() : openDropdown();
+  });
+};
+
+const countriesList = [
+  { name: "India", prefix: 91, flag: "in" },
+  { name: "United States", prefix: 1, flag: "us" },
+  { name: "United Kingdom", prefix: 44, flag: "gb" },
+  { name: "Australia", prefix: 61, flag: "au" },
+  { name: "United Arab Emirates", prefix: 971, flag: "ae" },
+  { name: "Austria", prefix: 43, flag: "at" },
+  { name: "Belgium", prefix: 32, flag: "be" },
+  { name: "Bulgaria", prefix: 359, flag: "bg" },
+  { name: "Croatia", prefix: 385, flag: "hr" },
+  { name: "Cyprus", prefix: 357, flag: "cy" },
+  { name: "Czech Republic", prefix: 420, flag: "cz" },
+  { name: "Denmark", prefix: 45, flag: "dk" },
+  { name: "Estonia", prefix: 372, flag: "ee" },
+  { name: "Finland", prefix: 358, flag: "fi" },
+  { name: "France", prefix: 33, flag: "fr" },
+  { name: "Germany", prefix: 49, flag: "de" },
+  { name: "Greece", prefix: 30, flag: "gr" },
+  { name: "Hungary", prefix: 36, flag: "hu" },
+  { name: "Iceland", prefix: 354, flag: "is" },
+  { name: "Republic of Ireland", prefix: 353, flag: "ie" },
+  { name: "Italy", prefix: 39, flag: "it" },
+  { name: "Latvia", prefix: 371, flag: "lv" },
+  { name: "Liechtenstein", prefix: 423, flag: "li" },
+  { name: "Lithuania", prefix: 370, flag: "lt" },
+  { name: "Luxembourg", prefix: 352, flag: "lu" },
+  { name: "Malta", prefix: 356, flag: "mt" },
+  { name: "Netherlands", prefix: 31, flag: "nl" },
+  { name: "Norway", prefix: 47, flag: "no" },
+  { name: "Poland", prefix: 48, flag: "pl" },
+  { name: "Portugal", prefix: 351, flag: "pt" },
+  { name: "Romania", prefix: 40, flag: "ro" },
+  { name: "Slovakia", prefix: 421, flag: "sk" },
+  { name: "Slovenia", prefix: 386, flag: "si" },
+  { name: "Spain", prefix: 34, flag: "es" },
+  { name: "Sweden", prefix: 46, flag: "se" },
+];
+
+initPhoneSelect(countriesList);
+
 </script>
 {% endblock %}

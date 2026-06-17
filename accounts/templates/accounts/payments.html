@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div class="text-start">
+            <h4 class="fw-bold mb-1" style="color:var(--text);">Payments Dashboard</h4>
+            <p class="text-muted mb-0">Manage your payment methods and billing history</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'profile' %}" class="btn btn-outline-primary" style="border-radius:10px;">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back to Profile
+            </a>
+        </div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="row g-4 mb-5">
+        <!-- Lifetime Spent -->
+        <div class="col-md-6">
+            <div class="stat-card text-center h-100" style="background:var(--neu-bg); box-shadow:var(--neu-raised); border-radius:15px; padding:30px;">
+                <div class="stat-icon mx-auto mb-3" style="width:60px; height:60px; border-radius:50%; background:rgba(6,187,204,0.1); display:flex; align-items:center; justify-content:center;">
+                    <i class="fa-solid fa-wallet" style="color:var(--primary); font-size:24px;"></i>
+                </div>
+                <div class="stat-value fw-bold" style="font-size:36px; color:var(--text);">₹{{ total_spent }}</div>
+                <div class="stat-label text-muted text-uppercase" style="letter-spacing:1px; font-size:12px;">Total Spent</div>
+            </div>
+        </div>
+
+        <!-- Active Payment Methods -->
+        <div class="col-md-6">
+            <div class="stat-card h-100 text-start position-relative overflow-hidden" style="background:var(--neu-bg); box-shadow:var(--neu-raised); border-radius:15px; padding:30px;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0" style="color:var(--text);">Payment Methods</h5>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="alert('Card integration is a premium feature. Stay tuned!')">
+                        <i class="fa fa-plus me-1"></i> Add Method
+                    </button>
+                </div>
+                
+                <!-- Mock Saved Card -->
+                <div class="d-flex align-items-center p-3 rounded" style="background:rgba(6,187,204,0.05); border:1px solid rgba(6,187,204,0.1);">
+                    <div class="me-3" style="font-size:24px; color:#1a1f36;">
+                        <i class="fa-brands fa-cc-visa"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0" style="color:var(--text);">Visa ending in 4242</h6>
+                        <small class="text-muted">Expires 12/28</small>
+                    </div>
+                    <span class="badge bg-light text-dark ms-auto" style="border:1px solid #ccc;">Default</span>
+                </div>
+                
+                <i class="fa-solid fa-credit-card position-absolute" style="font-size:10rem;color:rgba(6,187,204,0.03);right:-20px;bottom:-20px;transform:rotate(-15deg);pointer-events:none;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRANSACTION HISTORY -->
+    <div class="neu-raised rounded p-4 mb-4" style="background:var(--neu-bg); box-shadow:var(--neu-raised); border-radius:15px;">
+        <h5 class="fw-bold mb-4" style="color:var(--text);"><i class="fa-solid fa-clock-rotate-left me-2" style="color:var(--primary);"></i>Transaction History</h5>
+        
+        {% if orders %}
+        <div class="table-responsive">
+            <table class="table-neu table-hover align-middle w-100">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Transaction ID</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                        <th class="text-end pe-3">Receipt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td class="ps-3">
+                            <span class="fw-bold" style="color:var(--text);">#{{ order.id|stringformat:"06d" }}</span>
+                        </td>
+                        <td style="color:var(--text-muted);">
+                            {{ order.order_date|date:"M d, Y" }}
+                        </td>
+                        <td>
+                            <span class="fw-bold" style="color:var(--text);">₹{{ order.total_amount }}</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                {% if order.payment_method == 'card' %}
+                                    <i class="fa-regular fa-credit-card me-1"></i> Card
+                                {% elif order.payment_method == 'upi' %}
+                                    <i class="fa-solid fa-mobile-screen me-1"></i> UPI
+                                {% else %}
+                                    <i class="fa-solid fa-money-bill me-1"></i> COD
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            {% if order.payment_status == 'completed' %}
+                            <span class="status-pill paid"><i class="fa fa-circle" style="font-size:7px;"></i> Completed</span>
+                            {% elif order.payment_status == 'pending' %}
+                            <span class="status-pill pending"><i class="fa fa-circle" style="font-size:7px;"></i> Pending</span>
+                            {% else %}
+                            <span class="status-pill cancelled"><i class="fa fa-circle" style="font-size:7px;"></i> Failed</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-3">
+                            {% if order.payment_status == 'completed' %}
+                            <a href="#" onclick="alert('Receipt downloading is coming soon!'); return false;" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;" title="Download Receipt">
+                                <i class="fa-solid fa-download"></i>
+                            </a>
+                            {% else %}
+                            <button class="btn btn-sm btn-outline-secondary" style="border-radius:8px; opacity:0.5; cursor:not-allowed;" title="No Receipt Available">
+                                <i class="fa-solid fa-download"></i>
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div class="stat-icon mx-auto mb-3" style="width:64px;height:64px;background:rgba(6,187,204,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                <i class="fa-solid fa-receipt" style="font-size:24px;color:var(--text-muted);"></i>
+            </div>
+            <p class="text-muted mb-3">You don't have any transaction history yet.</p>
+            <a href="{% url 'project_list' %}" class="btn btn-primary px-4 py-2" style="border-radius:10px;">
+                Start Exploring
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock content %}

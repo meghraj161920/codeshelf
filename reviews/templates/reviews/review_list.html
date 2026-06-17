@@ -46,7 +46,7 @@
             <div class="neu-pressed rounded px-3 py-1"
                  style="font-size:14px;font-weight:700;color:#f59e0b;letter-spacing:2px;">
                 {% for i in "12345" %}
-                    {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                    {% if forloop.counter <= review.rating %}<i class="fa-solid fa-star"></i>{% else %}<i class="fa-regular fa-star"></i>{% endif %}
                 {% endfor %}
             </div>
 

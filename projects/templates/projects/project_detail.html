@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load embed_video_tags %}
 
 {% block content %}
 <div class="container py-5">
@@ -73,26 +74,32 @@
                 <div class="d-flex gap-2 flex-wrap mt-auto">
                     {% if user.is_authenticated and user.profile.is_customer %}
                         {% if has_purchased %}
+                            {% if project.zip_file %}
                             <a href="{% url 'download_project' project.id %}"
                                class="btn btn-success flex-grow-1"
                                style="border-radius:10px;">
                                 <i class="fa fa-download me-1"></i> Download Project
                             </a>
+                            {% else %}
+                            <button class="btn btn-secondary flex-grow-1" style="border-radius:10px;" disabled>
+                                <i class="fa fa-times-circle me-1"></i> No File Available
+                            </button>
+                            {% endif %}
                             <span class="neu-pressed rounded px-3 d-flex align-items-center gap-1"
                                   style="font-size:13px;font-weight:700;color:#10b981;">
                                 <i class="fa fa-check-circle"></i> Purchased
                             </span>
                         {% else %}
-                            <a href="{% url 'add_to_cart' project.id %}"
-                               class="btn btn-primary flex-grow-1"
-                               style="border-radius:10px;">
-                                <i class="fa fa-shopping-cart me-1"></i> Add to Cart
+                            <a href="{% url 'add_to_cart' 'project' project.id %}"
+                               class="btn btn-primary ajax-add-to-cart d-flex align-items-center justify-content-center"
+                               style="border-radius:10px; padding: 12px 20px; font-weight: 700; {% if project.id in global_cart_project_ids %}background-color:#10b981;border-color:#10b981;{% endif %}">
+                                <i class="fa {% if project.id in global_cart_project_ids %}fa-check{% else %}fa-shopping-cart{% endif %} me-1"></i> Add to Cart
                             </a>
-                            <button class="btn btn-outline-danger wishlist-btn"
+                            <button class="btn btn-danger text-white wishlist-btn d-flex align-items-center justify-content-center px-4"
                                     data-id="{{ project.id }}"
-                                    style="border-radius:10px;">
-                                <i class="fa {% if project.id in wishlist_ids %}fa-heart text-danger{% else %}fa-heart-o{% endif %} me-1"></i>
-                                {% if project.id in wishlist_ids %}Wishlisted{% else %}Wishlist{% endif %}
+                                    style="border-radius:10px; padding: 12px 20px; font-weight: 700; margin-top: 0;">
+                                <i class="{% if project.id in global_wishlist_project_ids %}fa-solid fa-heart text-light{% else %}fa-regular fa-heart{% endif %} me-1"></i>
+                                {% if project.id in global_wishlist_project_ids %}Wishlisted{% else %}Wishlist{% endif %}
                             </button>
                         {% endif %}
                     {% else %}
@@ -114,7 +121,9 @@
             <i class="fa fa-play-circle me-2" style="color:var(--primary);"></i>Demo Video
         </h5>
         <div class="ratio ratio-16x9 neu-pressed rounded overflow-hidden">
-            <iframe src="{{ project.demo_video_url }}" allowfullscreen></iframe>
+            {% video project.demo_video_url as my_video %}
+                <iframe src="{{ my_video.url }}" width="100%" height="100%" frameborder="0" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            {% endvideo %}
         </div>
     </div>
     {% endif %}
@@ -130,7 +139,9 @@
                   style="font-size:11px;font-weight:700;color:#10b981;">Purchased Only</span>
         </h5>
         <div class="ratio ratio-16x9 neu-pressed rounded overflow-hidden">
-            <iframe src="{{ project.installation_video_url }}" allowfullscreen></iframe>
+            {% video project.installation_video_url as my_video %}
+                <iframe src="{{ my_video.url }}" width="100%" height="100%" frameborder="0" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            {% endvideo %}
         </div>
     </div>
     {% endif %}
@@ -139,8 +150,8 @@
     <div class="row g-4 mb-5">
 
         <!-- PROJECT DETAILS -->
-        <div class="col-md-6">
-            <div class="neu-raised rounded p-4 h-100">
+        <div class="col-md-6 d-flex flex-column">
+            <div class="neu-raised rounded p-4 h-100 d-flex flex-column">
                 <h5 class="fw-bold mb-3" style="color:var(--text);">
                     <i class="fa fa-info-circle me-2" style="color:var(--primary);"></i>
                     Project Details
@@ -176,8 +187,8 @@
         </div>
 
         <!-- WHAT'S INCLUDED -->
-        <div class="col-md-6">
-            <div class="neu-raised rounded p-4 h-100">
+        <div class="col-md-6 d-flex flex-column">
+            <div class="neu-raised rounded p-4 h-100 d-flex flex-column">
                 <h5 class="fw-bold mb-3" style="color:var(--text);">
                     <i class="fa fa-star me-2" style="color:#f59e0b;"></i>
                     What's Included
@@ -248,11 +259,11 @@
                     <div class="mb-3">
                         <label class="form-label" style="font-size:13px;color:var(--text-muted);">Rating</label>
                         <select name="rating" class="form-select">
-                            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
-                            <option value="4">⭐⭐⭐⭐ Good</option>
-                            <option value="3">⭐⭐⭐ Average</option>
-                            <option value="2">⭐⭐ Poor</option>
-                            <option value="1">⭐ Terrible</option>
+                            <option value="5">★★★★★ Excellent</option>
+                            <option value="4">★★★★ Good</option>
+                            <option value="3">★★★ Average</option>
+                            <option value="2">★★ Poor</option>
+                            <option value="1">★ Terrible</option>
                         </select>
                     </div>
 
@@ -293,7 +304,7 @@
                     <div class="neu-pressed rounded px-2 py-1"
                          style="font-size:13px;font-weight:700;color:#f59e0b;letter-spacing:1px;">
                         {% for i in "12345" %}
-                            {% if forloop.counter <= review.rating %}⭐{% endif %}
+                            {% if forloop.counter <= review.rating %}<i class="fa-solid fa-star"></i>{% endif %}
                         {% endfor %}
                     </div>
                 </div>
@@ -354,48 +365,5 @@
 {% endblock content %}
 
 {% block extra_js %}
-<script>
-document.querySelectorAll('.wishlist-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
-        const projectId = this.dataset.id;
-        const self = this;
 
-        self.disabled = true;
-        self.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
-
-        fetch("{% url 'toggle_wishlist' %}", {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `project_id=${projectId}`
-        })
-        .then(res => res.json())
-        .then(data => {
-            self.disabled = false;
-
-            const countEl = document.getElementById('wishlist-count');
-            if (countEl) {
-                if (data.wishlist_count > 0) {
-                    countEl.textContent = data.wishlist_count;
-                    countEl.style.display = 'inline';
-                } else {
-                    countEl.style.display = 'none';
-                }
-            }
-
-            if (data.status === 'added') {
-                self.innerHTML = '<i class="fa fa-heart text-danger me-1"></i> Wishlisted';
-            } else {
-                self.innerHTML = '<i class="fa fa-heart-o me-1"></i> Wishlist';
-            }
-        })
-        .catch(() => {
-            self.disabled = false;
-            self.innerHTML = '<i class="fa fa-heart-o me-1"></i> Wishlist';
-        });
-    });
-});
-</script>
 {% endblock %}

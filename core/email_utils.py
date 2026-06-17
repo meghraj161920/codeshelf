@@ -2,7 +2,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
 
-
 def send_order_confirmation_email(user, order):
     """
     Sends order confirmation email to the user after successful purchase.

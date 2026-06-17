@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block navbar %}{% endblock navbar %}
+{% block footer %}{% endblock footer %}
+
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
@@ -43,7 +46,7 @@
                                       z-index:1;pointer-events:none;"></i>
                             <input type="text" name="email" class="form-control"
                                    style="padding-left:38px;"
-                                   placeholder="Enter email or username" required>
+                                   placeholder="Enter email or username" required autocomplete="username">
                         </div>
                     </div>
 
@@ -61,7 +64,7 @@
                             <input type="password" name="password" id="loginPassword"
                                    class="form-control"
                                    style="padding-left:38px;padding-right:42px;"
-                                   placeholder="Enter password" required>
+                                   placeholder="Enter password" required autocomplete="current-password">
                             <span onclick="togglePwd()"
                                   class="position-absolute"
                                   style="right:14px;top:50%;transform:translateY(-50%);
@@ -89,7 +92,7 @@
                     </div>
 
                     <!-- SUBMIT -->
-                    <button class="btn btn-primary w-100 py-2 mb-3">
+                    <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
                         <i class="fa fa-sign-in-alt me-2"></i> Login
                     </button>
 
@@ -144,5 +147,31 @@
         input.type   = isText ? 'password' : 'text';
         icon.className = isText ? 'fa fa-eye' : 'fa fa-eye-slash';
     }
+
+    // LocalStorage Remember Me
+    document.addEventListener("DOMContentLoaded", function() {
+        const emailInput = document.querySelector('input[name="email"]');
+        const pwdInput = document.getElementById('loginPassword');
+        const rememberChk = document.getElementById('rememberMe');
+        const form = document.querySelector('form');
+
+        // Restore credentials if saved
+        if (localStorage.getItem('rememberedEmail')) {
+            emailInput.value = localStorage.getItem('rememberedEmail');
+            pwdInput.value = localStorage.getItem('rememberedPwd');
+            rememberChk.checked = true;
+        }
+
+        // Save credentials on submit if checked
+        form.addEventListener('submit', function() {
+            if (rememberChk.checked) {
+                localStorage.setItem('rememberedEmail', emailInput.value);
+                localStorage.setItem('rememberedPwd', pwdInput.value);
+            } else {
+                localStorage.removeItem('rememberedEmail');
+                localStorage.removeItem('rememberedPwd');
+            }
+        });
+    });
 </script>
 {% endblock %}

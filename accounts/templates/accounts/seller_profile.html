@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    
+    <!-- SELLER HEADER PROFILE CARD -->
+    <div class="neu-raised rounded p-5 mb-5 text-center">
+        <img src="{% if seller_user.profile.profile_image %}{{ seller_user.profile.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ seller_user.username }}&background=06BBCC&color=fff&size=128{% endif %}"
+             alt="{{ seller_user.username }}"
+             style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 4px solid var(--primary); box-shadow: var(--neu-raised-lg); margin-bottom: 20px;">
+        
+        <h2 class="fw-bold mb-1" style="color:var(--text);">{{ seller_user.first_name }} {{ seller_user.last_name }}</h2>
+        <p class="text-muted mb-4">@{{ seller_user.username }} &bull; Verified Seller</p>
+        
+        {% if seller_user.profile.about %}
+        <div class="mx-auto" style="max-width: 700px;">
+            <div class="neu-inset rounded p-4 text-start">
+                <h6 class="fw-bold mb-3" style="color:var(--primary);"><i class="fa fa-info-circle me-2"></i>About the Seller</h6>
+                <p class="mb-0 text-muted" style="line-height: 1.6;">{{ seller_user.profile.about|linebreaksbr }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- TABS Navigation -->
+    <ul class="nav nav-pills mb-4 d-flex justify-content-center gap-3" id="sellerTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="btn btn-outline-primary active" style="border-radius:20px; padding: 10px 25px;" id="projects-tab" data-bs-toggle="tab" data-bs-target="#projects" type="button" role="tab">
+                <i class="fa fa-box me-2"></i> Projects ({{ projects|length }})
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="btn btn-outline-primary" style="border-radius:20px; padding: 10px 25px;" id="courses-tab" data-bs-toggle="tab" data-bs-target="#courses" type="button" role="tab">
+                <i class="fa fa-graduation-cap me-2"></i> Courses ({{ courses|length }})
+            </button>
+        </li>
+    </ul>
+
+    <!-- TABS Content -->
+    <div class="tab-content" id="sellerTabContent">
+        
+        <!-- PROJECTS TAB -->
+        <div class="tab-pane fade show active" id="projects" role="tabpanel">
+            {% if projects %}
+            <div class="row g-4">
+                {% for project in projects %}
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="course-item neu-raised" style="border-radius:15px; overflow:hidden;">
+                        <div class="position-relative overflow-hidden">
+                            <img class="img-fluid w-100" src="{{ project.thumbnail.url }}" alt="{{ project.title }}" style="height:180px; object-fit:cover;">
+                            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                                <a href="{% url 'project_detail' project.slug %}" class="flex-shrink-0 btn btn-sm btn-primary px-3" style="border-radius: 30px;">Read More</a>
+                            </div>
+                        </div>
+                        <div class="text-center p-4 pb-0">
+                            <h5 class="mb-2" style="color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="{{ project.title }}">
+                                {{ project.title }}
+                            </h5>
+                            <div class="mb-3">
+                                {{ project.render_stars }}
+                                <small>({{ project.reviews.count }})</small>
+                            </div>
+                            <h5 class="mb-4" style="color:var(--primary);">₹{{ project.price }}</h5>
+                        </div>
+                        <div class="d-flex border-top" style="border-color: rgba(0,0,0,0.05) !important;">
+                            <small class="flex-fill text-center py-2" style="color:var(--text-muted);">
+                                <i class="fa fa-tag text-primary me-2"></i>{{ project.category.name }}
+                            </small>
+                            <small class="flex-fill text-center border-start py-2" style="color:var(--text-muted); border-color: rgba(0,0,0,0.05) !important;">
+                                <i class="fa fa-download text-primary me-2"></i>{{ project.total_downloads }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fa fa-box-open mb-3" style="font-size: 48px; color: var(--text-muted); opacity: 0.5;"></i>
+                <h5 class="text-muted">No projects uploaded yet.</h5>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- COURSES TAB -->
+        <div class="tab-pane fade" id="courses" role="tabpanel">
+            {% if courses %}
+            <div class="row g-4">
+                {% for course in courses %}
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="course-item neu-raised" style="border-radius:15px; overflow:hidden;">
+                        <div class="position-relative overflow-hidden">
+                            <img class="img-fluid w-100" src="{{ course.thumbnail.url }}" alt="{{ course.title }}" style="height:180px; object-fit:cover;">
+                            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3" style="border-radius: 30px;">Read More</a>
+                            </div>
+                        </div>
+                        <div class="text-center p-4 pb-0">
+                            <h5 class="mb-2" style="color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="{{ course.title }}">
+                                {{ course.title }}
+                            </h5>
+                            <div class="mb-3">
+                                {{ course.render_stars }}
+                                <small>({{ course.review_count }})</small>
+                            </div>
+                            <h5 class="mb-4" style="color:var(--primary);">
+                                {% if course.is_free %}Free{% else %}₹{{ course.price }}{% endif %}
+                            </h5>
+                        </div>
+                        <div class="d-flex border-top" style="border-color: rgba(0,0,0,0.05) !important;">
+                            <small class="flex-fill text-center py-2" style="color:var(--text-muted);">
+                                <i class="fa fa-video text-primary me-2"></i>{{ course.total_videos }} Videos
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fa fa-graduation-cap mb-3" style="font-size: 48px; color: var(--text-muted); opacity: 0.5;"></i>
+                <h5 class="text-muted">No courses published yet.</h5>
+            </div>
+            {% endif %}
+        </div>
+        
+    </div>
+</div>
+{% endblock content %}

@@ -4,18 +4,32 @@
 {% block content %}
 <div class="container py-5">
 
+    <!-- MESSAGES -->
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
     <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-        <div>
-            <h4 class="fw-bold mb-0" style="color:var(--text);">
-                👋 Hello, {{ user.first_name|default:user.username }}!
-            </h4>
+        <div class="text-start">
+            <h4 class="fw-bold mb-1" style="color:var(--text);">Hello, {{ user.first_name|default:user.username }}!</h4>
             <p class="text-muted mb-0">Seller Dashboard</p>
         </div>
         <div class="d-flex gap-2">
-            <a href="{% url 'upload_project' %}" class="btn btn-primary">
+            <a href="{% url 'upload_project' %}" class="btn btn-primary" style="border-radius:10px;">
                 <i class="fa fa-upload me-1"></i> Upload Project
             </a>
+            <a href="#" class="btn btn-outline-primary" style="border-radius:10px;">
+                <i class="fa fa-upload me-1"></i> Upload Course
+            </a>
+            <button class="btn btn-warning text-white" style="border-radius:10px;" data-bs-toggle="modal" data-bs-target="#testimonialModal">
+                <i class="fa-solid fa-star me-1"></i> Share Success Story
+            </button>
             <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button class="btn btn-outline-danger">
@@ -28,7 +42,7 @@
     <!-- STATS CARDS -->
     <div class="row g-3 mb-5">
 
-        <div class="col-6 col-md-4">
+        <div class="col-6 col-md-3">
             <div class="stat-card text-center">
                 <div class="stat-icon mx-auto">
                     <i class="fa fa-box" style="color:var(--primary);"></i>
@@ -38,7 +52,17 @@
             </div>
         </div>
 
-        <div class="col-6 col-md-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card text-center">
+                <div class="stat-icon mx-auto">
+                    <i class="fa fa-graduation-cap" style="color:#8b5cf6;"></i>
+                </div>
+                <div class="stat-value" style="color:#8b5cf6;">{{ total_courses }}</div>
+                <div class="stat-label">Total Courses</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
             <div class="stat-card text-center">
                 <div class="stat-icon mx-auto">
                     <i class="fa fa-shopping-cart" style="color:#f59e0b;"></i>
@@ -48,7 +72,7 @@
             </div>
         </div>
 
-        <div class="col-6 col-md-4">
+        <div class="col-6 col-md-3">
             <div class="stat-card text-center">
                 <div class="stat-icon mx-auto">
                     <i class="fa fa-rupee-sign" style="color:#10b981;"></i>
@@ -60,10 +84,16 @@
 
     </div>
 
+    <!-- ANALYTICS CHART -->
+    <div class="neu-raised rounded p-4 mb-4">
+        <h5 class="fw-bold mb-4" style="color:var(--text);"><i class="fa-solid fa-chart-line me-2" style="color:var(--primary);"></i>Revenue Analytics</h5>
+        <canvas id="revenueChart" height="100"></canvas>
+    </div>
+
     <!-- MY PROJECTS -->
     <div class="neu-raised rounded p-4 mb-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold mb-0" style="color:var(--text);">📦 My Projects</h5>
+            <h5 class="fw-bold mb-0" style="color:var(--text);"><i class="fa-solid fa-box me-2" style="color:var(--primary);"></i>My Projects</h5>
             <a href="{% url 'upload_project' %}" class="btn btn-sm btn-outline-primary">
                 <i class="fa fa-plus me-1"></i> Add New
             </a>
@@ -108,7 +138,7 @@
                             </span>
                             {% else %}
                             <span class="status-pill" style="color:var(--text-muted);">
-                                <i class="fa fa-circle" style="font-size:7px;"></i> Inactive
+                                <i class="fa fa-circle" style="font-size:7px;"></i> Draft
                             </span>
                             {% endif %}
                         </td>
@@ -116,12 +146,17 @@
                             <div class="d-flex gap-2">
                                 <a href="{% url 'project_detail' project.slug %}"
                                    class="btn btn-sm btn-outline-primary"
-                                   style="border-radius:8px;">
+                                   style="border-radius:8px;" title="View">
                                     <i class="fa fa-eye"></i>
+                                </a>
+                                <a href="{% url 'edit_project' project.id %}"
+                                   class="btn btn-sm btn-outline-secondary"
+                                   style="border-radius:8px;" title="Edit">
+                                    <i class="fa fa-edit"></i>
                                 </a>
                                 <a href="{% url 'delete_project' project.id %}"
                                    class="btn btn-sm btn-outline-danger"
-                                   style="border-radius:8px;"
+                                   style="border-radius:8px;" title="Delete"
                                    onclick="return confirm('Delete this project?')">
                                     <i class="fa fa-trash"></i>
                                 </a>
@@ -147,9 +182,97 @@
 
     </div>
 
+    <!-- MY COURSES -->
+    <div class="neu-raised rounded p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0" style="color:var(--text);"><i class="fa-solid fa-graduation-cap me-2" style="color:var(--primary);"></i>My Courses</h5>
+            <a href="#" class="btn btn-sm btn-outline-primary">
+                <i class="fa fa-plus me-1"></i> Add New
+            </a>
+        </div>
+
+        {% if courses %}
+        <div class="table-responsive">
+            <table class="table-neu table-hover align-middle w-100">
+                <thead>
+                    <tr>
+                        <th>Thumbnail</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    <tr>
+                        <td>
+                            <img src="{{ course.thumbnail.url }}"
+                                 style="width:50px;height:50px;object-fit:cover;
+                                        border-radius:10px;
+                                        box-shadow:var(--neu-raised);">
+                        </td>
+                        <td>
+                            <p class="mb-0 fw-semibold" style="color:var(--text);">
+                                {{ course.title }}
+                            </p>
+                            <small class="text-muted">{{ course.difficulty_level|title }}</small>
+                        </td>
+                        <td style="color:var(--text-muted);">{{ course.category.name }}</td>
+                        <td>
+                            <span class="fw-bold" style="color:#10b981;">
+                                {% if course.is_free %}Free{% else %}₹{{ course.price }}{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            {% if course.is_active %}
+                            <span class="status-pill paid">
+                                <i class="fa fa-circle" style="font-size:7px;"></i> Active
+                            </span>
+                            {% else %}
+                            <span class="status-pill" style="color:var(--text-muted);">
+                                <i class="fa fa-circle" style="font-size:7px;"></i> Draft
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a href="#"
+                                   class="btn btn-sm btn-outline-primary"
+                                   style="border-radius:8px;" title="View">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                                <a href="#"
+                                   class="btn btn-sm btn-outline-secondary"
+                                   style="border-radius:8px;" title="Edit">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+        <div class="text-center py-5">
+            <div class="stat-icon mx-auto mb-3" style="width:64px;height:64px;">
+                <i class="fa fa-graduation-cap" style="font-size:24px;color:var(--text-muted);"></i>
+            </div>
+            <p class="text-muted mb-3">No courses published yet!</p>
+            <a href="#" class="btn btn-primary btn-sm">
+                <i class="fa fa-upload me-1"></i> Create First Course
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+
     <!-- RECENT ORDERS -->
     <div class="neu-raised rounded p-4">
-        <h5 class="fw-bold mb-3" style="color:var(--text);">🛒 Recent Orders</h5>
+        <h5 class="fw-bold mb-3" style="color:var(--text);"><i class="fa-solid fa-shopping-cart me-2" style="color:var(--primary);"></i>Recent Orders</h5>
 
         {% if recent_orders %}
         <div class="table-responsive">
@@ -208,4 +331,72 @@
     </div>
 
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    const chartMonths = JSON.parse('{{ chart_months|escapejs }}');
+    const chartRevenues = JSON.parse('{{ chart_revenues|escapejs }}');
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartMonths,
+            datasets: [{
+                label: 'Revenue (₹)',
+                data: chartRevenues,
+                borderColor: '#06BBCC',
+                backgroundColor: 'rgba(6, 187, 204, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+
+<!-- TESTIMONIAL MODAL -->
+<div class="modal fade" id="testimonialModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:15px; border:none; box-shadow:var(--neu-raised); background:var(--neu-bg);">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" style="color:var(--text);"><i class="fa-solid fa-star text-warning me-2"></i>Share Your Success Story</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'submit_testimonial' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:13px;color:var(--text-muted);">Rating</label>
+                        <select name="rating" class="form-select" required>
+                            <option value="5">★★★★★ Excellent</option>
+                            <option value="4">★★★★ Good</option>
+                            <option value="3">★★★ Average</option>
+                            <option value="2">★★ Poor</option>
+                            <option value="1">★ Terrible</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label" style="font-size:13px;color:var(--text-muted);">Your Feedback</label>
+                        <textarea name="content" class="form-control" rows="4" placeholder="How has CodeShelf helped you?" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100" style="border-radius:10px;">
+                        <i class="fa fa-paper-plane me-1"></i> Submit Feedback
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}

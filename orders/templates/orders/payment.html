@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+
+            <div class="text-center mb-4">
+                <div class="stat-icon mx-auto mb-3">
+                    <i class="fa-solid fa-credit-card" style="font-size:22px;color:var(--primary);"></i>
+                </div>
+                <h4 class="fw-bold mb-1" style="color:var(--text);">Payment Details</h4>
+                <p class="text-muted" style="font-size:14px;">Select your preferred payment method to complete the order</p>
+            </div>
+
+            <div class="neu-raised rounded p-4 p-md-5">
+                <form method="POST" action="{% url 'place_order' %}">
+                    {% csrf_token %}
+                    
+                    <h6 class="fw-bold mb-3" style="color:var(--text);">Payment Method</h6>
+                    <div class="d-flex flex-column gap-3 mb-4">
+                        <label class="neu-pressed rounded p-3 d-flex align-items-center gap-3" style="cursor:pointer;">
+                            <input type="radio" name="payment_method" value="upi" class="form-check-input mt-0" checked>
+                            <div>
+                                <div class="fw-bold" style="font-size:14px;color:var(--text);">UPI / QR Code</div>
+                                <div class="text-muted" style="font-size:12px;">GPay, PhonePe, Paytm</div>
+                            </div>
+                            <i class="fa-brands fa-google-pay ms-auto" style="font-size:20px;color:var(--text-muted);"></i>
+                        </label>
+                        
+                        <label class="neu-pressed rounded p-3 d-flex align-items-center gap-3" style="cursor:pointer;">
+                            <input type="radio" name="payment_method" value="card" class="form-check-input mt-0">
+                            <div>
+                                <div class="fw-bold" style="font-size:14px;color:var(--text);">Credit / Debit Card</div>
+                                <div class="text-muted" style="font-size:12px;">Visa, MasterCard, RuPay</div>
+                            </div>
+                            <i class="fa-regular fa-credit-card ms-auto" style="font-size:20px;color:var(--text-muted);"></i>
+                        </label>
+
+                        <label class="neu-pressed rounded p-3 d-flex align-items-center gap-3" style="cursor:pointer;">
+                            <input type="radio" name="payment_method" value="cod" class="form-check-input mt-0">
+                            <div>
+                                <div class="fw-bold" style="font-size:14px;color:var(--text);">Cash on Delivery</div>
+                                <div class="text-muted" style="font-size:12px;">Pay when you receive</div>
+                            </div>
+                            <i class="fa-solid fa-money-bill-wave ms-auto" style="font-size:20px;color:var(--text-muted);"></i>
+                        </label>
+                    </div>
+
+                    <h6 class="fw-bold mb-3 mt-4" style="color:var(--text);">Additional Remarks (Optional)</h6>
+                    <textarea name="additional_remarks" class="form-control mb-4" rows="3" placeholder="Any specific instructions for your order?"></textarea>
+
+                    <button type="submit" class="btn btn-success w-100 btn-lg" style="border-radius:10px;font-weight:700;">
+                        <i class="fa-solid fa-lock me-1"></i> Confirm & Pay ₹{{ total }}
+                    </button>
+                    
+                    <a href="{% url 'checkout' %}" class="btn btn-outline-secondary w-100 mt-2" style="border-radius:10px;">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Back to Checkout
+                    </a>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

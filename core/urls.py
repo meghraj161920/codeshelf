@@ -9,4 +9,7 @@ urlpatterns = [
     path('privacy/', views.privacy, name='privacy'),
     path('faq/', views.faq, name='faq'),
     path('refund_policy/', views.refund_policy, name='refund_policy'),
+    path('search/', views.global_search, name='global_search'),
+    path('subscribe/', views.subscribe_newsletter, name='subscribe_newsletter'),
+    path('submit-testimonial/', views.submit_testimonial, name='submit_testimonial'),
 ]
