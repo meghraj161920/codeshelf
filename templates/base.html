@@ -41,15 +41,77 @@
 
         
 
-        <!-- MOBILE TOGGLE -->
-        <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarCollapse"
-                aria-controls="navbarCollapse"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <!-- MOBILE ACTIONS (Search + Hamburger) -->
+        <div class="d-flex align-items-center gap-3 d-lg-none">
+            <button class="nav-icon-btn" id="mobileSearchBtnTop" title="Search" style="width: 42px; height: 42px; position: relative;">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <div class="dropdown">
+                <button class="navbar-toggler dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="true"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end cs-dropdown" style="margin-top: 14px; width: 280px;">
+                    {% if user.is_authenticated %}
+                        <li class="dropdown-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3">
+                                    {% if user.profile.profile_image %}
+                                        <img src="{{ user.profile.profile_image.url }}" width="44" height="44" class="rounded-circle" style="box-shadow:var(--neu-raised);">
+                                    {% else %}
+                                        <div class="avatar-initials" style="width:44px;height:44px;font-size:16px;">
+                                            {{ user.username|first|upper }}
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <div class="fw-bold" style="font-size:14px;color:var(--text);">{{ user.username }}</div>
+                                        <div style="font-size:11px;color:var(--text-muted);">{{ user.email }}</div>
+                                        <span class="role-badge mt-1">{{ user.profile.role|capfirst }}</span>
+                                    </div>
+                                </div>
+                                <button class="theme-toggle btn btn-sm p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: transparent; border: none; font-size: 18px;" title="Toggle Theme">
+                                    <i class="fa-solid fa-moon text-muted"></i>
+                                </button>
+                            </div>
+                        </li>
+                        <li><div class="dropdown-divider"></div></li>
+                        <li>
+                            <a class="dropdown-item cs-item" href="{% url 'profile' %}">
+                                <i class="fa-solid fa-user-circle"></i> My Profile
+                            </a>
+                        </li>
+                        {% if user.profile.role == 'seller' %}
+                        <li><a class="dropdown-item cs-item" href="{% url 'seller_dashboard' %}"><i class="fa-solid fa-chart-line"></i> Seller Dashboard</a></li>
+                        <li><a class="dropdown-item cs-item" href="{% url 'upload_project' %}"><i class="fa-solid fa-upload"></i> Upload Project</a></li>
+                        {% else %}
+                        <li><a class="dropdown-item cs-item" href="{% url 'customer_dashboard' %}"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
+                        <li><a class="dropdown-item cs-item" href="{% url 'order_history' %}"><i class="fa-solid fa-box"></i> My Orders</a></li>
+                        <li><a class="dropdown-item cs-item" href="{% url 'wishlist' %}"><i class="fa-solid fa-heart"></i> Wishlist</a></li>
+                        <li><a class="dropdown-item cs-item" href="{% url 'coupons' %}"><i class="fa-solid fa-ticket"></i> My Coupons</a></li>
+                        {% endif %}
+                        <li><div class="dropdown-divider"></div></li>
+                        <li>
+                            <a class="dropdown-item cs-item danger" href="{% url 'logout' %}">
+                                <i class="fa-solid fa-right-from-bracket"></i> Logout
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="dropdown-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0 fw-bold">Welcome</h6>
+                            <button class="theme-toggle btn btn-sm p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: transparent; border: none; font-size: 18px;" title="Toggle Theme">
+                                <i class="fa-solid fa-moon text-muted"></i>
+                            </button>
+                        </li>
+                        <li><div class="dropdown-divider"></div></li>
+                        <li><a class="dropdown-item cs-item" href="{% url 'login' %}"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+                        <li><a class="dropdown-item cs-item" href="{% url 'register' %}"><i class="fa-solid fa-user-plus"></i> Sign Up</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
 
@@ -205,6 +267,42 @@
     </div>
 </nav>
 <!-- ================= END NAVBAR ================= -->
+
+<!-- ================= MOBILE BOTTOM NAV ================= -->
+<nav class="mobile-bottom-nav d-lg-none">
+    <div class="mbn-bottom-row">
+        <a href="{% url 'home' %}" class="mbn-tab {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="{% url 'course_list' %}" class="mbn-tab {% if request.resolver_match.url_name == 'course_list' %}active{% endif %}">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Courses</span>
+        </a>
+        <a href="{% url 'project_list' %}" class="mbn-tab {% if request.resolver_match.url_name == 'project_list' %}active{% endif %}">
+            <i class="fa-solid fa-code"></i>
+            <span>Projects</span>
+        </a>
+        <a href="{% url 'cart' %}" class="mbn-tab position-relative {% if request.resolver_match.url_name == 'cart' %}active{% endif %}">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Cart</span>
+            <span id="mobile-bottom-cart-count" class="nav-badge" style="top: -6px; right: calc(50% - 20px); {% if not cart_count or cart_count == 0 %}display:none;{% endif %}">{{ cart_count }}</span>
+        </a>
+    </div>
+</nav>
+
+<!-- MOBILE SEARCH OVERLAY -->
+<div class="mobile-search-overlay d-lg-none" id="mobileSearchOverlay">
+    <div class="mso-header">
+        <i class="fa-solid fa-magnifying-glass text-muted ms-3"></i>
+        <input type="text" id="mobileSearchInputOverlay" placeholder="Search globally..." class="form-control shadow-none bg-transparent border-0 text-body" autocomplete="off" style="font-size: 16px;">
+        <button class="btn btn-link text-body me-2" id="closeMobileSearch" style="text-decoration: none;"><i class="fa-solid fa-xmark fs-4"></i></button>
+    </div>
+    <div id="mobile-search-suggestions" class="mso-body p-3" style="max-height: calc(100vh - 70px); overflow-y: auto;">
+        <!-- Results inject here -->
+    </div>
+</div>
+
 {% endblock navbar %}
 
 {% block content %}{% endblock %}
@@ -399,6 +497,48 @@ $(document).ready(function() {
         }
     });
 
+    // Mobile Search Overlay Logic
+    const $mobileSearchBtn = $('#mobileSearchBtnTop');
+    const $mobileSearchOverlay = $('#mobileSearchOverlay');
+    const $closeMobileSearch = $('#closeMobileSearch');
+    const $mobileSearchInputOverlay = $('#mobileSearchInputOverlay');
+    const $mobileSearchSuggestions = $('#mobile-search-suggestions');
+    let mobileSearchTimeout;
+
+    $mobileSearchBtn.on('click', function(e) {
+        e.preventDefault();
+        $mobileSearchOverlay.addClass('show');
+        setTimeout(() => $mobileSearchInputOverlay.focus(), 100);
+    });
+
+    $closeMobileSearch.on('click', function(e) {
+        e.preventDefault();
+        $mobileSearchOverlay.removeClass('show');
+    });
+
+    $mobileSearchInputOverlay.on('input', function() {
+        const query = $(this).val().trim();
+        clearTimeout(mobileSearchTimeout);
+
+        if (query.length < 2) {
+            $mobileSearchSuggestions.html('');
+            return;
+        }
+
+        mobileSearchTimeout = setTimeout(() => {
+            $.ajax({
+                url: "{% url 'global_search' %}",
+                data: { 'q': query },
+                success: function(html) {
+                    $mobileSearchSuggestions.html(html);
+                },
+                error: function(err) {
+                    console.error("Search error:", err);
+                }
+            });
+        }, 250);
+    });
+
     function showToast(message, actionUrl = null, actionText = 'View', iconClass = 'fa-check-circle', iconColor = 'var(--primary)') {
         const toastEl = document.getElementById('actionToast');
         
@@ -459,22 +599,15 @@ $(document).ready(function() {
                     icon.classList.add('fa-check');
                 }
             } else if (data.status === 'already_in_cart') {
-                showToast('Already in Cart!', "{% url 'cart' %}", 'View Cart', 'fa-cart-shopping', '#f59e0b');
-                btn.style.backgroundColor = '#10b981';
-                btn.style.borderColor = '#10b981';
-                const icon = btn.querySelector('i');
-                if (icon) {
-                    icon.classList.remove('fa-cart-plus', 'fa-shopping-cart');
-                    icon.classList.add('fa-check');
-                }
+                window.location.href = "{% url 'cart' %}";
             } else if (data.status === 'already_purchased') {
-                showToast('Already Purchased!', null, null, 'fa-info-circle', '#0dcaf0');
-                btn.style.backgroundColor = '#10b981';
-                btn.style.borderColor = '#10b981';
+                showToast('Already Purchased!', null, null, 'fa-info-circle', '#6366f1');
+                btn.style.backgroundColor = '#6366f1';
+                btn.style.borderColor = '#6366f1';
                 const icon = btn.querySelector('i');
                 if (icon) {
-                    icon.classList.remove('fa-cart-plus', 'fa-shopping-cart');
-                    icon.classList.add('fa-check');
+                    icon.classList.remove('fa-cart-plus', 'fa-shopping-cart', 'fa-check');
+                    icon.classList.add('fa-bag-shopping');
                 }
             }
         })

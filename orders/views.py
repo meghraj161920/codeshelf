@@ -8,6 +8,7 @@ from projects.models import Project
 from courses.models import Course
 from coupons.models import Coupon, UserCoupon
 from core.email_utils import send_order_confirmation_email
+from django.core.paginator import Paginator
 
 def get_cart_dict(request):
     cart = request.session.get('cart', {'projects': [], 'courses': []})
@@ -255,15 +256,27 @@ def order_history(request):
     purchased_projects = Project.objects.filter(
         order_items__order__user=request.user,
         order_items__order__is_completed=True
-    ).distinct()
+    ).distinct().order_by('-id')
 
     purchased_courses = Course.objects.filter(
         order_items__order__user=request.user,
         order_items__order__is_completed=True
-    ).distinct()
+    ).distinct().order_by('-id')
+
+    # Pagination for Projects
+    paginator_p = Paginator(purchased_projects, 4)
+    page_number_p = request.GET.get('page_p')
+    projects_page = paginator_p.get_page(page_number_p)
+
+    # Pagination for Courses
+    paginator_c = Paginator(purchased_courses, 4)
+    page_number_c = request.GET.get('page_c')
+    courses_page = paginator_c.get_page(page_number_c)
 
     return render(request, "orders/order_history.html", {
         "orders": orders,
-        "purchased_projects": purchased_projects,
-        "purchased_courses": purchased_courses
+        "purchased_projects": projects_page,
+        "purchased_courses": courses_page,
+        "page_range_p": paginator_p.get_elided_page_range(projects_page.number, on_each_side=1, on_ends=1) if paginator_p.num_pages > 1 else [],
+        "page_range_c": paginator_c.get_elided_page_range(courses_page.number, on_each_side=1, on_ends=1) if paginator_c.num_pages > 1 else [],
     })

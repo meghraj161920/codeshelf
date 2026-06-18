@@ -15,12 +15,12 @@
     {% endif %}
 
     <!-- WELCOME -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 mb-4 text-center text-md-start">
         <div>
-            <h4 class="fw-bold mb-1" style="color:var(--text);"><i class="fa-solid fa-hand-wave me-2" style="color:#f59e0b;"></i> Hello, {{ user.first_name|default:user.username }}!</h4>
+            <h4 class="fw-bold mb-1" style="color:var(--text);"><i class="fa-solid fa-hand-wave " style="color:#f59e0b;"></i> Hello, {{ user.first_name|default:user.username }}!</h4>
             <p class="text-muted mb-0">Welcome to your dashboard</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex justify-content-center gap-2">
             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#testimonialModal">
                 <i class="fa-solid fa-star me-1"></i> Share Success Story
             </button>

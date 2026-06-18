@@ -61,7 +61,7 @@ def project_list(request):
 
 # ================= PROJECT DETAIL =================
 def project_detail(request, slug):
-    project = get_object_or_404(Project, slug=slug, is_active=True)
+    project = get_object_or_404(Project, slug=slug)
 
     related_projects = Project.objects.filter(
         category=project.category,
@@ -81,6 +81,12 @@ def project_detail(request, slug):
             order__is_completed=True,
             project=project
         ).exists()
+
+    if not project.is_active:
+        is_seller = request.user.is_authenticated and project.seller == request.user
+        if not (is_seller or has_purchased):
+            from django.http import Http404
+            raise Http404("No active Project matches the given query.")
 
     return render(request, 'projects/project_detail.html', {
         'project': project,
@@ -140,7 +146,7 @@ def delete_project(request, project_id):
 # ================= DOWNLOAD PROJECT =================
 @login_required
 def download_project(request, project_id):
-    project = get_object_or_404(Project, id=project_id, is_active=True)
+    project = get_object_or_404(Project, id=project_id)
 
     # ✅ Purchase check
     has_purchased = OrderItem.objects.filter(
@@ -152,6 +158,12 @@ def download_project(request, project_id):
     if not has_purchased:
         messages.error(request, "You must purchase this project before downloading.")
         return redirect('project_detail', slug=project.slug)
+
+    if not project.is_active:
+        is_seller = request.user.is_authenticated and project.seller == request.user
+        if not (is_seller or has_purchased):
+            from django.http import Http404
+            raise Http404("No active Project matches the given query.")
 
     # ✅ File check
     if not project.zip_file:

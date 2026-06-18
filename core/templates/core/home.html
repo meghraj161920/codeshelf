@@ -155,6 +155,7 @@
         background: var(--neu-bg); box-shadow: var(--neu-raised); border: none;
         border-radius: 16px; padding: 30px; position: relative;
         transition: box-shadow 0.3s var(--ease);
+        display: flex; flex-direction: column;
     }
     .testimonial-card:hover { box-shadow: var(--neu-raised-lg); }
     .testimonial-card::after {
@@ -368,8 +369,10 @@
         {% for project in projects|slice:":4" %}
         <div class="col-md-4 col-lg-3 d-flex">
             <div class="project-card w-100">
-                <div class="img-container">
-                    <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100 h-100" style="object-fit:cover;">
+                <div class="img-container d-block text-decoration-none">
+                    <a href="{% url 'project_detail' project.slug %}">
+                        <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100 h-100" style="object-fit:cover;">
+                    </a>
                     <span class="badge bg-success position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill shadow-sm">New</span>
                     <div class="card-img-overlay-hover">
                         <a href="{% url 'project_detail' project.slug %}" class="btn btn-light rounded-circle" style="width:45px;height:45px;display:flex;align-items:center;justify-content:center;">
@@ -392,11 +395,17 @@
                             <i class="fa-regular fa-heart" style="color:#fff;"></i>
                         </a>
                         {% endif %}
+                        {% if project.id in global_purchased_project_ids %}
+                        <a href="javascript:void(0);" onclick="showToast('Already Purchased!', null, null, 'fa-info-circle', '#6366f1')" class="action-btn buy-btn" title="Already Purchased" style="background-color:#6366f1;border-color:#6366f1;">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </a>
+                        {% else %}
                         <a href="{% if user.is_authenticated %}{% url 'add_to_cart' 'project' project.id %}{% else %}{% url 'login' %}{% endif %}"
                            class="action-btn buy-btn buy-trigger" title="Add to Cart"
                            style="{% if project.id in global_cart_project_ids %}background-color:#10b981;border-color:#10b981;{% endif %}">
                             <i class="fa-solid {% if project.id in global_cart_project_ids %}fa-check{% else %}fa-cart-plus{% endif %}"></i><span class="expansion"></span>
                         </a>
+                        {% endif %}
                     </div>
                     <div class="success-mark"></div>
                     <div class="mt-3 mb-2">
@@ -440,7 +449,9 @@
             <div class="col-md-4 col-lg-3 d-flex">
                 <div class="project-card w-100">
                     <div class="img-container">
-                        <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100 h-100" style="object-fit:cover;">
+                        <a href="{% url 'project_detail' project.slug %}">
+                            <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100 h-100" style="object-fit:cover;">
+                        </a>
                         <span class="badge bg-danger position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill shadow-sm"><i class="fa-solid fa-fire me-1"></i>Hot</span>
                         <div class="card-img-overlay-hover">
                             <a href="{% url 'project_detail' project.slug %}" class="btn btn-light rounded-circle" style="width:45px;height:45px;display:flex;align-items:center;justify-content:center;">
@@ -463,11 +474,17 @@
                                 <i class="fa-regular fa-heart" style="color:#fff;"></i>
                             </a>
                             {% endif %}
+                            {% if project.id in global_purchased_project_ids %}
+                            <a href="javascript:void(0);" onclick="showToast('Already Purchased!', null, null, 'fa-info-circle', '#6366f1')" class="action-btn buy-btn" title="Already Purchased" style="background-color:#6366f1;border-color:#6366f1;">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                            </a>
+                            {% else %}
                             <a href="{% if user.is_authenticated %}{% url 'add_to_cart' 'project' project.id %}{% else %}{% url 'login' %}{% endif %}"
                                class="action-btn buy-btn buy-trigger" title="Add to Cart"
                                style="{% if project.id in global_cart_project_ids %}background-color:#10b981;border-color:#10b981;{% endif %}">
                                 <i class="fa-solid {% if project.id in global_cart_project_ids %}fa-check{% else %}fa-cart-plus{% endif %}"></i><span class="expansion"></span>
                             </a>
+                            {% endif %}
                         </div>
                         <div class="success-mark"></div>
                         <div class="mt-3 mb-2">
@@ -580,7 +597,7 @@
                     <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                 </div>
                 <p class="fst-italic mb-4" style="color:var(--text-muted);">"The MERN stack ecommerce project I downloaded helped me understand Redux better than any video tutorial. The code was clean and well documented!"</p>
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center mt-auto">
                     <img class="img-fluid flex-shrink-0 rounded-circle" src="{% static 'img/testimonial-1.jpg' %}" style="width:50px;height:50px;box-shadow:var(--neu-raised);">
                     <div class="ps-3">
                         <h6 class="fw-bold mb-1" style="color:var(--text);">Rahul Sharma</h6>
@@ -590,12 +607,12 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="testimonial-card h-100">
+            <div class="testimonial-card h-100 p-4" style="display: flex; flex-direction: column;">
                 <div class="text-warning mb-3">
                     <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                 </div>
                 <p class="fst-italic mb-4" style="color:var(--text-muted);">"Absolutely brilliant platform. I used a Django hospital management template for my final year submission and scored an A+!"</p>
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center mt-auto">
                     <img class="img-fluid flex-shrink-0 rounded-circle" src="{% static 'img/testimonial-2.jpg' %}" style="width:50px;height:50px;box-shadow:var(--neu-raised);">
                     <div class="ps-3">
                         <h6 class="fw-bold mb-1" style="color:var(--text);">Priya Patel</h6>
@@ -605,12 +622,12 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="testimonial-card h-100">
+            <div class="testimonial-card h-100 p-4" style="display: flex; flex-direction: column;">
                 <div class="text-warning mb-3">
                     <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
                 </div>
                 <p class="fst-italic mb-4" style="color:var(--text-muted);">"I have started selling my own scripts here. The dashboard is intuitive and payouts are fast. Great community to be a part of."</p>
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center mt-auto">
                     <img class="img-fluid flex-shrink-0 rounded-circle" src="{% static 'img/testimonial-3.jpg' %}" style="width:50px;height:50px;box-shadow:var(--neu-raised);">
                     <div class="ps-3">
                         <h6 class="fw-bold mb-1" style="color:var(--text);">Amit Kumar</h6>
@@ -655,13 +672,35 @@
 <script>
     // Slider
     const slider = document.querySelector('.slider');
-    function activate(e) {
+    
+    function slideNext() {
+        if (!slider) return;
         const items = document.querySelectorAll('.slider-item');
-        if (e.target.closest('.next')) slider.append(items[0]);
-        if (e.target.closest('.prev')) slider.prepend(items[items.length - 1]);
+        slider.append(items[0]);
     }
+    
+    function slidePrev() {
+        if (!slider) return;
+        const items = document.querySelectorAll('.slider-item');
+        slider.prepend(items[items.length - 1]);
+    }
+
+    function activate(e) {
+        if (e.target.closest('.next')) slideNext();
+        if (e.target.closest('.prev')) slidePrev();
+    }
+    
     const navControls = document.querySelector('.nav-controls');
     if (navControls) navControls.addEventListener('click', activate, false);
+
+    if (slider) {
+        let autoSlide = setInterval(slideNext, 4000);
+        const sliderSection = document.querySelector('.hero-slider-section');
+        if (sliderSection) {
+            sliderSection.addEventListener('mouseenter', () => clearInterval(autoSlide));
+            sliderSection.addEventListener('mouseleave', () => autoSlide = setInterval(slideNext, 4000));
+        }
+    }
 
     $(document).ready(function() {
         // Stats counter

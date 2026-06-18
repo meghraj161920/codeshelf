@@ -132,7 +132,9 @@
         <div class="col-xl-3 col-md-4 col-sm-6">
             <div class="project-card w-100">
                 <div class="img-container">
-                    <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100 h-100" style="object-fit:cover;">
+                    <a href="{% url 'project_detail' project.slug %}">
+                        <img src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100 h-100" style="object-fit:cover;">
+                    </a>
                     <div class="card-img-overlay-hover">
                         <a href="{% url 'project_detail' project.slug %}" class="btn btn-light rounded-circle" style="width:45px;height:45px;display:flex;align-items:center;justify-content:center;">
                             <i class="fa-solid fa-eye text-primary"></i>
@@ -160,11 +162,17 @@
                                 <i class="fa-regular fa-heart" style="color:#fff;"></i>
                             </a>
                             {% endif %}
+                            {% if project.id in global_purchased_project_ids %}
+                            <a href="javascript:void(0);" onclick="showToast('Already Purchased!', null, null, 'fa-info-circle', '#6366f1')" class="action-btn buy-btn" title="Already Purchased" style="background-color:#6366f1;border-color:#6366f1;">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                            </a>
+                            {% else %}
                             <a href="{% if user.is_authenticated %}{% url 'add_to_cart' 'project' project.id %}{% else %}{% url 'login' %}{% endif %}"
                                class="action-btn buy-btn buy-trigger" title="Add to Cart"
                                style="{% if project.id in global_cart_project_ids %}background-color:#10b981;border-color:#10b981;{% endif %}">
                                 <i class="fa-solid {% if project.id in global_cart_project_ids %}fa-check{% else %}fa-cart-plus{% endif %}"></i><span class="expansion"></span>
                             </a>
+                            {% endif %}
                         {% endif %}
                     </div>
                     <div class="success-mark"></div>

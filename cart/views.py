@@ -97,9 +97,19 @@ def cart_context(request):
     
     wishlist_project_ids = []
     wishlist_course_ids = []
+    purchased_project_ids = []
+    purchased_course_ids = []
     if request.user.is_authenticated:
         wishlist_project_ids = list(Wishlist.objects.filter(user=request.user, project__isnull=False).values_list('project_id', flat=True))
         wishlist_course_ids = list(Wishlist.objects.filter(user=request.user, course__isnull=False).values_list('course_id', flat=True))
+        
+        purchased_project_ids = list(OrderItem.objects.filter(
+            order__user=request.user, order__is_completed=True, project__isnull=False
+        ).values_list('project_id', flat=True))
+        
+        purchased_course_ids = list(OrderItem.objects.filter(
+            order__user=request.user, order__is_completed=True, course__isnull=False
+        ).values_list('course_id', flat=True))
 
     return {
         'cart_count': len(cart['projects']) + len(cart['courses']),
@@ -108,4 +118,6 @@ def cart_context(request):
         'global_wishlist_project_ids': wishlist_project_ids,
         'global_wishlist_course_ids': wishlist_course_ids,
         'wishlist_count': len(wishlist_project_ids) + len(wishlist_course_ids),
+        'global_purchased_project_ids': purchased_project_ids,
+        'global_purchased_course_ids': purchased_course_ids,
     }

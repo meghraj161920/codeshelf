@@ -159,7 +159,9 @@
         <div class="col-xl-3 col-md-4 col-sm-6">
             <div class="project-card w-100">
                 <div class="img-container">
-                    <img src="{% if course.thumbnail %}{{ course.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100 h-100" style="object-fit:cover;">
+                    <a href="{% url 'course_detail' course.slug %}">
+                        <img src="{% if course.thumbnail %}{{ course.thumbnail.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" class="w-100 h-100" style="object-fit:cover;">
+                    </a>
                     {% if course.is_free %}
                     <span class="badge bg-primary position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill shadow-sm">Free</span>
                     {% endif %}
@@ -180,13 +182,19 @@
                             <i class="fa-heart {% if course.id in global_wishlist_course_ids %}fa-solid{% else %}fa-regular{% endif %}" style="color:#fff;"></i>
                         </a>
                         {% if not course.is_free %}
-                        <a href="{% url 'add_to_cart' 'course' course.id %}" class="action-btn buy-btn ajax-add-to-cart" title="Add to Cart" {% if course.id in global_cart_course_ids %}style="background-color:#10b981;border-color:#10b981;"{% endif %}>
-                            {% if course.id in global_cart_course_ids %}
-                            <i class="fa-solid fa-check"></i>
+                            {% if course.id in global_purchased_course_ids %}
+                            <a href="javascript:void(0);" onclick="showToast('Already Purchased!', null, null, 'fa-info-circle', '#6366f1')" class="action-btn buy-btn" title="Already Purchased" style="background-color:#6366f1;border-color:#6366f1;">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                            </a>
                             {% else %}
-                            <i class="fa-solid fa-cart-plus"></i>
+                            <a href="{% url 'add_to_cart' 'course' course.id %}" class="action-btn buy-btn ajax-add-to-cart" title="Add to Cart" {% if course.id in global_cart_course_ids %}style="background-color:#10b981;border-color:#10b981;"{% endif %}>
+                                {% if course.id in global_cart_course_ids %}
+                                <i class="fa-solid fa-check"></i>
+                                {% else %}
+                                <i class="fa-solid fa-cart-plus"></i>
+                                {% endif %}
+                            </a>
                             {% endif %}
-                        </a>
                         {% endif %}
                         {% endif %}
                     </div>

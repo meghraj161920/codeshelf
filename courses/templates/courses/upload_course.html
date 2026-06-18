@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+
+    <!-- HEADER -->
+    <div class="d-flex align-items-center mb-4">
+        <a href="{% url 'seller_dashboard' %}" class="btn btn-outline-secondary btn-sm me-3"
+           style="border-radius:10px;">
+            <i class="fa fa-arrow-left"></i> Back
+        </a>
+        <div>
+            <h4 class="fw-bold mb-0" style="color:var(--text);">Upload New Course</h4>
+            <p class="text-muted mb-0" style="font-size:13px;">Create a new course and share your knowledge</p>
+        </div>
+    </div>
+
+    <!-- MESSAGES -->
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div class="alert alert-danger mb-4" style="border-radius:10px;">
+            <h6 class="fw-bold mb-2"><i class="fa fa-exclamation-triangle me-2"></i>Please correct the following errors:</h6>
+            <ul class="mb-0 small">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- ══ SECTION 1: Basic Info ══ -->
+        <div class="neu-raised rounded p-4 mb-4">
+            <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--primary);">
+                <i class="fa fa-info-circle"></i> Basic Information
+            </h6>
+            <div class="row g-4">
+
+                <!-- TITLE -->
+                <div class="col-md-6">
+                    <label class="form-label">Course Title *</label>
+                    {{ form.title }}
+                </div>
+
+                <!-- CATEGORY -->
+                <div class="col-md-6">
+                    <label class="form-label">Category *</label>
+                    {{ form.category }}
+                </div>
+
+                <!-- DESCRIPTION -->
+                <div class="col-12">
+                    <label class="form-label">Description *</label>
+                    {{ form.description }}
+                </div>
+
+                <!-- DIFFICULTY -->
+                <div class="col-md-6">
+                    <label class="form-label">Difficulty Level *</label>
+                    {{ form.difficulty_level }}
+                </div>
+                
+                <!-- THUMBNAIL -->
+                <div class="col-md-6">
+                    <label class="form-label">Thumbnail Image *</label>
+                    {{ form.thumbnail }}
+                    <small class="text-muted d-block mt-1">JPG, PNG recommended</small>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ══ SECTION 2: Pricing & Access ══ -->
+        <div class="neu-raised rounded p-4 mb-4">
+            <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--primary);">
+                <i class="fa fa-tags"></i> Pricing & Access
+            </h6>
+            <div class="row g-4 align-items-center">
+
+                <!-- IS FREE -->
+                <div class="col-md-3">
+                    <div class="form-check form-switch mt-3">
+                        {{ form.is_free }}
+                        <label class="form-check-label ms-2 fw-bold" for="{{ form.is_free.id_for_label }}">Free Course</label>
+                    </div>
+                </div>
+
+                <!-- PRICE -->
+                <div class="col-md-4">
+                    <label class="form-label">Price (₹) *</label>
+                    {{ form.price }}
+                </div>
+
+                <!-- ACCESS DURATION -->
+                <div class="col-md-5">
+                    <label class="form-label">Access Duration *</label>
+                    {{ form.access_duration_months }}
+                </div>
+                
+                <!-- STATUS -->
+                <div class="col-md-12 mt-4">
+                    <div class="form-check form-switch">
+                        {{ form.is_active }}
+                        <label class="form-check-label ms-2 fw-bold" for="{{ form.is_active.id_for_label }}">Publish Immediately</label>
+                    </div>
+                    <small class="text-muted d-block ms-5 mt-1">If unchecked, this course will be saved as a draft.</small>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ══ SUBMIT ══ -->
+        <div class="d-flex justify-content-end gap-3 mt-5">
+            <a href="{% url 'seller_dashboard' %}"
+               class="btn btn-outline-secondary"
+               style="border-radius:10px;min-width:120px;">
+                Cancel
+            </a>
+            <button type="submit" class="btn btn-primary px-5" style="border-radius:10px;">
+                <i class="fa fa-save me-2"></i> Create Course
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    // Optional: Add simple logic to disable price field if "Free Course" is checked
+    document.addEventListener("DOMContentLoaded", function() {
+        const isFreeCheckbox = document.querySelector('input[name="is_free"]');
+        const priceInput = document.querySelector('input[name="price"]');
+        
+        function togglePrice() {
+            if (isFreeCheckbox.checked) {
+                priceInput.value = '0.00';
+                priceInput.setAttribute('readonly', 'readonly');
+            } else {
+                priceInput.removeAttribute('readonly');
+            }
+        }
+        
+        if(isFreeCheckbox && priceInput) {
+            isFreeCheckbox.addEventListener('change', togglePrice);
+            togglePrice(); // run on load
+        }
+    });
+</script>
+{% endblock content %}

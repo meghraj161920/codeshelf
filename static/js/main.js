@@ -62,26 +62,29 @@
 
     // ================= DARK MODE =================
     const html = document.documentElement;
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
+    const themeToggles = document.querySelectorAll('.theme-toggle');
 
     const savedTheme = localStorage.getItem('csTheme') || 'light';
     html.setAttribute('data-theme', savedTheme);
-    updateIcon(savedTheme);
+    updateIcons(savedTheme);
 
-    if (themeToggle) {
-        themeToggle.addEventListener('click', function () {
+    themeToggles.forEach(toggle => {
+        toggle.addEventListener('click', function () {
             const current = html.getAttribute('data-theme');
             const next = current === 'light' ? 'dark' : 'light';
             html.setAttribute('data-theme', next);
             localStorage.setItem('csTheme', next);
-            updateIcon(next);
+            updateIcons(next);
         });
-    }
+    });
 
-    function updateIcon(theme) {
-        if (!themeIcon) return;
-        themeIcon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    function updateIcons(theme) {
+        themeToggles.forEach(toggle => {
+            const icon = toggle.querySelector('i');
+            if (icon) {
+                icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+        });
     }
 
 })(jQuery);

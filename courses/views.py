@@ -1,6 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 from django.core.paginator import Paginator
 from .models import Course, CourseCategory, CourseVideo
+from .forms import CourseUploadForm
+from core.decorators import seller_required
 from orders.models import OrderItem
 
 
@@ -53,7 +56,7 @@ def course_detail(request, slug):
     Gets selected video from URL parameter ?video=ID.
     Defaults to first video if no parameter is given.
     """
-    course = get_object_or_404(Course, slug=slug, is_active=True)
+    course = get_object_or_404(Course, slug=slug)
     videos = course.videos.all().order_by('order')
 
     video_id = request.GET.get('video')
@@ -81,6 +84,12 @@ def course_detail(request, slug):
                     is_expired = True
                     has_purchased = False
 
+    if not course.is_active:
+        is_seller = request.user.is_authenticated and course.seller == request.user
+        if not (is_seller or has_purchased):
+            from django.http import Http404
+            raise Http404("No active Course matches the given query.")
+
     return render(request, 'courses/course_detail.html', {
         'course': course,
         'videos': videos,
@@ -88,3 +97,21 @@ def course_detail(request, slug):
         'has_purchased': has_purchased,
         'is_expired': is_expired,
     })
+
+
+@seller_required
+def upload_course(request):
+    if request.method == "POST":
+        form = CourseUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            course = form.save(commit=False)
+            course.seller = request.user
+            course.save()
+            messages.success(request, "Course uploaded successfully!")
+            return redirect('seller_dashboard')
+        else:
+            messages.error(request, "Please fix the errors below.")
+    else:
+        form = CourseUploadForm()
+
+    return render(request, 'courses/upload_course.html', {'form': form})
