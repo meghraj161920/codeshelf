@@ -1,4 +1,5 @@
 from django.shortcuts import redirect, render, get_object_or_404
+from django.db import transaction
 from django.db.models import Q
 from coupons.utils import is_coupon_valid
 from django.contrib.auth.decorators import login_required
@@ -27,8 +28,8 @@ def checkout(request):
         messages.error(request, "Your cart is empty!")
         return redirect('cart')
 
-    projects = Project.objects.filter(id__in=cart['projects'])
-    courses = Course.objects.filter(id__in=cart['courses'])
+    projects = Project.objects.filter(id__in=cart['projects'], is_active=True)
+    courses = Course.objects.filter(id__in=cart['courses'], is_active=True)
     
     subtotal = sum(p.price for p in projects) + sum(c.price for c in courses)
 
@@ -46,7 +47,7 @@ def checkout(request):
         except Coupon.DoesNotExist:
             request.session.pop('coupon_code', None)
 
-    total = subtotal - discount
+    total = max(0, subtotal - discount)
 
     # Fetch all active coupons from the DB
     available_coupons = Coupon.objects.filter(is_active=True).order_by('-id')
@@ -115,8 +116,8 @@ def payment_selection(request):
         messages.error(request, "Your cart is empty!")
         return redirect('cart')
 
-    projects = Project.objects.filter(id__in=cart['projects'])
-    courses = Course.objects.filter(id__in=cart['courses'])
+    projects = Project.objects.filter(id__in=cart['projects'], is_active=True)
+    courses = Course.objects.filter(id__in=cart['courses'], is_active=True)
     subtotal = sum(p.price for p in projects) + sum(c.price for c in courses)
     
     discount = 0
@@ -130,7 +131,7 @@ def payment_selection(request):
         except Coupon.DoesNotExist:
             pass
 
-    total = subtotal - discount
+    total = max(0, subtotal - discount)
     return render(request, "orders/payment.html", {"total": total})
 
 
@@ -144,8 +145,8 @@ def place_order(request):
             messages.error(request, "Your cart is empty!")
             return redirect('cart')
 
-        projects = Project.objects.filter(id__in=cart['projects'])
-        courses = Course.objects.filter(id__in=cart['courses'])
+        projects = Project.objects.filter(id__in=cart['projects'], is_active=True)
+        courses = Course.objects.filter(id__in=cart['courses'], is_active=True)
 
         already_purchased = []
         valid_projects = []
@@ -203,35 +204,45 @@ def place_order(request):
             except Coupon.DoesNotExist:
                 pass
 
-        total = subtotal - discount
+        total = max(0, subtotal - discount)
         payment_method = request.POST.get('payment_method', 'upi')
         additional_remarks = request.POST.get('additional_remarks', '')
 
-        order = Order.objects.create(
-            user=request.user,
-            total_amount=total,
-            payment_method=payment_method,
-            payment_status='completed',
-            is_completed=True,
-            additional_remarks=additional_remarks
-        )
+        try:
+            with transaction.atomic():
+                order = Order.objects.create(
+                    user=request.user,
+                    total_amount=total,
+                    payment_method=payment_method,
+                    payment_status='completed',
+                    is_completed=True,
+                    additional_remarks=additional_remarks
+                )
 
-        from wishlist.models import Wishlist
+                from wishlist.models import Wishlist
 
-        for project in valid_projects:
-            OrderItem.objects.create(order=order, project=project, price=project.price)
-            Wishlist.objects.filter(user=request.user, project=project).delete()
-            
-        for course in valid_courses:
-            OrderItem.objects.create(order=order, course=course, price=course.price)
-            # Courses are left in the wishlist to be marked as 'Already Purchased' by the template
+                for project in valid_projects:
+                    OrderItem.objects.create(order=order, project=project, price=project.price)
+                    Wishlist.objects.filter(user=request.user, project=project).delete()
+                    
+                for course in valid_courses:
+                    OrderItem.objects.create(order=order, course=course, price=course.price)
+                    Wishlist.objects.filter(user=request.user, course=course).delete()
+
+                if coupon_obj and not coupon_obj.is_unlimited:
+                    UserCoupon.objects.update_or_create(user=request.user, coupon=coupon_obj, defaults={'is_used': True})
+                    
+        except Exception as e:
+            messages.error(request, "A critical error occurred processing your order.")
+            return redirect('checkout')
 
         if coupon_obj:
-            if coupon_obj.code != 'SAVE5':
-                UserCoupon.objects.update_or_create(user=request.user, coupon=coupon_obj, defaults={'is_used': True})
             request.session.pop('coupon_code', None)
 
-        send_order_confirmation_email(request.user, order)
+        try:
+            send_order_confirmation_email(request.user, order)
+        except Exception as e:
+            print(f"Error sending order confirmation email: {e}")
         request.session['cart'] = {'projects': [], 'courses': []}
 
         return redirect('order_success', order_id=order.id)
@@ -256,12 +267,12 @@ def order_history(request):
     purchased_projects = Project.objects.filter(
         order_items__order__user=request.user,
         order_items__order__is_completed=True
-    ).distinct().order_by('-id')
+    ).select_related('category', 'seller').distinct().order_by('-id')
 
     purchased_courses = Course.objects.filter(
         order_items__order__user=request.user,
         order_items__order__is_completed=True
-    ).distinct().order_by('-id')
+    ).select_related('category', 'seller').distinct().order_by('-id')
 
     # Pagination for Projects
     paginator_p = Paginator(purchased_projects, 4)

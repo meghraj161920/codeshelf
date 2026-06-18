@@ -10,6 +10,7 @@ class Coupon(models.Model):
 
     is_active = models.BooleanField(default=True)
     is_global = models.BooleanField(default=False)
+    is_unlimited = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.code} ({self.discount_percent}%)"

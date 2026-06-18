@@ -49,8 +49,8 @@ def add_to_cart(request, item_type, item_id):
 @login_required
 def cart_view(request):
     cart = get_cart_dict(request)
-    projects = Project.objects.filter(id__in=cart['projects'])
-    courses = Course.objects.filter(id__in=cart['courses'])
+    projects = Project.objects.filter(id__in=cart['projects'], is_active=True)
+    courses = Course.objects.filter(id__in=cart['courses'], is_active=True)
     
     total = sum(p.price for p in projects) + sum(c.price for c in courses)
     
